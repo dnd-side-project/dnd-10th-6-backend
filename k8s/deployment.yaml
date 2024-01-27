@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "namui-wiki"
+  labels:
+    app: "namui-wiki"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "namui-wiki"
+  template:
+    metadata:
+      name: "namui-wiki"
+      labels:
+        app: "namui-wiki"
+    spec:
+      containers:
+        - name: "namui-wiki"
+          image: "ghcr.io/rlacksgus97/namui-wiki:main"
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
