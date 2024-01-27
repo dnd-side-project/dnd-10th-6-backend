@@ -18,5 +18,6 @@ spec:
       containers:
         - name: "namui-wiki"
           image: "ghcr.io/rlacksgus97/namui-wiki:main"
-          imagePullPolicy: IfNotPresent
+      imagePullSecrets:
+        - name: registry-secret
       restartPolicy: Always
