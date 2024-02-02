@@ -1,4 +1,4 @@
-package com.dnd.namuiwiki.application.oauth.dto;
+package com.dnd.namuiwiki.application.oauth.kakao.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

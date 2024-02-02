@@ -1,4 +1,4 @@
-package com.dnd.namuiwiki.application.oauth.dto;
+package com.dnd.namuiwiki.application.oauth.kakao.dto;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
