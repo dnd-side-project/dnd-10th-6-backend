@@ -14,6 +14,7 @@ public enum ApplicationErrorType {
     INVALID_DATA_ARGUMENT(HttpStatus.BAD_REQUEST, "Invalid data argument"),
     FROM_JSON_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Json parsing error"),
     TO_JSON_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Json parsing error"),
+    INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버에 문제가 발생했습니다."),
     NO_PERMISSION(HttpStatus.FORBIDDEN, "해당 권한이 없습니다"),
 
     /**
