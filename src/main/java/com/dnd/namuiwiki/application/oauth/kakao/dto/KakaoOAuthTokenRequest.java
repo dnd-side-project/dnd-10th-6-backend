@@ -26,27 +26,27 @@ public class KakaoOAuthTokenRequest {
     }
 
     @Value("${oauth.kakao.request-token-url}")
-    public void setRequestTokenURL(String requestTokenURL) {
+    private void setRequestTokenURL(String requestTokenURL) {
         KakaoOAuthTokenRequest.requestTokenURL = requestTokenURL;
     }
 
     @Value("${oauth.kakao.grant-type}")
-    public void setGrantType(String grantType) {
+    private void setGrantType(String grantType) {
         KakaoOAuthTokenRequest.grantType = grantType;
     }
 
     @Value("${oauth.kakao.client-id}")
-    public void setClientId(String clientId) {
+    private void setClientId(String clientId) {
         KakaoOAuthTokenRequest.clientId = clientId;
     }
 
     @Value("${oauth.kakao.redirect-uri}")
-    public void setRedirectUri(String redirectUri) {
+    private void setRedirectUri(String redirectUri) {
         KakaoOAuthTokenRequest.redirectUri = redirectUri;
     }
 
     @Value("${oauth.kakao.client-secret}")
-    public void setClientSecret(String clientSecret) {
+    private void setClientSecret(String clientSecret) {
         KakaoOAuthTokenRequest.clientSecret = clientSecret;
     }
 

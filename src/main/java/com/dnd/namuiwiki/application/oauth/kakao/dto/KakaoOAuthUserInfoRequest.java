@@ -9,7 +9,7 @@ public class KakaoOAuthUserInfoRequest {
     public static String requestUserInfoURL;
 
     @Value("${oauth.kakao.request-user-url}")
-    public void setRequestUserInfoURL(String requestUserInfoURL) {
+    private void setRequestUserInfoURL(String requestUserInfoURL) {
         KakaoOAuthUserInfoRequest.requestUserInfoURL = requestUserInfoURL;
     }
 
