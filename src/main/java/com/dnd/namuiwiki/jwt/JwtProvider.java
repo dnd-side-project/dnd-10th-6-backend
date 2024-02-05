@@ -5,7 +5,6 @@ import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,15 +12,11 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
-@Slf4j
 @Component
 public class JwtProvider implements InitializingBean {
 
     @Value("${jwt.key}")
     public String key;
-
-    @Value("${jwt.token-valid-time}")
-    private long tokenValidTime;
     private SecretKey secretKey;
     private final String OAUTH_PROVIDER_CLAIM = "oAuthProvider";
     private final String OAUTH_ID_CLAIM = "oAuthId";
@@ -32,7 +27,7 @@ public class JwtProvider implements InitializingBean {
         this.secretKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createToken(TokenUserInfoDto tokenUserInfoDto) {
+    public String createToken(long tokenValidTime, TokenUserInfoDto tokenUserInfoDto) {
         return Jwts.builder()
                 .header()
                     .add("typ", "JWT")
@@ -42,7 +37,7 @@ public class JwtProvider implements InitializingBean {
                     .add(OAUTH_PROVIDER_CLAIM, tokenUserInfoDto.getProvider())
                     .add(OAUTH_ID_CLAIM, tokenUserInfoDto.getOAuthId())
                 .and()
-                .expiration(new Date(new Date().getTime() + this.tokenValidTime))
+                .expiration(new Date(new Date().getTime() + tokenValidTime))
                 .signWith(secretKey)
                 .compact();
     }
