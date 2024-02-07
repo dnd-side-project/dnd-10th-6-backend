@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -16,21 +18,27 @@ class JwtProviderTest {
 
     @Autowired
     JwtProvider jwtProvider;
-    TokenUserInfoDto tokenUserInfoDto = new TokenUserInfoDto("KAKAO", "1234");
+    String wikiId = UUID.randomUUID().toString();
 
     @Value("${jwt.valid-time.access-token}")
     private long accessTokenValidTime;
 
     @Test
-    void createToken() {
+    void createAccessToken() {
         //when
-        assertDoesNotThrow(() -> jwtProvider.createToken(accessTokenValidTime, tokenUserInfoDto));
+        assertDoesNotThrow(() -> jwtProvider.createAccessToken(wikiId));
+    }
+
+    @Test
+    void createRefreshToken() {
+        //when
+        assertDoesNotThrow(() -> jwtProvider.createRefreshToken());
     }
 
     @Test
     void validateToken() {
         //given
-        String token = jwtProvider.createToken(accessTokenValidTime, tokenUserInfoDto);
+        String token = jwtProvider.createAccessToken(wikiId);
 
         //when
         assertDoesNotThrow(() -> jwtProvider.validateToken(token));
@@ -39,12 +47,11 @@ class JwtProviderTest {
     @Test
     void parseToken() {
         //given
-        String token = jwtProvider.createToken(accessTokenValidTime, tokenUserInfoDto);
+        String token = jwtProvider.createAccessToken(wikiId);
         Jws<Claims> claims = jwtProvider.validateToken(token);
 
         //when
         TokenUserInfoDto parsed = jwtProvider.parseToken(claims);
-        assertEquals(parsed.getProvider(), tokenUserInfoDto.getProvider());
-        assertEquals(parsed.getOAuthId(), tokenUserInfoDto.getOAuthId());
+        assertEquals(parsed.getWikiId(), wikiId);
     }
 }
