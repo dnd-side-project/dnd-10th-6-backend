@@ -17,9 +17,14 @@ public class JwtProvider implements InitializingBean {
 
     @Value("${jwt.key}")
     public String key;
+
+    @Value("${jwt.valid-time.access-token}")
+    private long accessTokenValidTime;
+
+    @Value("${jwt.valid-time.refresh-token}")
+    private long refreshTokenValidTime;
+    private final String WIKI_ID = "WIKI_ID";
     private SecretKey secretKey;
-    private final String OAUTH_PROVIDER_CLAIM = "oAuthProvider";
-    private final String OAUTH_ID_CLAIM = "oAuthId";
 
     @Override
     public void afterPropertiesSet() {
@@ -27,17 +32,27 @@ public class JwtProvider implements InitializingBean {
         this.secretKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createToken(long tokenValidTime, TokenUserInfoDto tokenUserInfoDto) {
+    public String createAccessToken(String wikiId) {
         return Jwts.builder()
                 .header()
                     .add("typ", "JWT")
                     .add("alg", "HS256")
                 .and()
                 .claims()
-                    .add(OAUTH_PROVIDER_CLAIM, tokenUserInfoDto.getProvider())
-                    .add(OAUTH_ID_CLAIM, tokenUserInfoDto.getOAuthId())
+                    .add(WIKI_ID, wikiId)
                 .and()
-                .expiration(new Date(new Date().getTime() + tokenValidTime))
+                .expiration(new Date(new Date().getTime() + accessTokenValidTime))
+                .signWith(secretKey)
+                .compact();
+    }
+
+    public String createRefreshToken() {
+        return Jwts.builder()
+                .header()
+                .add("typ", "JWT")
+                .add("alg", "HS256")
+                .and()
+                .expiration(new Date(new Date().getTime() + refreshTokenValidTime))
                 .signWith(secretKey)
                 .compact();
     }
@@ -56,6 +71,6 @@ public class JwtProvider implements InitializingBean {
 
     public TokenUserInfoDto parseToken(Jws<Claims> jwt) {
         Claims claims = jwt.getPayload();
-        return new TokenUserInfoDto(claims.get(OAUTH_PROVIDER_CLAIM).toString(), claims.get(OAUTH_ID_CLAIM).toString());
+        return new TokenUserInfoDto(claims.get(WIKI_ID).toString());
     }
 }

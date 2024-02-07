@@ -1,11 +1,13 @@
 package com.dnd.namuiwiki.user;
 
 import com.dnd.namuiwiki.application.oauth.type.OAuthProvider;
+import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.UUID;
 
+@Getter
 @Document(collection = "users")
 public class User {
     @Id
@@ -13,10 +15,15 @@ public class User {
     private String wikiId;
     private OAuthProvider oAuthProvider;
     private String oAuthId;
+    private String refreshToken;
 
     public User(OAuthProvider oAuthProvider, String oAuthId) {
         this.wikiId = UUID.randomUUID().toString();
         this.oAuthProvider = oAuthProvider;
         this.oAuthId = oAuthId;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }

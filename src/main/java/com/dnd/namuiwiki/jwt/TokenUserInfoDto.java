@@ -6,6 +6,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class TokenUserInfoDto {
-    private String provider;
-    private String oAuthId;
+    private String wikiId;
 }
