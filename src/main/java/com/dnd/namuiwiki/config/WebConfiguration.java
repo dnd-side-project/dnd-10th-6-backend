@@ -14,11 +14,15 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Value("${spring.cors.allowed-methods}")
     private String[] allowedMethods;
 
+    @Value("${spring.cors.allowed-headers}")
+    private String[] allowedHeaders;
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(allowedOrigins)
                 .allowedMethods(allowedMethods)
+                .allowedHeaders(allowedHeaders)
                 .allowCredentials(true);
     }
 }
