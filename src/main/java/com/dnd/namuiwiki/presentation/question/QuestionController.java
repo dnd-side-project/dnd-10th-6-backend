@@ -4,6 +4,7 @@ import com.dnd.namuiwiki.application.question.QuestionService;
 import com.dnd.namuiwiki.presentation.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +22,12 @@ public class QuestionController {
     ) {
         questionService.setDefaultDocuments(pwd);
         return ResponseDto.noContent();
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getQuestions() {
+        var response = questionService.getQuestions();
+        return ResponseDto.ok(response);
     }
 
 }

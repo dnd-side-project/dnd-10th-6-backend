@@ -7,6 +7,7 @@ import com.dnd.namuiwiki.domain.entity.Question;
 import com.dnd.namuiwiki.domain.type.QuestionType;
 import com.dnd.namuiwiki.insfrastructure.persistence.option.OptionRepository;
 import com.dnd.namuiwiki.insfrastructure.persistence.question.QuestionRepository;
+import com.dnd.namuiwiki.presentation.question.dto.QuestionDto;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -27,6 +29,11 @@ public class QuestionService {
 
     @Value("${setting.password}")
     private String SETTING_PASSWORD;
+
+    public List<QuestionDto> getQuestions() {
+        return questionRepository.findAll()
+                .stream().map(QuestionDto::from).toList();
+    }
 
     public void setDefaultDocuments(String pwd) {
         if (!SETTING_PASSWORD.equals(pwd)) {
