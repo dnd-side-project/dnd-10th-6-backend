@@ -17,16 +17,19 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
+    private final String HTTP_METHOD_OPTIONS = "OPTIONS";
     private final String AUTHENTICATION_HEADER = "X-NAMUIWIKI-TOKEN";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authHeader = request.getHeader(AUTHENTICATION_HEADER);
-        if (authHeader == null) {
-            throw new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_ACCESS_TOKEN);
+        if (!request.getMethod().equals(HTTP_METHOD_OPTIONS)) {
+            String authHeader = request.getHeader(AUTHENTICATION_HEADER);
+            if (authHeader.isBlank()) {
+                throw new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_ACCESS_TOKEN);
+            }
+            Jws<Claims> claims = jwtProvider.validateToken(authHeader);
+            jwtProvider.parseToken(claims);
         }
-        Jws<Claims> claims = jwtProvider.validateToken(authHeader);
-        jwtProvider.parseToken(claims);
         filterChain.doFilter(request, response);
     }
 }
