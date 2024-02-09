@@ -29,32 +29,38 @@ public class JwtProvider {
     private SecretKey secretKey;
 
     @PostConstruct
-    public void afterPropertiesSet() {
+    public void createSecretKey() {
         byte[] keyBytes = Decoders.BASE64.decode(key);
         this.secretKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String createAccessToken(String wikiId) {
-        return Jwts.builder()
-                .header()
-                    .add("typ", "JWT")
-                    .add("alg", "HS256")
-                .and()
-                .claims()
-                    .add(WIKI_ID, wikiId)
-                .and()
-                .expiration(new Date(new Date().getTime() + accessTokenValidTime))
-                .signWith(secretKey)
-                .compact();
+        Claims claims = Jwts.claims()
+                .subject("accessToken")
+                .add(WIKI_ID, wikiId)
+                .build();
+        return createToken(accessTokenValidTime, claims);
     }
 
     public String createRefreshToken() {
+        Claims claims = Jwts.claims()
+                .subject("refreshToken")
+                .build();
+        return createToken(refreshTokenValidTime, claims);
+    }
+
+    private String createToken(Long validTime, Claims claims) {
+        Date now = new Date();
         return Jwts.builder()
+                .issuedAt(now)
                 .header()
                 .add("typ", "JWT")
                 .add("alg", "HS256")
                 .and()
-                .expiration(new Date(new Date().getTime() + refreshTokenValidTime))
+                .claims()
+                .add(claims)
+                .and()
+                .expiration(new Date(now.getTime() + validTime))
                 .signWith(secretKey)
                 .compact();
     }
@@ -73,6 +79,10 @@ public class JwtProvider {
 
     public TokenUserInfoDto parseToken(Jws<Claims> jwt) {
         Claims claims = jwt.getPayload();
-        return new TokenUserInfoDto(claims.get(WIKI_ID).toString());
+        String wikiId = claims.get(WIKI_ID, String.class);
+        if (wikiId == null) {
+            throw new ApplicationErrorException(ApplicationErrorType.AUTHENTICATION_FAILED);
+        }
+        return new TokenUserInfoDto(wikiId);
     }
 }
