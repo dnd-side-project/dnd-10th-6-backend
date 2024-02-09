@@ -1,6 +1,6 @@
-package com.dnd.namuiwiki.insfrastructure.persistence.option;
+package com.dnd.namuiwiki.domain.option;
 
-import com.dnd.namuiwiki.domain.entity.Option;
+import com.dnd.namuiwiki.domain.option.entity.Option;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;

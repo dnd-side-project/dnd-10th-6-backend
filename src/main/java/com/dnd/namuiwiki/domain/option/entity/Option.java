@@ -1,4 +1,4 @@
-package com.dnd.namuiwiki.domain.entity;
+package com.dnd.namuiwiki.domain.option.entity;
 
 import lombok.Builder;
 import lombok.Getter;

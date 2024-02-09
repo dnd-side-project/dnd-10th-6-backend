@@ -1,13 +1,13 @@
-package com.dnd.namuiwiki.application.question;
+package com.dnd.namuiwiki.domain.question;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
-import com.dnd.namuiwiki.domain.entity.Option;
-import com.dnd.namuiwiki.domain.entity.Question;
-import com.dnd.namuiwiki.domain.type.QuestionType;
-import com.dnd.namuiwiki.insfrastructure.persistence.option.OptionRepository;
-import com.dnd.namuiwiki.insfrastructure.persistence.question.QuestionRepository;
-import com.dnd.namuiwiki.presentation.question.dto.QuestionDto;
+import com.dnd.namuiwiki.domain.option.entity.Option;
+import com.dnd.namuiwiki.domain.question.entity.Question;
+import com.dnd.namuiwiki.domain.question.type.QuestionType;
+import com.dnd.namuiwiki.domain.option.OptionRepository;
+import com.dnd.namuiwiki.domain.question.QuestionRepository;
+import com.dnd.namuiwiki.domain.question.dto.QuestionDto;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

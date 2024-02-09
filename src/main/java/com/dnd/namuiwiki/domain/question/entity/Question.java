@@ -1,6 +1,7 @@
-package com.dnd.namuiwiki.domain.entity;
+package com.dnd.namuiwiki.domain.question.entity;
 
-import com.dnd.namuiwiki.domain.type.QuestionType;
+import com.dnd.namuiwiki.domain.option.entity.Option;
+import com.dnd.namuiwiki.domain.question.type.QuestionType;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;

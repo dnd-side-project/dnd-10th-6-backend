@@ -1,6 +1,6 @@
-package com.dnd.namuiwiki.presentation.question.dto;
+package com.dnd.namuiwiki.domain.option.dto;
 
-import com.dnd.namuiwiki.domain.entity.Option;
+import com.dnd.namuiwiki.domain.option.entity.Option;
 import lombok.Builder;
 import lombok.Getter;
 

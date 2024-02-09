@@ -1,4 +1,4 @@
-package com.dnd.namuiwiki.application.question.dto;
+package com.dnd.namuiwiki.domain.question.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

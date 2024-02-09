@@ -1,4 +1,4 @@
-package com.dnd.namuiwiki.domain.type;
+package com.dnd.namuiwiki.domain.question.type;
 
 public enum QuestionType {
     OX, MULTIPLE_CHOICE, SHORT_ANSWER, NUMBER_CHOICE;

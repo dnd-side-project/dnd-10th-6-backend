@@ -1,7 +1,6 @@
-package com.dnd.namuiwiki.presentation.question;
+package com.dnd.namuiwiki.domain.question;
 
-import com.dnd.namuiwiki.application.question.QuestionService;
-import com.dnd.namuiwiki.presentation.dto.ResponseDto;
+import com.dnd.namuiwiki.common.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
