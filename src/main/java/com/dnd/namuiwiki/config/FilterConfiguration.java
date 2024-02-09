@@ -10,12 +10,14 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 @Configuration
 @RequiredArgsConstructor
 public class FilterConfiguration {
 
     @Value("${jwt.permit-uri}")
-    private String[] permittedURIs;
+    private List<String > permittedURIs;
 
     private final JwtProvider jwtProvider;
     private final ObjectMapper objectMapper;
@@ -23,8 +25,7 @@ public class FilterConfiguration {
     @Bean
     public FilterRegistrationBean<JwtFilter> jwtFilter() {
         FilterRegistrationBean<JwtFilter> jwtFilterBean = new FilterRegistrationBean<>();
-        jwtFilterBean.setFilter(new JwtFilter(jwtProvider));
-        jwtFilterBean.addUrlPatterns(permittedURIs);
+        jwtFilterBean.setFilter(new JwtFilter(jwtProvider, permittedURIs));
         jwtFilterBean.setOrder(2);
         return jwtFilterBean;
     }
