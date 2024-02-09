@@ -7,17 +7,19 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class JwtFilter implements Filter {
+public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
@@ -27,8 +29,7 @@ public class JwtFilter implements Filter {
     private List<String> permittedURIs;
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (permittedURIs.stream().noneMatch(p -> antPathMatcher.match(p, request.getRequestURI()))) {
             String authHeader = request.getHeader(AUTHENTICATION_HEADER);
             if (authHeader == null) {
@@ -37,6 +38,6 @@ public class JwtFilter implements Filter {
             Jws<Claims> claims = jwtProvider.validateToken(authHeader);
             jwtProvider.parseToken(claims);
         }
-        filterChain.doFilter(request, servletResponse);
+        filterChain.doFilter(request, response);
     }
 }
