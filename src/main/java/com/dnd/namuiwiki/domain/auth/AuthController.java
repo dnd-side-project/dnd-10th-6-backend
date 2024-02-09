@@ -1,5 +1,7 @@
 package com.dnd.namuiwiki.domain.auth;
 
+import com.dnd.namuiwiki.domain.jwt.JwtAuthorization;
+import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.oauth.OAuthService;
 import com.dnd.namuiwiki.domain.oauth.dto.OAuthUserInfoDto;
 import com.dnd.namuiwiki.domain.auth.dto.OAuthLoginRequest;
@@ -9,10 +11,7 @@ import com.dnd.namuiwiki.domain.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -31,6 +30,11 @@ public class AuthController {
          */
         OAuthLoginResponse oAuthLoginResponse = userService.login(oauthUserInfo);
         return ResponseDto.ok(oAuthLoginResponse);
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<?> test(@JwtAuthorization TokenUserInfoDto tokenUserInfoDto) {
+        return null;
     }
 
 }
