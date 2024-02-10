@@ -33,7 +33,13 @@ public enum ApplicationErrorType {
     /**
      * User Error Type
      */
-    NOT_FOUND_USER(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다.");
+    NOT_FOUND_USER(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다."),
+
+    /**
+     * Question Error Type
+     */
+    INVALID_QUESTION_ID(HttpStatus.UNAUTHORIZED, "문항을 찾을 수 없습니다.");
+
 
     @Getter
     private HttpStatus httpStatus;
