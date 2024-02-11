@@ -18,4 +18,10 @@ public class OptionDto {
                 .build();
     }
 
+    public Option toEntity() {
+        return Option.builder()
+                .id(id)
+                .content(content)
+                .build();
+    }
 }

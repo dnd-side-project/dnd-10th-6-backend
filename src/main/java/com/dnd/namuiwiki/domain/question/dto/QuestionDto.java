@@ -26,4 +26,12 @@ public class QuestionDto {
                 .build();
     }
 
+    public Question toEntity() {
+        return Question.builder()
+                .id(id)
+                .title(title)
+                .type(type)
+                .options(options.stream().map(OptionDto::toEntity).toList())
+                .build();
+    }
 }
