@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/surveys")
 public class SurveyController {
     private final SurveyService surveyService;
+    private final SurveyAnswerService surveyAnswerService;
 
     @PostMapping
     public ResponseEntity<?> createSurvey(
             @Validated @RequestBody CreateSurveyRequest request
     ) {
-        var response = surveyService.createSurvey(request);
+        var surveyAnswers = surveyAnswerService.getSurveyAnswers(request.getAnswers());
+        var response = surveyService.createSurvey(request, surveyAnswers);
         return ResponseDto.created(response);
     }
 
