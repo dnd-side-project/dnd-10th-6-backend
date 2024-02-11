@@ -4,6 +4,7 @@ import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.question.QuestionRepository;
 import com.dnd.namuiwiki.domain.question.entity.Question;
+import com.dnd.namuiwiki.domain.survey.dto.AnswerDto;
 import com.dnd.namuiwiki.domain.survey.dto.CreateSurveyRequest;
 import com.dnd.namuiwiki.domain.survey.dto.CreateSurveyResponse;
 import com.dnd.namuiwiki.domain.survey.entity.Survey;
@@ -57,7 +58,7 @@ public class SurveyService {
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
     }
 
-    private List<Survey.Answer> makeSurveyAnswers(List<CreateSurveyRequest.AnswerDto> answers) {
+    private List<Survey.Answer> makeSurveyAnswers(List<AnswerDto> answers) {
         return answers.stream().map(answer -> {
             Question question = questionRepository.findById(answer.getQuestionId())
                     .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_ID));

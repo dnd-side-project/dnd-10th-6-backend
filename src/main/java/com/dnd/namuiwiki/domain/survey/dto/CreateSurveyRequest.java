@@ -1,7 +1,6 @@
 package com.dnd.namuiwiki.domain.survey.dto;
 
 import com.dnd.namuiwiki.common.annotation.Enum;
-import com.dnd.namuiwiki.domain.survey.type.AnswerType;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import jakarta.validation.constraints.NotEmpty;
@@ -32,21 +31,5 @@ public class CreateSurveyRequest {
     @NotEmpty
     private List<AnswerDto> answers;
 
-    @Getter
-    public static class AnswerDto {
-
-        @NotEmpty
-        private String questionId;
-
-        @Enum(enumClass = AnswerType.class)
-        private String type;
-
-        @NotEmpty
-        private String answer;
-
-        @NotEmpty
-        private String reason;
-
-    }
 
 }
