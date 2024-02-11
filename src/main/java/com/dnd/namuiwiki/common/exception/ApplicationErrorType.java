@@ -38,7 +38,17 @@ public enum ApplicationErrorType {
     /**
      * Question Error Type
      */
-    INVALID_QUESTION_ID(HttpStatus.UNAUTHORIZED, "문항을 찾을 수 없습니다.");
+    INVALID_QUESTION_ID(HttpStatus.NOT_FOUND, "문항을 찾을 수 없습니다."),
+
+    /**
+     * Option Error Type
+     */
+    INVALID_OPTION_ID(HttpStatus.NOT_FOUND, "옵션을 찾을 수 없습니다."),
+
+    /**
+     * Answer Error Type
+     */
+    NOT_ALLOWED_ANSWER_TYPE(HttpStatus.CONFLICT, "해당 문항에 허용되지 않은 답변 타입입니다.");
 
 
     @Getter
