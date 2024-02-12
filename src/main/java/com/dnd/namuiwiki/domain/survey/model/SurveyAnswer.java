@@ -42,7 +42,12 @@ public class SurveyAnswer {
 
         private Answer(QuestionDto question, AnswerType type, Object answer, String reason) {
             validateAnswerType(question.getType(), type);
-            validateAnswerShouldBeNumeric(question.getType(), type, answer);
+            boolean answerShouldBeNumeric = question.getType().isNumericType() && type.isManual();
+            if (answerShouldBeNumeric) {
+                validateAnswerIsNumeric(answer);
+            } else {
+                validateAnswerIsString(answer);
+            }
 
             this.question = question;
             this.type = type;
@@ -50,12 +55,15 @@ public class SurveyAnswer {
             this.reason = reason;
         }
 
-        private void validateAnswerShouldBeNumeric(QuestionType questionType, AnswerType answerType, Object answer) {
-            boolean needToCheck = questionType.isNumericType() && answerType.isManual();
-            boolean isIntegerType = answer instanceof Integer;
-
-            if (needToCheck && !isIntegerType) {
+        private void validateAnswerIsNumeric(Object answer) {
+            if (!(answer instanceof Integer)) {
                 throw new ApplicationErrorException(ApplicationErrorType.NOT_INTEGER_ANSWER);
+            }
+        }
+
+        private void validateAnswerIsString(Object answer) {
+            if (!(answer instanceof String)) {
+                throw new ApplicationErrorException(ApplicationErrorType.NOT_STRING_ANSWER);
             }
         }
 
