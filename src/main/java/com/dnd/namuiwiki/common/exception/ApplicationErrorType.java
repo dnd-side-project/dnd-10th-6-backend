@@ -49,7 +49,8 @@ public enum ApplicationErrorType {
      * Answer Error Type
      */
     NOT_ALLOWED_ANSWER_TYPE(HttpStatus.CONFLICT, "해당 문항에 허용되지 않은 답변 타입입니다."),
-    CONFLICT_OPTION_QUESTION(HttpStatus.CONFLICT, "문항에 해당 옵션이 없습니다.");
+    CONFLICT_OPTION_QUESTION(HttpStatus.CONFLICT, "문항에 해당 옵션이 없습니다."),
+    NOT_INTEGER_ANSWER(HttpStatus.CONFLICT, "정수형 답변이 아닙니다.");
 
 
     @Getter

@@ -44,7 +44,7 @@ public class Survey {
         @DocumentReference(collection = "questions", lazy = true)
         private Question question;
         private AnswerType type;
-        private String answer;
+        private Object answer;
         private String reason;
 
     }

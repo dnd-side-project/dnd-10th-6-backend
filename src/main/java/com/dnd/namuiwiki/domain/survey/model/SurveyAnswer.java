@@ -28,7 +28,7 @@ public class SurveyAnswer {
         return answers.size();
     }
 
-    public static Answer create(QuestionDto question, AnswerType type, String answer, String reason) {
+    public static Answer create(QuestionDto question, AnswerType type, Object answer, String reason) {
         return new Answer(question, type, answer, reason);
     }
 
@@ -37,16 +37,26 @@ public class SurveyAnswer {
     public static class Answer {
         private final QuestionDto question;
         private final AnswerType type;
-        private final String answer;
+        private final Object answer;
         private final String reason;
 
-        private Answer(QuestionDto question, AnswerType type, String answer, String reason) {
+        private Answer(QuestionDto question, AnswerType type, Object answer, String reason) {
             validateAnswerType(question.getType(), type);
+            validateAnswerShouldBeNumeric(question.getType(), type, answer);
 
             this.question = question;
             this.type = type;
             this.answer = answer;
             this.reason = reason;
+        }
+
+        private void validateAnswerShouldBeNumeric(QuestionType questionType, AnswerType answerType, Object answer) {
+            boolean needToCheck = questionType.isNumericType() && answerType.isManual();
+            boolean isIntegerType = answer instanceof Integer;
+
+            if (needToCheck && !isIntegerType) {
+                throw new ApplicationErrorException(ApplicationErrorType.NOT_INTEGER_ANSWER);
+            }
         }
 
         private Survey.Answer toEntity() {
