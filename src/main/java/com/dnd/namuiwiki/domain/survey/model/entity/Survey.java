@@ -1,4 +1,4 @@
-package com.dnd.namuiwiki.domain.survey.entity;
+package com.dnd.namuiwiki.domain.survey.model.entity;
 
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.survey.type.AnswerType;

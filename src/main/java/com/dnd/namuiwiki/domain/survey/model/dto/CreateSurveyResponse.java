@@ -1,4 +1,4 @@
-package com.dnd.namuiwiki.domain.survey.dto;
+package com.dnd.namuiwiki.domain.survey.model.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
