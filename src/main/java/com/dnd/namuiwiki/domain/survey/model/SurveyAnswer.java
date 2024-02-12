@@ -44,27 +44,15 @@ public class SurveyAnswer {
             validateAnswerType(question.getType(), type);
             boolean answerShouldBeNumeric = question.getType().isNumericType() && type.isManual();
             if (answerShouldBeNumeric) {
-                validateAnswerIsNumeric(answer);
+                validateAnswerObjectType(answer, Integer.class);
             } else {
-                validateAnswerIsString(answer);
+                validateAnswerObjectType(answer, String.class);
             }
 
             this.question = question;
             this.type = type;
             this.answer = answer;
             this.reason = reason;
-        }
-
-        private void validateAnswerIsNumeric(Object answer) {
-            if (!(answer instanceof Integer)) {
-                throw new ApplicationErrorException(ApplicationErrorType.NOT_INTEGER_ANSWER);
-            }
-        }
-
-        private void validateAnswerIsString(Object answer) {
-            if (!(answer instanceof String)) {
-                throw new ApplicationErrorException(ApplicationErrorType.NOT_STRING_ANSWER);
-            }
         }
 
         private Survey.Answer toEntity() {
@@ -74,6 +62,12 @@ public class SurveyAnswer {
                     .answer(answer)
                     .reason(reason)
                     .build();
+        }
+
+        private void validateAnswerObjectType(Object answer, Class<?> clazz) {
+            if (!clazz.isInstance(answer)) {
+                throw new ApplicationErrorException(ApplicationErrorType.NOT_INTEGER_ANSWER);
+            }
         }
 
         private void validateAnswerType(QuestionType questionType, AnswerType answerType) {
