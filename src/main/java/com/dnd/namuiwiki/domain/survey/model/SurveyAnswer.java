@@ -20,6 +20,10 @@ public class SurveyAnswer {
         return answers.stream().map(Answer::toEntity).toList();
     }
 
+    public Answer get(int index) {
+        return answers.get(index);
+    }
+
     public int size() {
         return answers.size();
     }

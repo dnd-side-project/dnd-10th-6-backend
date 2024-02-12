@@ -103,7 +103,8 @@ class SurveyAnswerServiceTest {
             // given
             QuestionType questionType = QuestionType.OX;
             Option option = Option.builder().id("notOptionId").build();
-            Question question = Question.builder().type(questionType).options(List.of()).build();
+            Option realOption = Option.builder().id("realOptionId").build();
+            Question question = Question.builder().type(questionType).options(List.of(realOption)).build();
             var answers = List.of(answerOfOptionType);
 
             given(optionRepository.findById(any(String.class))).willReturn(Optional.of(option));
@@ -117,21 +118,51 @@ class SurveyAnswerServiceTest {
 
     }
 
-    class MULTIPLE_CHOICE {
-        /**
-         * Answer.type이 "OPTION"일 경우
-         * 1. Answer.answer를 통해 Option을 가져온다. Option이 없을 경우 에러 뱉음
-         *
-         * Answer.type이 "MANUAL"일 경우
-         * 2. Answer.answer를 문자열 그대로 저장한다.
-         */
-    }
+    @Nested
+    @DisplayName("Answer.type이 'MANUAL'일 경우")
+    class AnswerTypeIsManual {
+        private final AnswerDto answerOfManualType = AnswerDto.builder()
+                .type("MANUAL")
+                .questionId("questionId")
+                .answer("직접 작성한 답변")
+                .build();
 
-    class SHORT_ANSWER {
-        /**
-         * 1. Answer.type이 "MANUAL"만 허용한다.
-         * 2. Answer.answer를 문자열 그대로 저장한다.
-         */
+        @Test
+        @DisplayName("Answer.answer는 일반 문자열로 취급한다.")
+        void answerIsPlainText() {
+            // given
+            QuestionType questionType = QuestionType.SHORT_ANSWER;
+            Question question = Question.builder().type(questionType).options(List.of()).build();
+            var answers = List.of(answerOfManualType);
+
+            given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
+
+            // when
+            var answer = surveyAnswerService.getSurveyAnswers(answers).get(0);
+
+            // then
+            String expected = "직접 작성한 답변";
+            assertThat(answer.getAnswer()).isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("MANUAL 타입의 Question은 Option 리스트의 길이가 0이다.")
+        void sizeOfOptionListIsZero() {
+            // given
+            QuestionType questionType = QuestionType.SHORT_ANSWER;
+            Question question = Question.builder().type(questionType).options(List.of()).build();
+            var answers = List.of(answerOfManualType);
+
+            given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
+
+            // when
+            var answer = surveyAnswerService.getSurveyAnswers(answers).get(0);
+
+            // then
+            int expected = 0;
+            assertThat(answer.getQuestion().getOptions().size()).isEqualTo(expected);
+        }
+
     }
 
     class NUMBER_CHOICE {
