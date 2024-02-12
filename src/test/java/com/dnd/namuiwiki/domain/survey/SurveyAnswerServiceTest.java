@@ -173,7 +173,7 @@ class SurveyAnswerServiceTest {
         @DisplayName("답변이 MANUAL타입이면, answer는 Integer 타입이다.")
         void typeOfAnswerShouldBeInteger() {
             // given
-            QuestionType questionType = QuestionType.NUMBER_CHOICE;
+            QuestionType questionType = QuestionType.NUMERIC_CHOICE;
             Question question = Question.builder().type(questionType).options(List.of()).build();
             int intAnswer = 100000;
             var answers = List.of(AnswerDto.builder()
@@ -195,7 +195,7 @@ class SurveyAnswerServiceTest {
         @DisplayName("답변이 MANUAL타입일 때 answer가 숫자가 아니면 에러 발생")
         void throwExceptionIfAnswerIsNotInteger() {
             // given
-            QuestionType questionType = QuestionType.NUMBER_CHOICE;
+            QuestionType questionType = QuestionType.NUMERIC_CHOICE;
             Question question = Question.builder().type(questionType).options(List.of()).build();
             String stringAnswer = "100000";
             var answers = List.of(AnswerDto.builder()
