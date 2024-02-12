@@ -165,14 +165,52 @@ class SurveyAnswerServiceTest {
 
     }
 
+    @Nested
+    @DisplayName("Question 타입이 NUMBER_CHOICE일 경우")
     class NUMBER_CHOICE {
-        /**
-         * Answer.type이 "OPTION"일 경우
-         * 1. Answer.answer를 통해 Option을 가져온다. Option이 없을 경우 에러 뱉음
-         *
-         * Answer.type이 "MANUAL"일 경우
-         * 2. Answer.answer를 숫자 그대로 저장한다.
-         * 숫자가 아닐 경우 에러 뱉음
-         */
+
+        @Test
+        @DisplayName("답변이 MANUAL타입이면, answer는 Integer 타입이다.")
+        void typeOfAnswerShouldBeInteger() {
+            // given
+            QuestionType questionType = QuestionType.NUMBER_CHOICE;
+            Question question = Question.builder().type(questionType).options(List.of()).build();
+            int intAnswer = 100000;
+            var answers = List.of(AnswerDto.builder()
+                    .type("MANUAL")
+                    .questionId("questionId")
+                    .answer(intAnswer)
+                    .build());
+
+            given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
+
+            // when
+            var answer = surveyAnswerService.getSurveyAnswers(answers).get(0);
+
+            // then
+            assertThat(answer.getAnswer() instanceof Integer).isTrue();
+        }
+
+        @Test
+        @DisplayName("답변이 MANUAL타입일 때 answer가 숫자가 아니면 에러 발생")
+        void throwExceptionIfAnswerIsNotInteger() {
+            // given
+            QuestionType questionType = QuestionType.NUMBER_CHOICE;
+            Question question = Question.builder().type(questionType).options(List.of()).build();
+            String stringAnswer = "100000";
+            var answers = List.of(AnswerDto.builder()
+                    .type("MANUAL")
+                    .questionId("questionId")
+                    .answer(stringAnswer)
+                    .build());
+
+            given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
+
+            // then
+            assertThatThrownBy(() -> surveyAnswerService.getSurveyAnswers(answers))
+                    .isInstanceOf(ApplicationErrorException.class)
+                    .hasMessageMatching("정수형 답변이 아닙니다.");
+        }
+
     }
 }

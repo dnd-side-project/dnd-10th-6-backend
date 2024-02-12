@@ -24,4 +24,8 @@ public enum QuestionType {
         return this == MULTIPLE_CHOICE || this == OX || this == NUMBER_CHOICE;
     }
 
+    public boolean isNumericType() {
+        return this == NUMBER_CHOICE;
+    }
+
 }

@@ -27,7 +27,7 @@ public class SurveyAnswerService {
             AnswerType answerType = AnswerType.valueOf(answer.getType());
 
             if (answerType.isOption()) {
-                String optionId = answer.getAnswer();
+                String optionId = answer.getAnswer().toString();
                 validateOptionExists(optionId, question);
             }
 
