@@ -1,7 +1,7 @@
 package com.dnd.namuiwiki.domain.survey;
 
 import com.dnd.namuiwiki.common.dto.ResponseDto;
-import com.dnd.namuiwiki.domain.survey.dto.CreateSurveyRequest;
+import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

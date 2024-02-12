@@ -5,7 +5,7 @@ import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.option.OptionRepository;
 import com.dnd.namuiwiki.domain.question.QuestionRepository;
 import com.dnd.namuiwiki.domain.question.dto.QuestionDto;
-import com.dnd.namuiwiki.domain.survey.dto.AnswerDto;
+import com.dnd.namuiwiki.domain.survey.model.dto.AnswerDto;
 import com.dnd.namuiwiki.domain.survey.model.SurveyAnswers;
 import com.dnd.namuiwiki.domain.survey.type.AnswerType;
 import lombok.RequiredArgsConstructor;

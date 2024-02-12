@@ -1,4 +1,4 @@
-package com.dnd.namuiwiki.domain.survey.dto;
+package com.dnd.namuiwiki.domain.survey.model.dto;
 
 import com.dnd.namuiwiki.common.annotation.Enum;
 import com.dnd.namuiwiki.domain.survey.type.AnswerType;
