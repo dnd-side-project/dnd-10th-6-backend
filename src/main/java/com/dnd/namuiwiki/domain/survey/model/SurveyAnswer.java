@@ -24,7 +24,7 @@ public class SurveyAnswer {
         return answers.size();
     }
 
-    public static Answer createSurveyAnswer(QuestionDto question, AnswerType type, String answer, String reason) {
+    public static Answer create(QuestionDto question, AnswerType type, String answer, String reason) {
         return new Answer(question, type, answer, reason);
     }
 
