@@ -7,7 +7,7 @@ import com.dnd.namuiwiki.domain.question.QuestionRepository;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyRequest;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyResponse;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
-import com.dnd.namuiwiki.domain.survey.model.SurveyAnswers;
+import com.dnd.namuiwiki.domain.survey.model.SurveyAnswer;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.UserRepository;
@@ -23,7 +23,7 @@ public class SurveyService {
     private final SurveyRepository surveyRepository;
     private final OptionRepository optionRepository;
 
-    public CreateSurveyResponse createSurvey(CreateSurveyRequest request, SurveyAnswers surveyAnswers) {
+    public CreateSurveyResponse createSurvey(CreateSurveyRequest request, SurveyAnswer surveyAnswer) {
         System.out.println(request);
 
 //        TODO owner
@@ -40,7 +40,7 @@ public class SurveyService {
                 .isAnonymous(request.getIsAnonymous())
                 .period(Period.valueOf(request.getPeriod()))
                 .relation(Relation.valueOf(request.getRelation()))
-                .answers(surveyAnswers.toEntity())
+                .answers(surveyAnswer.toEntity())
                 .build();
 
         return new CreateSurveyResponse(surveyRepository.save(survey).getId());
