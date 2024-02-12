@@ -6,7 +6,7 @@ import com.dnd.namuiwiki.domain.option.OptionRepository;
 import com.dnd.namuiwiki.domain.question.QuestionRepository;
 import com.dnd.namuiwiki.domain.question.dto.QuestionDto;
 import com.dnd.namuiwiki.domain.survey.model.dto.AnswerDto;
-import com.dnd.namuiwiki.domain.survey.model.SurveyAnswers;
+import com.dnd.namuiwiki.domain.survey.model.SurveyAnswer;
 import com.dnd.namuiwiki.domain.survey.type.AnswerType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,8 +19,8 @@ public class SurveyAnswerService {
     private final QuestionRepository questionRepository;
     private final OptionRepository optionRepository;
 
-    public SurveyAnswers getSurveyAnswers(List<AnswerDto> answersRequest) {
-        return new SurveyAnswers(answersRequest.stream()
+    public SurveyAnswer getSurveyAnswers(List<AnswerDto> answersRequest) {
+        return new SurveyAnswer(answersRequest.stream()
                 .map(answer -> {
                     QuestionDto question = getQuestionById(answer.getQuestionId());
                     AnswerType answerType = AnswerType.valueOf(answer.getType());
@@ -29,7 +29,7 @@ public class SurveyAnswerService {
                         validateOptionExists(answer);
                     }
 
-                    return SurveyAnswers.createSurveyAnswer(
+                    return SurveyAnswer.createSurveyAnswer(
                             question,
                             answerType,
                             answer.getAnswer(),
