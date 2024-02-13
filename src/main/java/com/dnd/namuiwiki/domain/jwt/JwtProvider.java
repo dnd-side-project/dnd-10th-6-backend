@@ -7,7 +7,6 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -65,13 +64,14 @@ public class JwtProvider {
                 .compact();
     }
 
-    public Jws<Claims> validateToken(String token) {
+    public Claims validateToken(String token) {
         try {
             return Jwts
                     .parser()
                     .verifyWith(secretKey)
                     .build()
-                    .parseSignedClaims(token);
+                    .parseSignedClaims(token)
+                    .getPayload();
         } catch (ExpiredJwtException e) {
             throw new ApplicationErrorException(ApplicationErrorType.EXPIRED_TOKEN);
         } catch (JwtException e) {
@@ -79,27 +79,27 @@ public class JwtProvider {
         }
     }
 
-    public boolean isExpiredToken(String token) {
-        try {
-            Jwts
-                .parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token);
-        } catch (ExpiredJwtException e) {
-            return true;
-        } catch (JwtException e) {
-            throw new ApplicationErrorException(ApplicationErrorType.AUTHENTICATION_FAILED);
-        }
-        return false;
-    }
-
-    public TokenUserInfoDto parseToken(Jws<Claims> jwt) {
-        Claims claims = jwt.getPayload();
+    public TokenUserInfoDto parseToken(Claims claims) {
         String wikiId = claims.get(WIKI_ID, String.class);
         if (wikiId == null) {
             throw new ApplicationErrorException(ApplicationErrorType.AUTHENTICATION_FAILED);
         }
         return new TokenUserInfoDto(wikiId);
+    }
+
+    public TokenUserInfoDto parseExpiredToken(String token) {
+        try {
+            Claims claims = Jwts
+                    .parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+            return parseToken(claims);
+        } catch (ExpiredJwtException e) {
+            return parseToken(e.getClaims());
+        } catch (JwtException e) {
+            throw new ApplicationErrorException(ApplicationErrorType.AUTHENTICATION_FAILED);
+        }
     }
 }

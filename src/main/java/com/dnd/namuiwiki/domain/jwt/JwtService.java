@@ -29,15 +29,9 @@ public class JwtService {
     }
 
     public RefreshResponse reIssueToken(String accessToken, String refreshToken) {
+        String wikiId = jwtProvider.parseExpiredToken(accessToken).getWikiId();
+        jwtProvider.validateToken(refreshToken);
 
-        if(!jwtProvider.isExpiredToken(accessToken)) {
-            throw new ApplicationErrorException(ApplicationErrorType.TOKEN_INTERNAL_ERROR);
-        }
-
-        Jws<Claims> claimsJws = jwtProvider.validateToken(refreshToken);
-        TokenUserInfoDto tokenUserInfoDto = jwtProvider.parseToken(claimsJws);
-
-        String wikiId = tokenUserInfoDto.getWikiId();
         User user = userRepository.findByWikiId(wikiId)
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
 

@@ -32,7 +32,7 @@ public class JwtFilter extends OncePerRequestFilter {
             if (authHeader == null) {
                 throw new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_ACCESS_TOKEN);
             }
-            Jws<Claims> claims = jwtProvider.validateToken(authHeader);
+            Claims claims = jwtProvider.validateToken(authHeader);
             request.setAttribute("claims", claims);
         }
         filterChain.doFilter(request, response);

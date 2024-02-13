@@ -50,7 +50,7 @@ class JwtProviderTest {
     void parseToken() {
         //given
         String token = jwtProvider.createAccessToken(wikiId);
-        Jws<Claims> claims = jwtProvider.validateToken(token);
+        Claims claims = jwtProvider.validateToken(token);
 
         //when
         TokenUserInfoDto parsed = jwtProvider.parseToken(claims);

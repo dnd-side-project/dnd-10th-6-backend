@@ -32,7 +32,7 @@ public class JwtAuthorizationArgumentResolver implements HandlerMethodArgumentRe
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         if (request != null) {
-            Jws<Claims> claims = (Jws<Claims>) request.getAttribute("claims");
+            Claims claims = (Claims) request.getAttribute("claims");
             TokenUserInfoDto tokenUserInfoDto = jwtProvider.parseToken(claims);
             String wikiId = tokenUserInfoDto.getWikiId();
             User user = userRepository.findByWikiId(wikiId)
