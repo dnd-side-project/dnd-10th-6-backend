@@ -17,7 +17,7 @@ import java.util.List;
 public class FilterConfiguration {
 
     @Value("${jwt.permit-uri}")
-    private List<String > permittedURIs;
+    private String[] permittedURIs;
 
     private final JwtProvider jwtProvider;
     private final ObjectMapper objectMapper;
@@ -25,7 +25,7 @@ public class FilterConfiguration {
     @Bean
     public FilterRegistrationBean<JwtFilter> jwtFilter() {
         FilterRegistrationBean<JwtFilter> jwtFilterBean = new FilterRegistrationBean<>();
-        jwtFilterBean.setFilter(new JwtFilter(jwtProvider, permittedURIs));
+        jwtFilterBean.setFilter(new JwtFilter(jwtProvider, List.of(permittedURIs)));
         jwtFilterBean.setOrder(2);
         return jwtFilterBean;
     }
@@ -33,7 +33,7 @@ public class FilterConfiguration {
     @Bean
     public FilterRegistrationBean<JwtExceptionHandlerFilter> jwtExceptionHandlerFilter() {
         FilterRegistrationBean<JwtExceptionHandlerFilter> jwtExceptionHandlerFilterBean = new FilterRegistrationBean<>();
-        jwtExceptionHandlerFilterBean.setFilter(new JwtExceptionHandlerFilter(objectMapper));
+        jwtExceptionHandlerFilterBean.setFilter(new JwtExceptionHandlerFilter(objectMapper, List.of(permittedURIs)));
         jwtExceptionHandlerFilterBean.setOrder(1);
         return jwtExceptionHandlerFilterBean;
     }

@@ -10,14 +10,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
 
     private final ObjectMapper objectMapper;
+
+    private final List<String> excludeUrlPatterns;
+    private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -36,5 +41,11 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
             return null;
         }
         return objectMapper.writeValueAsString(object);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        return excludeUrlPatterns.stream()
+                .anyMatch(p -> antPathMatcher.match(p, request.getServletPath()));
     }
 }
