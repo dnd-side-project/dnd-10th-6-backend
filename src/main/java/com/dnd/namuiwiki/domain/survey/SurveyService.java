@@ -2,12 +2,12 @@ package com.dnd.namuiwiki.domain.survey;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
-import com.dnd.namuiwiki.domain.option.OptionRepository;
-import com.dnd.namuiwiki.domain.question.QuestionRepository;
+import com.dnd.namuiwiki.domain.jwt.JwtProvider;
+import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
+import com.dnd.namuiwiki.domain.survey.model.SurveyAnswer;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyRequest;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyResponse;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
-import com.dnd.namuiwiki.domain.survey.model.SurveyAnswer;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.UserRepository;
@@ -19,23 +19,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SurveyService {
     private final UserRepository userRepository;
-    private final QuestionRepository questionRepository;
     private final SurveyRepository surveyRepository;
-    private final OptionRepository optionRepository;
+    private final JwtProvider jwtProvider;
 
-    public CreateSurveyResponse createSurvey(CreateSurveyRequest request, SurveyAnswer surveyAnswer) {
-        System.out.println(request);
-
-//        TODO owner
-//        User owner = userRepository.findByWikiId(request.getOwner())
-//                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
-
-        // TODO sender: userId -> User
-//        User sender = getSender(senderId);
+    public CreateSurveyResponse createSurvey(CreateSurveyRequest request, SurveyAnswer surveyAnswer, String accessToken) {
+        User owner = userRepository.findByWikiId(request.getOwner())
+                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
+        User sender = getUserByAccessToken(accessToken);
 
         Survey survey = Survey.builder()
-                .owner(null)
-//                .sender(sender)
+                .owner(owner)
+                .sender(sender)
                 .senderName(request.getSenderName())
                 .isAnonymous(request.getIsAnonymous())
                 .period(Period.valueOf(request.getPeriod()))
@@ -46,11 +40,13 @@ public class SurveyService {
         return new CreateSurveyResponse(surveyRepository.save(survey).getId());
     }
 
-    private User getSender(String senderId) {
-        if (senderId == null) {
+    private User getUserByAccessToken(String accessToken) {
+        if (accessToken == null) {
             return null;
         }
-        return userRepository.findById(senderId)
+
+        TokenUserInfoDto tokenUserInfoDto = jwtProvider.parseToken(accessToken);
+        return userRepository.findByWikiId(tokenUserInfoDto.getWikiId())
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
     }
 
