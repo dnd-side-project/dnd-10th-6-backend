@@ -9,5 +9,12 @@ public class QuestionJsonDto {
     private String title;
     private Long surveyOrder;
     private String type;
-    private Long[] options;
+    private OptionJsonDto[] options;
+
+    @Getter
+    @AllArgsConstructor
+    public static class OptionJsonDto {
+        private String text;
+        private Object value;
+    }
 }

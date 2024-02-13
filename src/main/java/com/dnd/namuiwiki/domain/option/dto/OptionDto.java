@@ -14,14 +14,14 @@ public class OptionDto {
     public static OptionDto from(Option option) {
         return OptionDto.builder()
                 .id(option.getId())
-                .content(option.getContent())
+                .content(option.getValue())
                 .build();
     }
 
     public Option toEntity() {
         return Option.builder()
                 .id(id)
-                .content(content)
+                .value(content)
                 .build();
     }
 }
