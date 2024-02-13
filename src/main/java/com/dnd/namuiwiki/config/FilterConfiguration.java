@@ -19,13 +19,16 @@ public class FilterConfiguration {
     @Value("${jwt.permit-uri}")
     private String[] permittedURIs;
 
+    @Value("${jwt.authentication-header}")
+    private String AUTHENTICATION_HEADER;
+
     private final JwtProvider jwtProvider;
     private final ObjectMapper objectMapper;
 
     @Bean
     public FilterRegistrationBean<JwtFilter> jwtFilter() {
         FilterRegistrationBean<JwtFilter> jwtFilterBean = new FilterRegistrationBean<>();
-        jwtFilterBean.setFilter(new JwtFilter(jwtProvider, List.of(permittedURIs)));
+        jwtFilterBean.setFilter(new JwtFilter(jwtProvider, List.of(permittedURIs), AUTHENTICATION_HEADER));
         jwtFilterBean.setOrder(2);
         return jwtFilterBean;
     }
