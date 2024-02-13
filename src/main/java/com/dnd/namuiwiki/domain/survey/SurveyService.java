@@ -27,6 +27,8 @@ public class SurveyService {
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
         User sender = getUserByAccessToken(accessToken);
 
+        validateNotFromMe(owner, sender);
+
         Survey survey = Survey.builder()
                 .owner(owner)
                 .sender(sender)
@@ -38,6 +40,12 @@ public class SurveyService {
                 .build();
 
         return new CreateSurveyResponse(surveyRepository.save(survey).getId());
+    }
+
+    private void validateNotFromMe(User owner, User sender) {
+        if (owner.equals(sender)) {
+            throw new ApplicationErrorException(ApplicationErrorType.CANNOT_SEND_SURVEY_TO_MYSELF);
+        }
     }
 
     private User getUserByAccessToken(String accessToken) {
