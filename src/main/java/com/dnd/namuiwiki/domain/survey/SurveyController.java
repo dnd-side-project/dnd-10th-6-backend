@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,10 +20,11 @@ public class SurveyController {
 
     @PostMapping
     public ResponseEntity<?> createSurvey(
-            @Validated @RequestBody CreateSurveyRequest request
+            @Validated @RequestBody CreateSurveyRequest request,
+            @RequestHeader(required = false, value = "X-NAMUIWIKI-TOKEN") String accessToken
     ) {
         var surveyAnswers = surveyAnswerService.getSurveyAnswers(request.getAnswers());
-        var response = surveyService.createSurvey(request, surveyAnswers);
+        var response = surveyService.createSurvey(request, surveyAnswers, accessToken);
         return ResponseDto.created(response);
     }
 

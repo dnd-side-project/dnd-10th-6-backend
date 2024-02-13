@@ -15,6 +15,7 @@ public class CreateSurveyRequest {
     @NotEmpty
     private String owner;
 
+    @NotEmpty
     private String sender;
 
     @Size(min = 2, max = 6)
@@ -30,6 +31,5 @@ public class CreateSurveyRequest {
 
     @NotEmpty
     private List<AnswerDto> answers;
-
 
 }
