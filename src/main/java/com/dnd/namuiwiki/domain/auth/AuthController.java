@@ -14,6 +14,7 @@ import com.dnd.namuiwiki.common.dto.ResponseDto;
 import com.dnd.namuiwiki.domain.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
+
+    @Value("${jwt.authentication-header}")
+    private String AUTHENTICATION_HEADER;
+
     private final OAuthService oAuthService;
     private final UserService userService;
     private final JwtService jwtService;
@@ -40,7 +45,7 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(HttpServletRequest request, @CookieValue("refreshToken") String refreshToken) {
-        String accessToken = request.getHeader("X-NAMUIWIKI-TOKEN");
+        String accessToken = request.getHeader(AUTHENTICATION_HEADER);
 
         if (accessToken == null) {
             throw new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_ACCESS_TOKEN);
