@@ -19,6 +19,7 @@ public class Question {
     private String id;
     private String title;
     private QuestionType type;
+    private Long surveyOrder;
     @DocumentReference
     private List<Option> options;
 
