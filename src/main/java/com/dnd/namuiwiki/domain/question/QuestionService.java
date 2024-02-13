@@ -72,6 +72,7 @@ public class QuestionService {
             QuestionType type = QuestionType.of(qq.get("type").toString());
             Question.QuestionBuilder questionBuilder = Question.builder()
                     .title(qq.get("title").toString())
+                    .surveyOrder((Long) qq.get("surveyOrder"))
                     .type(type);
 
             if (type.isChoice()) {

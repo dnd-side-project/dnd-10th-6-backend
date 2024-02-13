@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class QuestionJsonDto {
     private String title;
+    private Long surveyOrder;
     private String type;
     private Long[] options;
 }
