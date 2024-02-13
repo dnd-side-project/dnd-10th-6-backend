@@ -13,14 +13,14 @@ public class User {
     @Id
     private String id;
     private String wikiId;
-    private OAuthProvider oAuthProvider;
-    private String oAuthId;
+    private OAuthProvider oauthProvider;
+    private String oauthId;
     private String refreshToken;
 
     public User(OAuthProvider oAuthProvider, String oAuthId) {
         this.wikiId = UUID.randomUUID().toString();
-        this.oAuthProvider = oAuthProvider;
-        this.oAuthId = oAuthId;
+        this.oauthProvider = oAuthProvider;
+        this.oauthId = oAuthId;
     }
 
     public void setRefreshToken(String refreshToken) {
