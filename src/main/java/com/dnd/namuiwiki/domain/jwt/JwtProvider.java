@@ -72,6 +72,8 @@ public class JwtProvider {
                     .verifyWith(secretKey)
                     .build()
                     .parseSignedClaims(token);
+        } catch (ExpiredJwtException e) {
+            throw new ApplicationErrorException(ApplicationErrorType.EXPIRED_TOKEN);
         } catch (JwtException e) {
             throw new ApplicationErrorException(ApplicationErrorType.AUTHENTICATION_FAILED);
         }
