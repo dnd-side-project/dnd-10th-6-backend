@@ -14,7 +14,8 @@ public class Option {
 
     @Id
     private String id;
-    private Object content;
+    private Object value;
+    private String text;
 
     @Override
     public boolean equals(Object o) {

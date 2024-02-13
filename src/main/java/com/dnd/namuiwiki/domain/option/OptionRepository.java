@@ -6,5 +6,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 
 public interface OptionRepository extends MongoRepository<Option, String> {
-    Optional<Option> findByContent(Object content);
+    Optional<Option> findByValue(Object value);
 }
