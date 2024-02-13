@@ -13,7 +13,7 @@ public class KakaoOAuthUserInfoResponse {
     private Boolean has_signed_up;
     private String connected_at;
     private String synched_at;
-    private String properties;
+    private Object properties;
     private Object kakao_account;
     private Object for_partner;
 

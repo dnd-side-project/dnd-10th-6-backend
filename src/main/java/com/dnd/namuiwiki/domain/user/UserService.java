@@ -17,7 +17,7 @@ public class UserService {
 
     @Transactional
     public OAuthLoginResponse login(OAuthUserInfoDto oAuthUserInfoDto) {
-        User user = userRepository.findByOAuthProviderAndOAuthId(oAuthUserInfoDto.getProvider(), oAuthUserInfoDto.getOAuthId())
+        User user = userRepository.findByOauthProviderAndOauthId(oAuthUserInfoDto.getProvider(), oAuthUserInfoDto.getOAuthId())
                 .orElseGet(() -> {
                     User newUser = new User(oAuthUserInfoDto.getProvider(), oAuthUserInfoDto.getOAuthId());
                     return userRepository.save(newUser);
