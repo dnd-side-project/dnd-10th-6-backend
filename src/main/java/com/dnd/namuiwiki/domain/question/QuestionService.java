@@ -2,12 +2,11 @@ package com.dnd.namuiwiki.domain.question;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
+import com.dnd.namuiwiki.domain.option.OptionRepository;
 import com.dnd.namuiwiki.domain.option.entity.Option;
+import com.dnd.namuiwiki.domain.question.dto.QuestionDto;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionType;
-import com.dnd.namuiwiki.domain.option.OptionRepository;
-import com.dnd.namuiwiki.domain.question.QuestionRepository;
-import com.dnd.namuiwiki.domain.question.dto.QuestionDto;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Comparator;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -31,8 +31,10 @@ public class QuestionService {
     private String SETTING_PASSWORD;
 
     public List<QuestionDto> getQuestions() {
-        return questionRepository.findAll()
-                .stream().map(QuestionDto::from).toList();
+        return questionRepository.findAll().stream()
+                .sorted(Comparator.comparing(Question::getSurveyOrder))
+                .map(QuestionDto::from)
+                .toList();
     }
 
     public void setDefaultDocuments(String pwd) {
