@@ -26,6 +26,7 @@ public class AuthController {
 
     @Value("${jwt.authentication-header}")
     private String AUTHENTICATION_HEADER;
+    private final String REFRESH_TOKEN_COOKIE = "refreshToken=%s; secure";
 
     private final OAuthService oAuthService;
     private final UserService userService;
@@ -40,7 +41,8 @@ public class AuthController {
         2. jwt 발행
          */
         OAuthLoginResponse oAuthLoginResponse = userService.login(oauthUserInfo);
-        return ResponseDto.ok(oAuthLoginResponse);
+        return ResponseDto.setCookie(String.format(REFRESH_TOKEN_COOKIE, oAuthLoginResponse.getRefreshToken()))
+                .body(oAuthLoginResponse);
     }
 
     @PostMapping("/refresh")

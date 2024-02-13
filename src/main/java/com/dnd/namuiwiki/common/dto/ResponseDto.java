@@ -19,6 +19,11 @@ public class ResponseDto<T> implements Serializable {
         return ResponseEntity.ok(new ResponseDto<T>(data));
     }
 
+    public static ResponseEntity.BodyBuilder setCookie(String cookie) {
+        return ResponseEntity.ok()
+                .header("Set-Cookie", cookie);
+    }
+
     public static <T> ResponseEntity<ResponseDto<T>> created(T data) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
