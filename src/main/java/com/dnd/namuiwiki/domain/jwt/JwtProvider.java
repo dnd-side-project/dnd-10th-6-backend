@@ -79,6 +79,21 @@ public class JwtProvider {
         }
     }
 
+    public boolean isExpiredToken(String token) {
+        try {
+            Jwts
+                .parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token);
+        } catch (ExpiredJwtException e) {
+            return true;
+        } catch (JwtException e) {
+            throw new ApplicationErrorException(ApplicationErrorType.AUTHENTICATION_FAILED);
+        }
+        return false;
+    }
+
     public TokenUserInfoDto parseToken(Jws<Claims> jwt) {
         Claims claims = jwt.getPayload();
         String wikiId = claims.get(WIKI_ID, String.class);

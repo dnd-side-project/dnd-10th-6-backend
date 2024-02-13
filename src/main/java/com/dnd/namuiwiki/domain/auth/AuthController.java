@@ -1,6 +1,10 @@
 package com.dnd.namuiwiki.domain.auth;
 
+import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
+import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
+import com.dnd.namuiwiki.domain.auth.dto.RefreshResponse;
 import com.dnd.namuiwiki.domain.jwt.JwtAuthorization;
+import com.dnd.namuiwiki.domain.jwt.JwtService;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.oauth.OAuthService;
 import com.dnd.namuiwiki.domain.oauth.dto.OAuthUserInfoDto;
@@ -8,6 +12,7 @@ import com.dnd.namuiwiki.domain.auth.dto.OAuthLoginRequest;
 import com.dnd.namuiwiki.domain.auth.dto.OAuthLoginResponse;
 import com.dnd.namuiwiki.common.dto.ResponseDto;
 import com.dnd.namuiwiki.domain.user.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final OAuthService oAuthService;
     private final UserService userService;
+    private final JwtService jwtService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Validated @RequestBody OAuthLoginRequest request) {
@@ -30,6 +36,22 @@ public class AuthController {
          */
         OAuthLoginResponse oAuthLoginResponse = userService.login(oauthUserInfo);
         return ResponseDto.ok(oAuthLoginResponse);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(HttpServletRequest request, @CookieValue("refreshToken") String refreshToken) {
+        String accessToken = request.getHeader("X-NAMUIWIKI-TOKEN");
+
+        if (accessToken == null) {
+            throw new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_ACCESS_TOKEN);
+        }
+
+        if (refreshToken == null) {
+            throw new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_REFRESH_TOKEN);
+        }
+
+        RefreshResponse refreshResponse = jwtService.reIssueToken(accessToken, refreshToken);
+        return ResponseDto.ok(refreshResponse);
     }
 
     @GetMapping("/test")

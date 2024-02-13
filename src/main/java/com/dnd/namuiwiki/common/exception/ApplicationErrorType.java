@@ -28,8 +28,12 @@ public enum ApplicationErrorType {
     AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "인증에 실패하였습니다."),
     AUTHORIZATION_FAILED(HttpStatus.FORBIDDEN, "인가에 실패하였습니다."),
     TOKEN_INTERNAL_ERROR(HttpStatus.UNAUTHORIZED, "토큰 verify 실패 (토큰 내부 값 오류)"),
-    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다.");
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),
 
+    /**
+     * User Error Type
+     */
+    NOT_FOUND_USER(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다.");
 
     @Getter
     private HttpStatus httpStatus;
