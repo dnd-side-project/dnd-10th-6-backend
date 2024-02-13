@@ -69,13 +69,13 @@ public class QuestionService {
         questionRepository.deleteAll();
         var allQuestions = questions.stream().map(q -> {
             JSONObject qq = (JSONObject) q;
-            QuestionType type = QuestionType.of(qq.get("type").toString());
+            QuestionType type = QuestionType.valueOf(qq.get("type").toString());
             Question.QuestionBuilder questionBuilder = Question.builder()
                     .title(qq.get("title").toString())
                     .surveyOrder((Long) qq.get("surveyOrder"))
                     .type(type);
 
-            if (type.isChoice()) {
+            if (type.isChoiceType()) {
                 JSONArray keys = (JSONArray) qq.get("key");
                 var questionOptions = keys.stream().map(optionNum -> {
                     int n = Integer.parseInt(optionNum.toString());
