@@ -9,19 +9,13 @@ import lombok.Getter;
 public class OptionDto {
 
     private String id;
-    private Object content;
+    private String text;
 
     public static OptionDto from(Option option) {
         return OptionDto.builder()
                 .id(option.getId())
-                .content(option.getValue())
+                .text(option.getText())
                 .build();
     }
 
-    public Option toEntity() {
-        return Option.builder()
-                .id(id)
-                .value(content)
-                .build();
-    }
 }
