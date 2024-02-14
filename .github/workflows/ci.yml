@@ -56,5 +56,5 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ github.run_id }}
+        tags: ${{ env.NAMESPACE }}/${{ env.IMAGE_NAME }}/${{ github.run_id }}
         labels: ${{ steps.meta.outputs.labels }}
