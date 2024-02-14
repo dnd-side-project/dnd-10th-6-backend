@@ -25,7 +25,7 @@ public class SurveyAnswerService {
         var answers = answersRequest.stream().map(answer -> {
             Question question = getQuestionById(answer.getQuestionId());
             AnswerType answerType = AnswerType.valueOf(answer.getType());
-            var survayAnswer = SurveyAnswer.create(
+            var surveyAnswer = SurveyAnswer.create(
                     QuestionDto.from(question), answerType, answer.getAnswer(), answer.getReason());
 
             if (answerType.isOption()) {
@@ -33,7 +33,7 @@ public class SurveyAnswerService {
                 validateOptionExists(optionId, question);
             }
 
-            return survayAnswer;
+            return surveyAnswer;
         }).toList();
 
         return new SurveyAnswer(answers);
