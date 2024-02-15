@@ -17,7 +17,18 @@ spec:
     spec:
       containers:
         - name: "namui-wiki"
-          image: "ghcr.io/rlacksgus97/namui-wiki:main"
+          image: "ghcr.io/rlacksgus97/namui-wiki:7900533613"
+          volumeMounts:
+            - name: application-properties
+              mountPath: /config
+              readOnly: true
+      volumes:
+        - name: application-properties
+          configMap:
+            name: namui-wiki-configmap
+            items:
+              - key: "application.yaml"
+                path: "application.yaml"
       imagePullSecrets:
         - name: registry-secret
       restartPolicy: Always
