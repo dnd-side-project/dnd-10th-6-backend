@@ -4,6 +4,7 @@
       "title": "{{userName}}님은<br/><b>사람들과 빨리 친해지는 편</b>인가요?",
       "surveyOrder": 1,
       "type": "OX",
+      "dashboardType": "CHARACTER",
       "key": [
         1,
         2
@@ -13,6 +14,7 @@
       "title": "{{userName}}님은<br/><b>나와 비슷한 성향</b>인가요?",
       "surveyOrder": 2,
       "type": "OX",
+      "dashboardType": "CHARACTER",
       "key": [
         1,
         3
@@ -22,6 +24,7 @@
       "title": "{{userName}}님은<br/><b>MBTI에 과몰입하는 편</b>인가요?",
       "surveyOrder": 3,
       "type": "OX",
+      "dashboardType": "CHARACTER",
       "key": [
         1,
         4
@@ -31,6 +34,7 @@
       "title": "{{userName}}님은<br/><b>주말마다 약속이 있는 편</b>인가요?",
       "surveyOrder": 4,
       "type": "OX",
+      "dashboardType": "CHARACTER",
       "key": [
         1,
         5
@@ -40,79 +44,85 @@
       "title": "{{userName}}님에게<br/><b>가장 중요한 것</b>은 무엇일 것 같나요?",
       "surveyOrder": 5,
       "type": "MULTIPLE_CHOICE",
+      "dashboardType": "BEST_WORTH",
       "key": [
         6,
         7,
         8,
-        9,
-        0
+        9
       ]
     },
     {
       "title": "{{userName}}님은<br/><b>기쁠 때 어떤 행동</b>을 할 것 같나요?",
       "surveyOrder": 6,
       "type": "MULTIPLE_CHOICE",
+      "dashboardType": "HAPPY",
       "key": [
         10,
         11,
         12,
-        13,
-        0
+        13
       ]
     },
     {
       "title": "{{userName}}님은<br/><b>슬프거나 화날 때 어떤 행동</b>을 할 것 같나요?",
       "surveyOrder": 7,
       "type": "MULTIPLE_CHOICE",
+      "dashboardType": "SAD",
       "key": [
         14,
         15,
         16,
-        17,
-        0
+        17
       ]
     },
     {
       "title": "{{userName}}님에게<br/><b>얼마까지</b> 빌려줄 수 있나요?",
       "surveyOrder": 8,
       "type": "NUMERIC_CHOICE",
+      "dashboardType": "MONEY",
       "key": [
         18,
         19,
         20,
-        21,
-        0
+        21
       ]
     },
     {
       "title": "{{userName}}님을<br/><b>처음 만났을 때 어떤 사람</b>으로 보였나요?",
       "surveyOrder": 9,
-      "type": "SHORT_ANSWER"
+      "type": "SHORT_ANSWER",
+      "dashboardType": "NONE"
     },
     {
       "title": "{{userName}}님을<br/><b>5글자(떠오르는 단어)로 표현</b>한다면?",
       "surveyOrder": 10,
-      "type": "SHORT_ANSWER"
+      "type": "SHORT_ANSWER",
+      "dashboardType": "NONE"
     },
     {
       "title": "{{userName}}님의<br/><b>이런점은 꼭 배우고 싶어요!</b>",
       "surveyOrder": 11,
-      "type": "SHORT_ANSWER"
+      "type": "SHORT_ANSWER",
+      "dashboardType": "NONE"
     },
     {
       "title": "{{userName}}님이<br/><b>가장 많이 사용하는 단어는?</b>",
       "surveyOrder": 12,
-      "type": "SHORT_ANSWER"
+      "type": "SHORT_ANSWER",
+      "dashboardType": "NONE"
     },
     {
       "title": "{{userName}}님이<br/><b>혼자 몰래 좋아하고 있는 것</b>은 무엇일까요?",
       "surveyOrder": 13,
-      "type": "SHORT_ANSWER"
+      "type": "SHORT_ANSWER",
+      "dashboardType": "NONE"
     },
     {
       "title": "{{userName}}님을 보면<br/><b>어떤 캐릭터(연예인)</b>이 떠오르나요?",
       "surveyOrder": 14,
-      "type": "SHORT_ANSWER"
+      "type": "SHORT_ANSWER",
+      "dashboardType": "NONE"
     }
   ],
   "options": [
