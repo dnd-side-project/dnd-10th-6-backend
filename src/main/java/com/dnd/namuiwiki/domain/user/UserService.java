@@ -1,8 +1,8 @@
 package com.dnd.namuiwiki.domain.user;
 
-import com.dnd.namuiwiki.domain.oauth.dto.OAuthUserInfoDto;
-import com.dnd.namuiwiki.domain.jwt.JwtService;
 import com.dnd.namuiwiki.domain.auth.dto.OAuthLoginResponse;
+import com.dnd.namuiwiki.domain.jwt.JwtService;
+import com.dnd.namuiwiki.domain.oauth.dto.OAuthUserInfoDto;
 import com.dnd.namuiwiki.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +24,7 @@ public class UserService {
                 });
         OAuthLoginResponse oAuthLoginResponse = jwtService.issueTokenPair(user.getWikiId());
         user.setRefreshToken(oAuthLoginResponse.getRefreshToken());
+        userRepository.save(user);
         return oAuthLoginResponse;
     }
 }
