@@ -8,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -20,13 +18,13 @@ public class UserService {
     @Transactional
     public OAuthLoginResponse login(OAuthUserInfoDto oAuthUserInfoDto) {
         User user = userRepository.findByOauthProviderAndOauthId(oAuthUserInfoDto.getProvider(), oAuthUserInfoDto.getOAuthId())
-                .orElseGet(() -> userRepository.save(User.builder()
-                        .wikiId(UUID.randomUUID().toString())
-                        .oauthProvider(oAuthUserInfoDto.getProvider())
-                        .oauthId(oAuthUserInfoDto.getOAuthId())
-                        .build()));
+                .orElseGet(() -> {
+                    User newUser = new User(oAuthUserInfoDto.getProvider(), oAuthUserInfoDto.getOAuthId());
+                    return userRepository.save(newUser);
+                });
         OAuthLoginResponse oAuthLoginResponse = jwtService.issueTokenPair(user.getWikiId());
         user.setRefreshToken(oAuthLoginResponse.getRefreshToken());
+        userRepository.save(user);
         return oAuthLoginResponse;
     }
 }
