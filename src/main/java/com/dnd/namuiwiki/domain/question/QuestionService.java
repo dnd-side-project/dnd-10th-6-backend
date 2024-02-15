@@ -2,6 +2,7 @@ package com.dnd.namuiwiki.domain.question;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
+import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.option.OptionRepository;
 import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.dto.QuestionDto;
@@ -73,6 +74,7 @@ public class QuestionService {
             Question.QuestionBuilder questionBuilder = Question.builder()
                     .title(qq.get("title").toString())
                     .surveyOrder((Long) qq.get("surveyOrder"))
+                    .dashboardType(DashboardType.valueOf(qq.get("dashboardType").toString()))
                     .type(type);
 
             if (type.isChoiceType()) {
