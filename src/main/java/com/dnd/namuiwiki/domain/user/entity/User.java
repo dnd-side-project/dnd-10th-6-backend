@@ -14,15 +14,17 @@ import java.util.UUID;
 public class User {
     @Id
     private String id;
+    private String nickname;
     private String wikiId;
     private OAuthProvider oauthProvider;
     private String oauthId;
     private String refreshToken;
 
-    public User(OAuthProvider oAuthProvider, String oAuthId) {
+    public User(OAuthProvider oAuthProvider, String oAuthId, String nickname) {
         this.wikiId = UUID.randomUUID().toString();
         this.oauthProvider = oAuthProvider;
         this.oauthId = oAuthId;
+        this.nickname = nickname;
     }
 
     public void setRefreshToken(String refreshToken) {

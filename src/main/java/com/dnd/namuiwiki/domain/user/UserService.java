@@ -19,7 +19,7 @@ public class UserService {
     public OAuthLoginResponse login(OAuthUserInfoDto oAuthUserInfoDto) {
         User user = userRepository.findByOauthProviderAndOauthId(oAuthUserInfoDto.getProvider(), oAuthUserInfoDto.getOAuthId())
                 .orElseGet(() -> {
-                    User newUser = new User(oAuthUserInfoDto.getProvider(), oAuthUserInfoDto.getOAuthId());
+                    User newUser = new User(oAuthUserInfoDto.getProvider(), oAuthUserInfoDto.getOAuthId(), oAuthUserInfoDto.getNickname());
                     return userRepository.save(newUser);
                 });
         OAuthLoginResponse oAuthLoginResponse = jwtService.issueTokenPair(user.getWikiId());
