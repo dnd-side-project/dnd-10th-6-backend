@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 @Builder
@@ -18,6 +19,12 @@ public class User {
     private OAuthProvider oauthProvider;
     private String oauthId;
     private String refreshToken;
+
+    public User(OAuthProvider oAuthProvider, String oAuthId) {
+        this.wikiId = UUID.randomUUID().toString();
+        this.oauthProvider = oAuthProvider;
+        this.oauthId = oAuthId;
+    }
 
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
