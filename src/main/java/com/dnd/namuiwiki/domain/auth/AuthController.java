@@ -2,14 +2,12 @@ package com.dnd.namuiwiki.domain.auth;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
-import com.dnd.namuiwiki.domain.auth.dto.RefreshResponse;
+import com.dnd.namuiwiki.domain.auth.dto.*;
 import com.dnd.namuiwiki.domain.jwt.JwtAuthorization;
 import com.dnd.namuiwiki.domain.jwt.JwtService;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.oauth.OAuthService;
 import com.dnd.namuiwiki.domain.oauth.dto.OAuthUserInfoDto;
-import com.dnd.namuiwiki.domain.auth.dto.OAuthLoginRequest;
-import com.dnd.namuiwiki.domain.auth.dto.OAuthLoginResponse;
 import com.dnd.namuiwiki.common.dto.ResponseDto;
 import com.dnd.namuiwiki.domain.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,6 +36,16 @@ public class AuthController {
         OAuthLoginResponse oAuthLoginResponse = userService.login(oauthUserInfo);
         return ResponseDto.setCookie(String.format(REFRESH_TOKEN_COOKIE, oAuthLoginResponse.getRefreshToken()))
                 .body(oAuthLoginResponse);
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<?> signUp(@CookieValue("oauthProvider") String oauthProvider,
+                                    @CookieValue("oauthAccessToken") String oauthAccessToken,
+                                    @Validated @RequestBody SignUpRequest signUpRequest) {
+
+        SignUpResponse signUpResponse = userService.signUp(oauthProvider, oauthAccessToken, signUpRequest.getNickname());
+        return ResponseDto.setCookie(String.format(REFRESH_TOKEN_COOKIE, signUpResponse.getRefreshToken()))
+                .body(signUpResponse);
     }
 
     @PostMapping("/refresh")
