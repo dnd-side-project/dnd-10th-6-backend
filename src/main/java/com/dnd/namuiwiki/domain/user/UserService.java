@@ -38,7 +38,9 @@ public class UserService {
                     return new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER, headers);
                 });
 
-        TokenPairDto tokenPair = getTokenPair(user);
+        TokenPairDto tokenPair = jwtService.issueTokenPair(user.getWikiId());
+        user.setRefreshToken(tokenPair.getRefreshToken());
+        userRepository.save(user);
         return OAuthLoginResponse.from(tokenPair);
     }
 
@@ -47,15 +49,20 @@ public class UserService {
         String oAuthUserId = oAuthService.getOAuthUserId(oauthProvider, oauthAccessToken);
         OAuthProvider oAuthProvider = OAuthProvider.of(oauthProvider);
 
-        User user = userRepository.findByOauthProviderAndOauthId(oAuthProvider, oAuthUserId)
-                .orElseGet(() -> User.builder()
-                        .oauthProvider(oAuthProvider)
-                        .oauthId(oAuthUserId)
-                        .wikiId(UUID.randomUUID().toString())
-                        .nickname(nickname)
-                        .build());
+        if (userRepository.findByOauthProviderAndOauthId(oAuthProvider, oAuthUserId).isPresent()) {
+            throw new ApplicationErrorException(ApplicationErrorType.EXISTING_USER);
+        }
 
-        TokenPairDto tokenPair = getTokenPair(user);
+        User user = User.builder()
+                .oauthProvider(oAuthProvider)
+                .oauthId(oAuthUserId)
+                .wikiId(UUID.randomUUID().toString())
+                .nickname(nickname)
+                .build();
+
+        TokenPairDto tokenPair = jwtService.issueTokenPair(user.getWikiId());
+        user.setRefreshToken(tokenPair.getRefreshToken());
+        userRepository.save(user);
         return SignUpResponse.from(tokenPair);
     }
 
@@ -77,13 +84,6 @@ public class UserService {
         headers.add(HttpHeaders.SET_COOKIE, oauthToken.toString());
         headers.add(HttpHeaders.SET_COOKIE, provider.toString());
         return headers;
-    }
-
-    private TokenPairDto getTokenPair(User user) {
-        TokenPairDto tokenPair = jwtService.issueTokenPair(user.getWikiId());
-        user.setRefreshToken(tokenPair.getRefreshToken());
-        userRepository.save(user);
-        return tokenPair;
     }
 
 }
