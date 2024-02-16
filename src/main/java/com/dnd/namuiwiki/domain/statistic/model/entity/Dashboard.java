@@ -1,6 +1,5 @@
 package com.dnd.namuiwiki.domain.statistic.model.entity;
 
-import com.dnd.namuiwiki.domain.statistic.model.Statistic;
 import com.dnd.namuiwiki.domain.statistic.model.Statistics;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.Period;
@@ -13,7 +12,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Builder
@@ -32,11 +30,8 @@ public class Dashboard {
 
     private Statistics statistics;
 
-    public Map<String, Statistic> getStatistics() {
-        return statistics.getStatistics();
-    }
-
     public void updateStatistics(List<Survey.Answer> answer) {
         statistics.updateStatistics(answer);
     }
+
 }

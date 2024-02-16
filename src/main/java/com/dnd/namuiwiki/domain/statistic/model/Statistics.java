@@ -34,10 +34,6 @@ public class Statistics {
         });
     }
 
-    public Map<String, Statistic> getStatistics() {
-        return statistics;
-    }
-
     public static Statistics from(List<Question> questions) {
         Statistics statistics = new Statistics(new HashMap<>());
         questions.stream()
