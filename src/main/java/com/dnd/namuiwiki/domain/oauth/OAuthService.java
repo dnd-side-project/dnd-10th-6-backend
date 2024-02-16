@@ -26,4 +26,12 @@ public class OAuthService {
         return providerService.getOAuthUserInfo(code);
     }
 
+    public String getOAuthUserId(String provider, String accessToken) {
+        OAuthProviderService providerService = providerServiceHandler.get(OAuthProvider.of(provider));
+        if (providerService == null) {
+            throw new ApplicationErrorException(ApplicationErrorType.INVALID_DATA_ARGUMENT, "지원하지 않는 프로바이더입니다.");
+        }
+        return providerService.getOAuthUserId(accessToken);
+    }
+
 }

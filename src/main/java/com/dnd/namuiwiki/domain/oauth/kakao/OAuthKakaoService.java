@@ -23,6 +23,24 @@ public class OAuthKakaoService implements OAuthProviderService {
         return new OAuthUserInfoDto(OAuthProvider.KAKAO, oauthUserId, accessToken);
     }
 
+    @Override
+    public String getOAuthUserId(String accessToken) {
+        KakaoOAuthUserInfoResponse userInfoResponse = RestClient.create().post()
+                .uri(KakaoOAuthUserInfoRequest.requestUserInfoURL)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + accessToken)
+                .retrieve()
+                .toEntity(KakaoOAuthUserInfoResponse.class)
+                .getBody();
+
+        if (userInfoResponse == null) {
+            throw new ApplicationErrorException(ApplicationErrorType.INTERNAL_ERROR);
+        }
+
+        return userInfoResponse.getId().toString();
+    }
+
     private String getAccessToken(String code) {
         KakaoOAuthTokenResponse tokenResponse = RestClient.create().post()
                 .uri(KakaoOAuthTokenRequest.requestTokenURL)
@@ -38,23 +56,6 @@ public class OAuthKakaoService implements OAuthProviderService {
         }
 
         return tokenResponse.getAccess_token();
-    }
-
-    private String getOAuthUserId(String accessToken) {
-        KakaoOAuthUserInfoResponse userInfoResponse = RestClient.create().post()
-                .uri(KakaoOAuthUserInfoRequest.requestUserInfoURL)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + accessToken)
-                .retrieve()
-                .toEntity(KakaoOAuthUserInfoResponse.class)
-                .getBody();
-
-        if (userInfoResponse == null) {
-            throw new ApplicationErrorException(ApplicationErrorType.INTERNAL_ERROR);
-        }
-
-        return userInfoResponse.getId().toString();
     }
 
 }
