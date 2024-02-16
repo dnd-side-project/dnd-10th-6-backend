@@ -24,7 +24,8 @@ public class AuthController {
 
     @Value("${jwt.authentication-header}")
     private String AUTHENTICATION_HEADER;
-    private final String REFRESH_TOKEN_COOKIE = "refreshToken=%s; secure";
+    private final String REFRESH_TOKEN_COOKIE = "refreshToken";
+    private final long REFRESH_TOKEN_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 
     private final OAuthService oAuthService;
     private final UserService userService;
@@ -34,7 +35,7 @@ public class AuthController {
     public ResponseEntity<?> login(@Validated @RequestBody OAuthLoginRequest request) {
         OAuthUserInfoDto oauthUserInfo = oAuthService.oauthLogin(request.getProvider(), request.getCode());
         OAuthLoginResponse oAuthLoginResponse = userService.login(oauthUserInfo);
-        return ResponseDto.setCookie(String.format(REFRESH_TOKEN_COOKIE, oAuthLoginResponse.getRefreshToken()))
+        return ResponseDto.setCookie(REFRESH_TOKEN_COOKIE, oAuthLoginResponse.getRefreshToken(), REFRESH_TOKEN_COOKIE_MAX_AGE)
                 .body(oAuthLoginResponse);
     }
 
@@ -44,7 +45,7 @@ public class AuthController {
                                     @Validated @RequestBody SignUpRequest signUpRequest) {
 
         SignUpResponse signUpResponse = userService.signUp(oauthProvider, oauthAccessToken, signUpRequest.getNickname());
-        return ResponseDto.setCookie(String.format(REFRESH_TOKEN_COOKIE, signUpResponse.getRefreshToken()))
+        return ResponseDto.setCookie(REFRESH_TOKEN_COOKIE, signUpResponse.getRefreshToken(), REFRESH_TOKEN_COOKIE_MAX_AGE)
                 .body(signUpResponse);
     }
 
