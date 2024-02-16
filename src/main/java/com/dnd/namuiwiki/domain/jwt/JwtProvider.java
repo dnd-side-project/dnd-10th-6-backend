@@ -87,6 +87,10 @@ public class JwtProvider {
         return new TokenUserInfoDto(wikiId);
     }
 
+    public TokenUserInfoDto parseToken(String accessToken) {
+        return parseToken(validateToken(accessToken));
+    }
+
     public TokenUserInfoDto parseExpiredToken(String token) {
         try {
             Claims claims = Jwts

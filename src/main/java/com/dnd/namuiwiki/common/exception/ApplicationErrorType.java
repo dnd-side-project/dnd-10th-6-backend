@@ -33,7 +33,27 @@ public enum ApplicationErrorType {
     /**
      * User Error Type
      */
-    NOT_FOUND_USER(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다.");
+    NOT_FOUND_USER(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다."),
+
+    /**
+     * Question Error Type
+     */
+    INVALID_QUESTION_ID(HttpStatus.NOT_FOUND, "문항을 찾을 수 없습니다."),
+
+    /**
+     * Option Error Type
+     */
+    INVALID_OPTION_ID(HttpStatus.NOT_FOUND, "옵션을 찾을 수 없습니다."),
+
+    /**
+     * Answer Error Type
+     */
+    NOT_ALLOWED_ANSWER_TYPE(HttpStatus.CONFLICT, "해당 문항에 허용되지 않은 답변 타입입니다."),
+    CONFLICT_OPTION_QUESTION(HttpStatus.CONFLICT, "문항에 해당 옵션이 없습니다."),
+    NOT_INTEGER_ANSWER(HttpStatus.CONFLICT, "정수형 답변이 아닙니다."),
+    NOT_STRING_ANSWER(HttpStatus.NOT_FOUND, "문자형 답변이 아닙니다."),
+    CANNOT_SEND_SURVEY_TO_MYSELF(HttpStatus.BAD_REQUEST, "자신에게 설문을 보낼 수 없습니다.");
+
 
     @Getter
     private HttpStatus httpStatus;

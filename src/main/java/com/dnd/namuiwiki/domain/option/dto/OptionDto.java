@@ -9,12 +9,12 @@ import lombok.Getter;
 public class OptionDto {
 
     private String id;
-    private Object content;
+    private String text;
 
     public static OptionDto from(Option option) {
         return OptionDto.builder()
                 .id(option.getId())
-                .content(option.getContent())
+                .text(option.getText())
                 .build();
     }
 
