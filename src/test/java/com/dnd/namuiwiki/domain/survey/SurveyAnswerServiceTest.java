@@ -170,7 +170,7 @@ class SurveyAnswerServiceTest {
     class NUMBER_CHOICE {
 
         @Test
-        @DisplayName("답변이 MANUAL타입이면, answer는 Integer 타입이다.")
+        @DisplayName("답변이 MANUAL타입이면, answer는 Long 타입이다.")
         void typeOfAnswerShouldBeInteger() {
             // given
             QuestionType questionType = QuestionType.NUMERIC_CHOICE;
@@ -188,7 +188,7 @@ class SurveyAnswerServiceTest {
             var answer = surveyAnswerService.getSurveyAnswers(answers).get(0);
 
             // then
-            assertThat(answer.getAnswer() instanceof Integer).isTrue();
+            assertThat(answer.getAnswer() instanceof Long).isTrue();
         }
 
         @Test
