@@ -2,7 +2,7 @@ package com.dnd.namuiwiki.domain.question;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
-import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
+import com.dnd.namuiwiki.domain.statistic.type.DashboardType;
 import com.dnd.namuiwiki.domain.option.OptionRepository;
 import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.dto.QuestionDto;
