@@ -33,6 +33,7 @@ public class UserService {
 
         OAuthLoginResponse oAuthLoginResponse = jwtService.issueTokenPair(user.getWikiId());
         user.setRefreshToken(oAuthLoginResponse.getRefreshToken());
+        userRepository.save(user);
         return oAuthLoginResponse;
     }
 
