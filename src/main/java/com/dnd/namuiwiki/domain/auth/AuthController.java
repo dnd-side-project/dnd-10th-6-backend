@@ -34,11 +34,6 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@Validated @RequestBody OAuthLoginRequest request) {
         OAuthUserInfoDto oauthUserInfo = oAuthService.oauthLogin(request.getProvider(), request.getCode());
-        /*
-        TODO
-        1. 유저 DB에 데이터 저장
-        2. jwt 발행
-         */
         OAuthLoginResponse oAuthLoginResponse = userService.login(oauthUserInfo);
         return ResponseDto.setCookie(REFRESH_TOKEN_COOKIE, oAuthLoginResponse.getRefreshToken(), REFRESH_TOKEN_COOKIE_MAX_AGE)
                 .body(oAuthLoginResponse);

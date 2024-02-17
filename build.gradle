@@ -7,6 +7,7 @@ plugins {
 ext {
     set('jwtVersion', '0.12.5')
     set('springdocOpenapiUIVersion', '2.3.0')
+    set('mockitoVersion', '5.10.0')
 }
 
 ext {
@@ -48,6 +49,7 @@ dependencies {
 
     /* test */
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation("org.mockito:mockito-core:${mockitoVersion}")
 }
 
 tasks.named('test') {

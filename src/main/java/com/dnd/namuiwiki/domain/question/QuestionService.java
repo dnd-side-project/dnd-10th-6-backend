@@ -69,18 +69,18 @@ public class QuestionService {
         questionRepository.deleteAll();
         var allQuestions = questions.stream().map(q -> {
             JSONObject qq = (JSONObject) q;
-            QuestionType type = QuestionType.of(qq.get("type").toString());
+            QuestionType type = QuestionType.valueOf(qq.get("type").toString());
             Question.QuestionBuilder questionBuilder = Question.builder()
                     .title(qq.get("title").toString())
                     .surveyOrder((Long) qq.get("surveyOrder"))
                     .type(type);
 
-            if (type.isChoice()) {
+            if (type.isChoiceType()) {
                 JSONArray keys = (JSONArray) qq.get("key");
                 var questionOptions = keys.stream().map(optionNum -> {
                     int n = Integer.parseInt(optionNum.toString());
-                    var optionContent = options.get(n);
-                    return optionRepository.findByContent(optionContent)
+                    JSONObject optionContent = (JSONObject) options.get(n);
+                    return optionRepository.findByValue(optionContent.get("value"))
                             .orElseThrow(() -> new RuntimeException("Option not found"));
                 }).toList();
                 questionBuilder.options(questionOptions);
@@ -92,7 +92,10 @@ public class QuestionService {
 
     private void setDefaultOptions(JSONArray options) {
         optionRepository.deleteAll();
-        var allOptions = options.stream().map(option -> Option.builder().content(option).build()).toList();
+        var allOptions = options.stream().map(opt -> {
+            JSONObject option = (JSONObject) opt;
+            return Option.builder().value(option.get("value")).text(option.get("text").toString()).build();
+        }).toList();
         optionRepository.saveAll(allOptions);
     }
 
