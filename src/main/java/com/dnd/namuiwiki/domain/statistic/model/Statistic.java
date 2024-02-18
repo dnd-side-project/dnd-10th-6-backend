@@ -1,5 +1,7 @@
 package com.dnd.namuiwiki.domain.statistic.model;
 
+import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
+import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.statistic.type.DashboardType;
 import com.dnd.namuiwiki.domain.statistic.type.StatisticsType;
@@ -19,10 +21,13 @@ public abstract class Statistic {
     }
 
     public static Statistic create(Question question, StatisticsType statisticsType) {
-        if (statisticsType == StatisticsType.RATIO) {
-            return RatioStatistic.create(question);
-        } else {
-            return AverageStatistic.create(question);
+        switch (statisticsType) {
+            case RATIO:
+                return RatioStatistic.create(question);
+            case AVERAGE:
+                return AverageStatistic.create(question);
+            default:
+                throw new ApplicationErrorException(ApplicationErrorType.INTERNAL_ERROR, "Invalid statistics type");
         }
     }
 
