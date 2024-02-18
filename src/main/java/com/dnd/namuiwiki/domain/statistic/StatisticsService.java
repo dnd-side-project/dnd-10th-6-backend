@@ -1,5 +1,6 @@
 package com.dnd.namuiwiki.domain.statistic;
 
+import com.dnd.namuiwiki.domain.dashboard.DashboardRepository;
 import com.dnd.namuiwiki.domain.statistic.model.Statistics;
 import com.dnd.namuiwiki.domain.statistic.model.entity.Dashboard;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
@@ -14,7 +15,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class StatisticsService {
-    private final StatisticsRepository statisticsRepository;
+    private final DashboardRepository dashboardRepository;
 
     public void updateStatistics(Survey survey) {
         User owner = survey.getOwner();
@@ -31,7 +32,7 @@ public class StatisticsService {
     }
 
     private void updateStatisticsByCategory(User owner, Period period, Relation relation, List<Survey.Answer> answers) {
-        Dashboard dashboard = statisticsRepository.findByUserAndPeriodAndRelation(owner, period, relation)
+        Dashboard dashboard = dashboardRepository.findByUserAndPeriodAndRelation(owner, period, relation)
                 .orElseGet(() -> {
                     Dashboard newDashboard = Dashboard.builder()
                             .user(owner)
@@ -39,10 +40,10 @@ public class StatisticsService {
                             .relation(relation)
                             .statistics(Statistics.from(answers.stream().map(Survey.Answer::getQuestion).toList()))
                             .build();
-                    return statisticsRepository.save(newDashboard);
+                    return dashboardRepository.save(newDashboard);
                 });
         dashboard.updateStatistics(answers);
-        statisticsRepository.save(dashboard);
+        dashboardRepository.save(dashboard);
     }
 
 }
