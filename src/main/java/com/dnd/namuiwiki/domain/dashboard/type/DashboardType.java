@@ -1,4 +1,6 @@
-package com.dnd.namuiwiki.domain.statistic.type;
+package com.dnd.namuiwiki.domain.dashboard.type;
+
+import com.dnd.namuiwiki.domain.statistic.type.StatisticsType;
 
 public enum DashboardType {
 

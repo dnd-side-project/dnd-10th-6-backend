@@ -6,7 +6,7 @@ import com.dnd.namuiwiki.domain.option.dto.OptionDto;
 import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionType;
-import com.dnd.namuiwiki.domain.statistic.type.DashboardType;
+import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import lombok.Builder;
 import lombok.Getter;
 
