@@ -25,8 +25,7 @@ public class RatioStatistic extends Statistic {
 
     public static RatioStatistic create(Question question) {
         Map<String, Legend> legends = new HashMap<>();
-        question.getOptions().forEach(option ->
-                legends.put(option.getId(), new Legend(option.getId(), option.getText(), 0L)));
+        question.getOptions().forEach((key, value) -> legends.put(key, new Legend(key, value.getText(), 0L)));
         return new RatioStatistic(
                 question.getId(),
                 question.getDashboardType(),
@@ -45,9 +44,7 @@ public class RatioStatistic extends Statistic {
         String optionId = answer.getAnswer().toString();
         Legend legend = getLegend(optionId)
                 .orElseGet(() -> {
-                    Option option = question.getOptions().stream()
-                            .filter(opt -> opt.getId().equals(optionId))
-                            .findFirst()
+                    Option option = question.getOption(optionId)
                             .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID));
                     return new Legend(option.getId(), option.getText(), 0L);
                 });

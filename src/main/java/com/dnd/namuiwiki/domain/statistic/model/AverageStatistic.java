@@ -7,8 +7,6 @@ import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.statistic.type.DashboardType;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 
-import java.util.List;
-
 public class AverageStatistic extends Statistic {
     private Long totalSum;
 
@@ -35,7 +33,7 @@ public class AverageStatistic extends Statistic {
         Question question = answer.getQuestion();
         switch (answer.getType()) {
             case OPTION:
-                value = getValueFromOption(answer, question.getOptions());
+                value = getValueFromOption(answer, question);
                 break;
             case MANUAL:
                 value = getValueFromManualAnswer(answer);
@@ -54,11 +52,10 @@ public class AverageStatistic extends Statistic {
         return value;
     }
 
-    private long getValueFromOption(Survey.Answer answer, List<Option> options) {
+    private long getValueFromOption(Survey.Answer answer, Question question) {
         long value;
         String optionId = answer.getAnswer().toString();
-        Option option = options.stream()
-                .filter(op -> op.getId().equals(optionId)).findFirst()
+        Option option = question.getOption(optionId)
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID));
         value = Long.parseLong(option.getValue().toString());
         return value;

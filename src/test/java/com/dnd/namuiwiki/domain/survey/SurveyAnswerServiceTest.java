@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,10 +54,10 @@ class SurveyAnswerServiceTest {
             // given
             QuestionType questionType = QuestionType.OX;
             Option option = Option.builder().id("optionId").build();
-            Question question = Question.builder().type(questionType).options(List.of(option)).build();
+            Question question = Question.builder().type(questionType).options(Map.of(option.getId(), option)).build();
             var answers = List.of(answerOfOptionType);
 
-            given(optionRepository.findById(any(String.class))).willReturn(Optional.of(option));
+            given(optionRepository.existsById(any(String.class))).willReturn(true);
             given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
 
             // when
@@ -71,10 +72,10 @@ class SurveyAnswerServiceTest {
         void throwExceptionIfOptionDocuementNotExists() {
             // given
             QuestionType questionType = QuestionType.OX;
-            Question question = Question.builder().type(questionType).options(List.of()).build();
+            Question question = Question.builder().type(questionType).options(Map.of()).build();
             var answers = List.of(answerOfOptionType);
 
-            given(optionRepository.findById(any(String.class))).willReturn(Optional.empty());
+            given(optionRepository.existsById(any(String.class))).willReturn(false);
             given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
 
             // then
@@ -104,10 +105,10 @@ class SurveyAnswerServiceTest {
             QuestionType questionType = QuestionType.OX;
             Option option = Option.builder().id("notOptionId").build();
             Option realOption = Option.builder().id("realOptionId").build();
-            Question question = Question.builder().type(questionType).options(List.of(realOption)).build();
+            Question question = Question.builder().type(questionType).options(Map.of(realOption.getId(), realOption)).build();
             var answers = List.of(answerOfOptionType);
 
-            given(optionRepository.findById(any(String.class))).willReturn(Optional.of(option));
+            given(optionRepository.existsById(any(String.class))).willReturn(true);
             given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
 
             // then
@@ -132,7 +133,7 @@ class SurveyAnswerServiceTest {
         void answerIsPlainText() {
             // given
             QuestionType questionType = QuestionType.SHORT_ANSWER;
-            Question question = Question.builder().type(questionType).options(List.of()).build();
+            Question question = Question.builder().type(questionType).options(Map.of()).build();
             var answers = List.of(answerOfManualType);
 
             given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
@@ -150,7 +151,7 @@ class SurveyAnswerServiceTest {
         void sizeOfOptionListIsZero() {
             // given
             QuestionType questionType = QuestionType.SHORT_ANSWER;
-            Question question = Question.builder().type(questionType).options(List.of()).build();
+            Question question = Question.builder().type(questionType).options(Map.of()).build();
             var answers = List.of(answerOfManualType);
 
             given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
@@ -174,7 +175,7 @@ class SurveyAnswerServiceTest {
         void typeOfAnswerShouldBeInteger() {
             // given
             QuestionType questionType = QuestionType.NUMERIC_CHOICE;
-            Question question = Question.builder().type(questionType).options(List.of()).build();
+            Question question = Question.builder().type(questionType).options(Map.of()).build();
             int intAnswer = 100000;
             var answers = List.of(AnswerDto.builder()
                     .type("MANUAL")
@@ -196,7 +197,7 @@ class SurveyAnswerServiceTest {
         void throwExceptionIfAnswerIsNotInteger() {
             // given
             QuestionType questionType = QuestionType.NUMERIC_CHOICE;
-            Question question = Question.builder().type(questionType).options(List.of()).build();
+            Question question = Question.builder().type(questionType).options(Map.of()).build();
             String stringAnswer = "100000";
             var answers = List.of(AnswerDto.builder()
                     .type("MANUAL")
