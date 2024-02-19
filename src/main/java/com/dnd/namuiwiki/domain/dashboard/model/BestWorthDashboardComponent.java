@@ -19,8 +19,7 @@ public class BestWorthDashboardComponent extends DashboardComponent {
 
     @Override
     public void calculate(Statistics statistics) {
-        RatioStatistic bestWorth = (RatioStatistic) statistics.getStatisticsByDashboardType(this.dashboardType)
-                .getFirst();
+        RatioStatistic bestWorth = (RatioStatistic) statistics.getStatisticsByDashboardType(this.dashboardType).get(0);
         Long totalCount = bestWorth.getTotalCount();
         this.rank = bestWorth.getLegends().stream()
                 .map(legend -> {
