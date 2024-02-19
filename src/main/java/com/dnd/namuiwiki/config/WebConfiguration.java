@@ -1,9 +1,11 @@
 package com.dnd.namuiwiki.config;
 
+import com.dnd.namuiwiki.common.converter.EnumConverterFactory;
 import com.dnd.namuiwiki.domain.jwt.JwtAuthorizationArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -24,6 +26,7 @@ public class WebConfiguration implements WebMvcConfigurer {
     private String[] allowedHeaders;
 
     private final JwtAuthorizationArgumentResolver jwtAuthorizationArgumentResolver;
+    private final EnumConverterFactory enumConverterFactory;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -38,4 +41,10 @@ public class WebConfiguration implements WebMvcConfigurer {
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(jwtAuthorizationArgumentResolver);
     }
+
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverterFactory(enumConverterFactory);
+    }
+
 }
