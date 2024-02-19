@@ -3,7 +3,6 @@ package com.dnd.namuiwiki.domain.survey;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.option.OptionRepository;
-import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.QuestionRepository;
 import com.dnd.namuiwiki.domain.question.dto.QuestionDto;
 import com.dnd.namuiwiki.domain.question.entity.Question;
@@ -40,10 +39,10 @@ public class SurveyAnswerService {
     }
 
     private void validateOptionExists(String optionId, Question question) {
-        Option option = optionRepository.findById(optionId)
-                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID));
-
-        if (!question.getOptions().contains(option)) {
+        if (!optionRepository.existsById(optionId)) {
+            throw new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID);
+        }
+        if (!question.getOptions().containsKey(optionId)) {
             throw new ApplicationErrorException(ApplicationErrorType.CONFLICT_OPTION_QUESTION);
         }
     }

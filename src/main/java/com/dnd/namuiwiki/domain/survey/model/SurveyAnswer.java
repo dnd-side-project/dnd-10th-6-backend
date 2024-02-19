@@ -45,13 +45,14 @@ public class SurveyAnswer {
             boolean answerShouldBeNumeric = question.getType().isNumericType() && type.isManual();
             if (answerShouldBeNumeric) {
                 validateAnswerObjectType(answer, Integer.class);
+                this.answer = Long.valueOf(answer.toString());
             } else {
                 validateAnswerObjectType(answer, String.class);
+                this.answer = answer;
             }
 
             this.question = question;
             this.type = type;
-            this.answer = answer;
             this.reason = reason;
         }
 
