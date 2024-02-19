@@ -14,11 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import java.util.UUID;
 
 import java.util.UUID;
 
@@ -32,7 +29,6 @@ public class UserService {
     private final JwtService jwtService;
     private final OAuthService oAuthService;
 
-    @Transactional
     public OAuthLoginResponse login(OAuthUserInfoDto oAuthUserInfoDto) {
         User user = userRepository.findByOauthProviderAndOauthId(oAuthUserInfoDto.getProvider(), oAuthUserInfoDto.getOAuthId())
                 .orElseThrow(() -> {
@@ -46,12 +42,11 @@ public class UserService {
         return OAuthLoginResponse.from(tokenPair);
     }
 
-    @Transactional
     public SignUpResponse signUp(String oauthProvider, String oauthAccessToken, String nickname) {
         String oAuthUserId = oAuthService.getOAuthUserId(oauthProvider, oauthAccessToken);
         OAuthProvider oAuthProvider = OAuthProvider.of(oauthProvider);
 
-        if (userRepository.findByOauthProviderAndOauthId(oAuthProvider, oAuthUserId).isPresent()) {
+        if (userRepository.existsByOauthProviderAndOauthId(oAuthProvider, oAuthUserId)) {
             throw new ApplicationErrorException(ApplicationErrorType.EXISTING_USER);
         }
 

@@ -24,6 +24,8 @@ public class AuthController {
 
     @Value("${jwt.authentication-header}")
     private String AUTHENTICATION_HEADER;
+    private final String OAUTH_PROVIDER_COOKIE = "oauthProvider";
+    private final String OAUTH_ACCESS_TOKEN_COOKIE = "oauthAccessToken";
     private final String REFRESH_TOKEN_COOKIE = "refreshToken";
     private final long REFRESH_TOKEN_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 
@@ -40,8 +42,8 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@CookieValue("oauthProvider") String oauthProvider,
-                                    @CookieValue("oauthAccessToken") String oauthAccessToken,
+    public ResponseEntity<?> signUp(@CookieValue(OAUTH_PROVIDER_COOKIE) String oauthProvider,
+                                    @CookieValue(OAUTH_ACCESS_TOKEN_COOKIE) String oauthAccessToken,
                                     @Validated @RequestBody SignUpRequest signUpRequest) {
 
         SignUpResponse signUpResponse = userService.signUp(oauthProvider, oauthAccessToken, signUpRequest.getNickname());
@@ -50,7 +52,7 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(HttpServletRequest request, @CookieValue("refreshToken") String refreshToken) {
+    public ResponseEntity<?> refresh(HttpServletRequest request, @CookieValue(REFRESH_TOKEN_COOKIE) String refreshToken) {
         String accessToken = request.getHeader(AUTHENTICATION_HEADER);
 
         if (accessToken == null) {
