@@ -8,19 +8,20 @@ import lombok.Getter;
 @Getter
 public class MoneyDashboardComponent extends DashboardComponent {
     private long peopleCount;
-    private long moneySum;
     private long average;
+    private long entireAverage;
 
-    public MoneyDashboardComponent(Statistics statistics) {
+    public MoneyDashboardComponent(Statistics statistics, long entireAverage) {
         super(DashboardType.MONEY);
         calculate(statistics);
+        this.entireAverage = entireAverage;
     }
 
     @Override
     public void calculate(Statistics statistics) {
         AverageStatistic money = (AverageStatistic) statistics.getStatisticsByDashboardType(this.dashboardType).get(0);
         this.peopleCount = money.getTotalCount();
-        this.moneySum = money.getTotalSum();
+        this.average = money.getTotalSum();
     }
 
 }
