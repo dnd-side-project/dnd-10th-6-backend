@@ -104,7 +104,7 @@
       "name":  "FIRST_IMPRESSION"
     },
     {
-      "title": "{{userName}}님을<br/><b>5글자(떠오르는 단어)로 표현</b>한다면?",
+      "title": "{{userName}}님을<br/><b>5글자로 표현</b>한다면?",
       "surveyOrder": 10,
       "type": "SHORT_ANSWER",
       "dashboardType": "NONE",
@@ -132,7 +132,7 @@
       "name":  "SECRET_PLEASURE"
     },
     {
-      "title": "{{userName}}님을 보면<br/><b>어떤 캐릭터(연예인)</b>이 떠오르나요?",
+      "title": "{{userName}}님을 보면<br/><b>어떤 캐릭터(연예인)</b>가 떠오르나요?",
       "surveyOrder": 14,
       "type": "SHORT_ANSWER",
       "dashboardType": "NONE",
