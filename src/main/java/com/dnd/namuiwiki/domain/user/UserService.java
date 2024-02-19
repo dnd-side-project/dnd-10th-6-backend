@@ -5,8 +5,8 @@ import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.auth.dto.OAuthLoginResponse;
 import com.dnd.namuiwiki.domain.auth.dto.SignUpResponse;
 import com.dnd.namuiwiki.domain.jwt.JwtService;
-import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenPairDto;
+import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.oauth.OAuthService;
 import com.dnd.namuiwiki.domain.oauth.dto.OAuthUserInfoDto;
 import com.dnd.namuiwiki.domain.oauth.type.OAuthProvider;
@@ -95,8 +95,7 @@ public class UserService {
 
         Long totalSurveyCnt = surveyRepository.countByOwner(user);
 
-        // TODO : profile에 nickname 추가
-        return new UserProfileDto(user.getWikiId(), "엽용현", totalSurveyCnt);
+        return new UserProfileDto(user.getWikiId(), user.getNickname(), totalSurveyCnt);
     }
 
 }
