@@ -29,7 +29,7 @@ public class SurveyService {
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
         User sender = getUserByAccessToken(accessToken);
 
-//        validateNotFromMe(owner, sender);
+        validateNotFromMe(owner, sender);
 
         Survey survey = surveyRepository.save(Survey.builder()
                 .owner(owner)
