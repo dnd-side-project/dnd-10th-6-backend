@@ -13,7 +13,7 @@ public class SadDashboardComponent extends DashboardComponent {
     private List<RatioDto> rank;
 
     public SadDashboardComponent(Statistics statistics) {
-        super(DashboardType.HAPPY);
+        super(DashboardType.SAD);
         calculate(statistics);
     }
 
