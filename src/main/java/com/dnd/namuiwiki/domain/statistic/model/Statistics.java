@@ -1,5 +1,6 @@
 package com.dnd.namuiwiki.domain.statistic.model;
 
+import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.statistic.type.StatisticsType;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
@@ -18,7 +19,9 @@ public class Statistics {
 
     public Statistic createAndPut(Question question) {
         StatisticsType statisticsType = question.getDashboardType().getStatisticsType();
-        return statistics.put(question.getId(), Statistic.create(question, statisticsType));
+        Statistic statistic = Statistic.create(question, statisticsType);
+        statistics.put(question.getId(), statistic);
+        return statistic;
     }
 
     public Optional<Statistic> get(String questionId) {
@@ -32,6 +35,12 @@ public class Statistics {
 
             statistic.updateStatistic(answer);
         });
+    }
+
+    public List<Statistic> getStatisticsByDashboardType(DashboardType dashboardType) {
+        return statistics.values().stream()
+                .filter(statistic -> statistic.getDashboardType().equals(dashboardType))
+                .toList();
     }
 
     public static Statistics from(List<Question> questions) {
