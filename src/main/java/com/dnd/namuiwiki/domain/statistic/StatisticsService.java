@@ -26,12 +26,12 @@ public class StatisticsService {
                 .filter(answer -> answer.getQuestion().getDashboardType().getStatisticsType().isNotNone())
                 .toList();
 
-        updateStatisticsByCategory(owner, null, null, statisticalAnswers);
-        updateStatisticsByCategory(owner, period, null, statisticalAnswers);
-        updateStatisticsByCategory(owner, null, relation, statisticalAnswers);
+        updateDashboardByCategory(owner, null, null, statisticalAnswers);
+        updateDashboardByCategory(owner, period, null, statisticalAnswers);
+        updateDashboardByCategory(owner, null, relation, statisticalAnswers);
     }
 
-    private void updateStatisticsByCategory(User owner, Period period, Relation relation, List<Survey.Answer> answers) {
+    private void updateDashboardByCategory(User owner, Period period, Relation relation, List<Survey.Answer> answers) {
         Dashboard dashboard = dashboardRepository.findByUserAndPeriodAndRelation(owner, period, relation)
                 .orElseGet(() -> {
                     Dashboard newDashboard = Dashboard.builder()
