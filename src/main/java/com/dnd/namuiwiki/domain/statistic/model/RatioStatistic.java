@@ -9,6 +9,7 @@ import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -30,9 +31,13 @@ public class RatioStatistic extends Statistic {
         return Optional.ofNullable(legends.get(optionId));
     }
 
+    public List<Legend> getLegends() {
+        return legends.values().stream().toList();
+    }
+
     public static RatioStatistic create(Question question) {
         Map<String, Legend> legends = new HashMap<>();
-        question.getOptions().forEach((key, value) -> legends.put(key, new Legend(key, value.getText(), 0L)));
+        question.getOptions().forEach((key, value) -> legends.put(key, new Legend(key, value.getText(), value.getValue(), 0L)));
         return new RatioStatistic(
                 question.getId(),
                 question.getName(),
@@ -54,7 +59,7 @@ public class RatioStatistic extends Statistic {
                 .orElseGet(() -> {
                     Option option = question.getOption(optionId)
                             .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID));
-                    return new Legend(option.getId(), option.getText(), 0L);
+                    return new Legend(option.getId(), option.getText(), option.getValue(), 0L);
                 });
         legend.increaseCount();
     }

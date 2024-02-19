@@ -8,6 +8,7 @@ import lombok.Getter;
 public class Legend {
     private String optionId;
     private String text;
+    private Object value;
     private Long count;
 
     public Long increaseCount() {

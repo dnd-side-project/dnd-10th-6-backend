@@ -1,5 +1,11 @@
-package com.dnd.namuiwiki.domain.statistic.model.entity;
+package com.dnd.namuiwiki.domain.dashboard.model.entity;
 
+import com.dnd.namuiwiki.domain.dashboard.model.BestWorthDashboardComponent;
+import com.dnd.namuiwiki.domain.dashboard.model.CharacterDashboardComponent;
+import com.dnd.namuiwiki.domain.dashboard.model.DashboardComponent;
+import com.dnd.namuiwiki.domain.dashboard.model.HappyDashboardComponent;
+import com.dnd.namuiwiki.domain.dashboard.model.MoneyDashboardComponent;
+import com.dnd.namuiwiki.domain.dashboard.model.SadDashboardComponent;
 import com.dnd.namuiwiki.domain.statistic.model.Statistics;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.Period;
@@ -32,6 +38,16 @@ public class Dashboard {
 
     public void updateStatistics(List<Survey.Answer> answer) {
         statistics.updateStatistics(answer);
+    }
+
+    public List<DashboardComponent> getDashboardComponents() {
+        return List.of(
+                new BestWorthDashboardComponent(statistics),
+                new HappyDashboardComponent(statistics),
+                new SadDashboardComponent(statistics),
+                new CharacterDashboardComponent(statistics),
+                new MoneyDashboardComponent(statistics)
+        );
     }
 
 }
