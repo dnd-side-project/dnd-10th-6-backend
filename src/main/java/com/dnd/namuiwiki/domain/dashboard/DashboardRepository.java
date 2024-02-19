@@ -1,6 +1,6 @@
 package com.dnd.namuiwiki.domain.dashboard;
 
-import com.dnd.namuiwiki.domain.statistic.model.entity.Dashboard;
+import com.dnd.namuiwiki.domain.dashboard.model.entity.Dashboard;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.entity.User;

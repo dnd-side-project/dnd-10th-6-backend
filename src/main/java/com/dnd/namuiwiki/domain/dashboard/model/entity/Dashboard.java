@@ -1,4 +1,4 @@
-package com.dnd.namuiwiki.domain.statistic.model.entity;
+package com.dnd.namuiwiki.domain.dashboard.model.entity;
 
 import com.dnd.namuiwiki.domain.dashboard.model.BestWorthDashboardComponent;
 import com.dnd.namuiwiki.domain.dashboard.model.CharacterDashboardComponent;
