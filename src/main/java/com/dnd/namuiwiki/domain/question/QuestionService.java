@@ -2,12 +2,13 @@ package com.dnd.namuiwiki.domain.question;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
+import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.option.OptionRepository;
 import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.dto.QuestionDto;
 import com.dnd.namuiwiki.domain.question.entity.Question;
+import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.question.type.QuestionType;
-import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -73,10 +74,12 @@ public class QuestionService {
         var allQuestions = questions.stream().map(q -> {
             JSONObject qq = (JSONObject) q;
             QuestionType type = QuestionType.valueOf(qq.get("type").toString());
+            QuestionName name = QuestionName.valueOf(qq.get("name").toString());
             Question.QuestionBuilder questionBuilder = Question.builder()
                     .title(qq.get("title").toString())
                     .surveyOrder((Long) qq.get("surveyOrder"))
                     .dashboardType(DashboardType.valueOf(qq.get("dashboardType").toString()))
+                    .name(name)
                     .type(type);
 
             if (type.isChoiceType()) {
@@ -86,10 +89,11 @@ public class QuestionService {
                 keys.forEach(optionNum -> {
                     int n = Integer.parseInt(optionNum.toString());
                     JSONObject optionContent = (JSONObject) options.get(n);
-                    Option option = optionRepository.findByValue(optionContent.get("value"))
+                    Option option = optionRepository.findByText(optionContent.get("text").toString())
                             .orElseThrow(() -> new RuntimeException("Option not found"));
                     questionOptions.put(option.getId(), option);
                 });
+
                 questionBuilder.options(questionOptions);
             }
 

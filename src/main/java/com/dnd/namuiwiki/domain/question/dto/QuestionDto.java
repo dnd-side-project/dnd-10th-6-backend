@@ -5,6 +5,7 @@ import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.option.dto.OptionDto;
 import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.entity.Question;
+import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.question.type.QuestionType;
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import lombok.Builder;
@@ -20,6 +21,7 @@ public class QuestionDto {
 
     private String id;
     private String title;
+    private QuestionName name;
     private QuestionType type;
     private DashboardType dashboardType;
     private Long surveyOrder;
@@ -29,6 +31,7 @@ public class QuestionDto {
         var questionDto = QuestionDto.builder()
                 .id(question.getId())
                 .title(question.getTitle())
+                .name(question.getName())
                 .type(question.getType())
                 .dashboardType(question.getDashboardType())
                 .surveyOrder(question.getSurveyOrder());
@@ -51,6 +54,7 @@ public class QuestionDto {
         return Question.builder()
                 .id(id)
                 .title(title)
+                .name(name)
                 .type(type)
                 .dashboardType(dashboardType)
                 .surveyOrder(surveyOrder)
