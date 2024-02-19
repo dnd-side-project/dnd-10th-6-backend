@@ -10,5 +10,6 @@ public class OAuthUserInfoDto {
 
     private OAuthProvider provider;
     private String oAuthId;
+    private String accessToken;
 
 }

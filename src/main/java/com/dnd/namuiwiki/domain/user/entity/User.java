@@ -15,6 +15,7 @@ public class User {
     @Id
     private String id;
     private String wikiId;
+    private String nickname;
     private OAuthProvider oauthProvider;
     private String oauthId;
     private String refreshToken;

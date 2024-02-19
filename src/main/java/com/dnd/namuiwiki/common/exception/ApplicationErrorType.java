@@ -34,6 +34,7 @@ public enum ApplicationErrorType {
      * User Error Type
      */
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다."),
+    EXISTING_USER(HttpStatus.CONFLICT, "이미 존재하는 유저입니다."),
 
     /**
      * Question Error Type

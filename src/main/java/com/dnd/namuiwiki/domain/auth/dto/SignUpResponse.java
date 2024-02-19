@@ -6,13 +6,11 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class OAuthLoginResponse {
-
+public class SignUpResponse {
     private final String accessToken;
     private final String refreshToken;
 
-    public static OAuthLoginResponse from(TokenPairDto tokenPairDto) {
-        return new OAuthLoginResponse(tokenPairDto.getAccessToken(), tokenPairDto.getRefreshToken());
+    public static SignUpResponse from(TokenPairDto tokenPairDto) {
+        return new SignUpResponse(tokenPairDto.getAccessToken(), tokenPairDto.getRefreshToken());
     }
-
 }

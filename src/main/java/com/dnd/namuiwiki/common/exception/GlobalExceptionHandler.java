@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -22,7 +23,8 @@ public class GlobalExceptionHandler {
                 ? e.getCustomMessage()
                 : e.getMessage();
         var response = new ErrorResponseDto(e.getErrorType().name(), errorMessage);
-        return new ResponseEntity<>(response, e.getErrorType().getHttpStatus());
+        MultiValueMap<String, String> headers = e.getHeaders();
+        return new ResponseEntity<>(response, headers, e.getErrorType().getHttpStatus());
     }
 
     @ExceptionHandler(value = ValidationException.class)

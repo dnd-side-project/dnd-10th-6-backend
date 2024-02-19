@@ -4,6 +4,7 @@ import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.auth.dto.OAuthLoginResponse;
 import com.dnd.namuiwiki.domain.auth.dto.RefreshResponse;
+import com.dnd.namuiwiki.domain.jwt.dto.TokenPairDto;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.user.UserRepository;
 import com.dnd.namuiwiki.domain.user.UserService;
@@ -22,10 +23,10 @@ public class JwtService {
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
 
-    public OAuthLoginResponse issueTokenPair(String wikiId) {
+    public TokenPairDto issueTokenPair(String wikiId) {
         String accessToken = jwtProvider.createAccessToken(wikiId);
         String refreshToken = jwtProvider.createRefreshToken();
-        return new OAuthLoginResponse(accessToken, refreshToken);
+        return new TokenPairDto(accessToken, refreshToken);
     }
 
     public RefreshResponse reIssueToken(String accessToken, String refreshToken) {
