@@ -31,7 +31,14 @@ public class DashboardService {
             return null;
         }
 
-        List<DashboardComponent> dashboardComponents = dashboard.get().getDashboardComponents();
+        Statistics statistics = dashboard.get().getStatistics();
+        List<DashboardComponent> dashboardComponents = List.of(
+                new BestWorthDashboardComponent(statistics),
+                new HappyDashboardComponent(statistics),
+                new SadDashboardComponent(statistics),
+                new CharacterDashboardComponent(statistics),
+                getMoneyDashboardComponent(statistics, period, relation)
+        );
         return new DashboardDto(dashboardComponents);
     }
 
