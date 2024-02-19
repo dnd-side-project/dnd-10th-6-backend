@@ -19,8 +19,7 @@ public class SadDashboardComponent extends DashboardComponent {
 
     @Override
     public void calculate(Statistics statistics) {
-        RatioStatistic sad = (RatioStatistic) statistics.getStatisticsByDashboardType(this.dashboardType)
-                .getFirst();
+        RatioStatistic sad = (RatioStatistic) statistics.getStatisticsByDashboardType(this.dashboardType).get(0);
         Long totalCount = sad.getTotalCount();
         this.rank = sad.getLegends().stream()
                 .map(legend -> {
