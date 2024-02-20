@@ -12,6 +12,7 @@ import com.dnd.namuiwiki.domain.oauth.dto.OAuthUserInfoDto;
 import com.dnd.namuiwiki.domain.oauth.type.OAuthProvider;
 import com.dnd.namuiwiki.domain.survey.SurveyRepository;
 import com.dnd.namuiwiki.domain.user.dto.EditUserProfileRequest;
+import com.dnd.namuiwiki.domain.user.dto.GetUserPublicProfileResponse;
 import com.dnd.namuiwiki.domain.user.dto.UserProfileDto;
 import com.dnd.namuiwiki.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -66,6 +67,12 @@ public class UserService {
         user.setRefreshToken(tokenPair.getRefreshToken());
         userRepository.save(user);
         return SignUpResponse.from(tokenPair);
+    }
+
+    public GetUserPublicProfileResponse getUserPublicProfile(String wikiId) {
+        User user = userRepository.findByWikiId(wikiId)
+                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
+        return new GetUserPublicProfileResponse(user.getNickname());
     }
 
     private MultiValueMap<String, String> getOauthCookie(OAuthUserInfoDto oAuthUserInfoDto) {
