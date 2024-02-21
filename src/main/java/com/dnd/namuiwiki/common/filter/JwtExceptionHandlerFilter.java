@@ -21,6 +21,8 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
 
     private final ObjectMapper objectMapper;
 
+    private final String[] allowedOrigins;
+
     private final List<String> excludeUrlPatterns;
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
@@ -32,6 +34,7 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
             ErrorResponseDto errorResponseDto = new ErrorResponseDto(ApplicationErrorType.AUTHENTICATION_FAILED.name(), e.getMessage());
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setCharacterEncoding("UTF-8");
+            response.setHeader("Access-Control-Allow-Origin", String.join(",", allowedOrigins));
             response.getWriter().write(convertObjectToJson(errorResponseDto));
         }
     }

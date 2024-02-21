@@ -16,6 +16,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FilterConfiguration {
 
+    @Value("${spring.cors.allowed-origins}")
+    private String[] allowedOrigins;
+
     @Value("${jwt.permit-uri}")
     private String[] permittedURIs;
 
@@ -36,7 +39,7 @@ public class FilterConfiguration {
     @Bean
     public FilterRegistrationBean<JwtExceptionHandlerFilter> jwtExceptionHandlerFilter() {
         FilterRegistrationBean<JwtExceptionHandlerFilter> jwtExceptionHandlerFilterBean = new FilterRegistrationBean<>();
-        jwtExceptionHandlerFilterBean.setFilter(new JwtExceptionHandlerFilter(objectMapper, List.of(permittedURIs)));
+        jwtExceptionHandlerFilterBean.setFilter(new JwtExceptionHandlerFilter(objectMapper, allowedOrigins, List.of(permittedURIs)));
         jwtExceptionHandlerFilterBean.setOrder(1);
         return jwtExceptionHandlerFilterBean;
     }
