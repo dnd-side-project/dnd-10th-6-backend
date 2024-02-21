@@ -11,12 +11,17 @@ import com.dnd.namuiwiki.domain.survey.model.SurveyAnswer;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyRequest;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyResponse;
 import com.dnd.namuiwiki.domain.survey.model.dto.GetSurveyResponse;
+import com.dnd.namuiwiki.domain.survey.model.dto.GetAnswersByQuestionResponse;
+import com.dnd.namuiwiki.domain.survey.model.dto.SingleAnswerWithSurveyDetailDto;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.UserRepository;
 import com.dnd.namuiwiki.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -72,5 +77,31 @@ public class SurveyService {
         Survey survey = surveyRepository.findById(surveyId)
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_SURVEY));
         return GetSurveyResponse.from(survey, questions);
+    }
+
+    public GetAnswersByQuestionResponse getAnswersByQuestion(String wikiId, String questionId, int pageNo, int pageSize) {
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_ID));
+
+        User owner = userRepository.findByWikiId(wikiId)
+                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Survey> surveys = surveyRepository.findByOwner(owner, pageable);
+        var answers = surveys.get().map(survey -> {
+                    var answerOfQuestion = survey.getAnswers().stream()
+                            .filter(answer -> answer.getQuestion().getId().equals(questionId))
+                            .findAny()
+                            .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_ID));
+                    return SingleAnswerWithSurveyDetailDto.builder()
+                            .senderName(survey.getSenderName())
+                            .period(survey.getPeriod())
+                            .relation(survey.getRelation())
+                            .answer(answerOfQuestion.getAnswer())
+                            .reason(answerOfQuestion.getReason())
+                            .build();
+        }).toList();
+
+        return new GetAnswersByQuestionResponse(question.getTitle(), answers);
     }
 }
