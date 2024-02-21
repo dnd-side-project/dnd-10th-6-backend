@@ -1,5 +1,6 @@
 package com.dnd.namuiwiki.domain.survey.model.entity;
 
+import com.dnd.namuiwiki.common.model.BaseTimeEntity;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.survey.type.AnswerType;
 import com.dnd.namuiwiki.domain.survey.type.Period;
@@ -17,7 +18,7 @@ import java.util.Objects;
 @Getter
 @Builder
 @Document(collection = "surveys")
-public class Survey {
+public class Survey extends BaseTimeEntity {
 
     @Id
     private String id;

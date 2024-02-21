@@ -1,5 +1,6 @@
 package com.dnd.namuiwiki.domain.dashboard.model.entity;
 
+import com.dnd.namuiwiki.common.model.BaseTimeEntity;
 import com.dnd.namuiwiki.domain.dashboard.model.BestWorthDashboardComponent;
 import com.dnd.namuiwiki.domain.dashboard.model.CharacterDashboardComponent;
 import com.dnd.namuiwiki.domain.dashboard.model.DashboardComponent;
@@ -22,7 +23,7 @@ import java.util.List;
 @Getter
 @Builder
 @Document("dashboards")
-public class Dashboard {
+public class Dashboard extends BaseTimeEntity {
 
     @Id
     private String id;
