@@ -23,8 +23,6 @@ public class CreateSurveyRequest {
     @Size(min = 2, max = 6)
     private String senderName;
 
-    private Boolean isAnonymous;
-
     @Enum(enumClass = Period.class, ignoreCase = true)
     private String period;
 
