@@ -17,6 +17,7 @@ public class Option extends BaseTimeEntity {
     private String id;
     private Object value;
     private String text;
+    private int order;
 
     @Override
     public boolean equals(Object o) {
@@ -30,4 +31,5 @@ public class Option extends BaseTimeEntity {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }
