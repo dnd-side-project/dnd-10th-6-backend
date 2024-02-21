@@ -79,7 +79,9 @@ public class SurveyService {
         return GetSurveyResponse.from(survey, questions);
     }
 
-    public GetAnswersByQuestionResponse getAnswersByQuestion(String wikiId, String questionId, int pageNo, int pageSize) {
+    public GetAnswersByQuestionResponse getAnswersByQuestion(String wikiId, String questionId, Period period, Relation relation, int pageNo, int pageSize) {
+        validateFilter(period, relation);
+
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_ID));
 
@@ -87,7 +89,7 @@ public class SurveyService {
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Survey> surveys = surveyRepository.findByOwner(owner, pageable);
+        Page<Survey> surveys = getSurveysByFilter(period, relation, owner, pageable);
         var answers = surveys.get().map(survey -> {
                     var answerOfQuestion = survey.getAnswers().stream()
                             .filter(answer -> answer.getQuestion().getId().equals(questionId))
@@ -103,5 +105,21 @@ public class SurveyService {
         }).toList();
 
         return new GetAnswersByQuestionResponse(question.getTitle(), answers);
+    }
+
+    private void validateFilter(Period period, Relation relation) {
+        if (!period.equals(Period.TOTAL) && !relation.equals(Relation.TOTAL)) {
+            throw new ApplicationErrorException(ApplicationErrorType.INVALID_FILTER);
+        }
+    }
+
+    private Page<Survey> getSurveysByFilter(Period period, Relation relation, User owner, Pageable pageable) {
+        if (!period.equals(Period.TOTAL)) {
+            return surveyRepository.findByOwnerAndPeriod(owner, period, pageable);
+        }
+        if (!relation.equals(Relation.TOTAL)) {
+            return surveyRepository.findByOwnerAndRelation(owner, relation, pageable);
+        }
+            return surveyRepository.findByOwner(owner, pageable);
     }
 }

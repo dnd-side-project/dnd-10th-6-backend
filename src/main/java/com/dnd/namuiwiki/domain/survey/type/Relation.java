@@ -2,6 +2,7 @@ package com.dnd.namuiwiki.domain.survey.type;
 
 public enum Relation {
 
+    TOTAL("전체"),
     ELEMENTARY_SCHOOL("초등학교"),
     MIDDLE_AND_HIGH_SCHOOL("중고등학교"),
     UNIVERSITY("대학교"),
