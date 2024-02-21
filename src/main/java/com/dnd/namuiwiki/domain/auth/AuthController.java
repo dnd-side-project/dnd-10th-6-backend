@@ -1,5 +1,6 @@
 package com.dnd.namuiwiki.domain.auth;
 
+import com.dnd.namuiwiki.common.annotation.DisableSwaggerSecurity;
 import com.dnd.namuiwiki.common.dto.ResponseDto;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
@@ -52,6 +53,7 @@ public class AuthController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "로그인 성공", content = @Content(schema = @Schema(implementation = OAuthLoginResponse.class))),
                     @ApiResponse(responseCode = "404", description = "회원가입이 되지 않은 유저")})
+    @DisableSwaggerSecurity
     @PostMapping("/login")
     public ResponseEntity<?> login(@Validated @RequestBody OAuthLoginRequest request) {
         OAuthUserInfoDto oauthUserInfo = oAuthService.oauthLogin(request.getProvider(), request.getCode());
@@ -75,6 +77,7 @@ public class AuthController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "재발급 성공", content = @Content(schema = @Schema(implementation = RefreshResponse.class))),
                     @ApiResponse(responseCode = "401", description = "refresh token 만료")})
+    @DisableSwaggerSecurity
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(HttpServletRequest request, @CookieValue(REFRESH_TOKEN_COOKIE) String refreshToken) {
         String accessToken = request.getHeader(AUTHENTICATION_HEADER);
