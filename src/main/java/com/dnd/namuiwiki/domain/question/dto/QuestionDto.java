@@ -2,15 +2,16 @@ package com.dnd.namuiwiki.domain.question.dto;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
+import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.option.dto.OptionDto;
 import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.question.type.QuestionType;
-import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,10 @@ public class QuestionDto {
         if (question.getOptions() == null) {
             questionDto.options(List.of());
         } else {
-            questionDto.options(question.getOptions().values().stream().map(OptionDto::from).toList());
+            questionDto.options(question.getOptions().values().stream()
+                    .sorted(Comparator.comparingInt(Option::getOrder))
+                    .map(OptionDto::from)
+                    .toList());
         }
 
         return questionDto.build();
