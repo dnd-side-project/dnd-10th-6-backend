@@ -6,9 +6,13 @@ import com.dnd.namuiwiki.domain.auth.dto.OAuthLoginResponse;
 import com.dnd.namuiwiki.domain.auth.dto.SignUpResponse;
 import com.dnd.namuiwiki.domain.jwt.JwtService;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenPairDto;
+import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.oauth.OAuthService;
 import com.dnd.namuiwiki.domain.oauth.dto.OAuthUserInfoDto;
 import com.dnd.namuiwiki.domain.oauth.type.OAuthProvider;
+import com.dnd.namuiwiki.domain.survey.SurveyRepository;
+import com.dnd.namuiwiki.domain.user.dto.EditUserProfileRequest;
+import com.dnd.namuiwiki.domain.user.dto.UserProfileDto;
 import com.dnd.namuiwiki.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -26,6 +30,7 @@ public class UserService {
     private final String COOKIE_OAUTH_PROVIDER = "oauthProvider";
 
     private final UserRepository userRepository;
+    private final SurveyRepository surveyRepository;
     private final JwtService jwtService;
     private final OAuthService oAuthService;
 
@@ -81,6 +86,28 @@ public class UserService {
         headers.add(HttpHeaders.SET_COOKIE, oauthToken.toString());
         headers.add(HttpHeaders.SET_COOKIE, provider.toString());
         return headers;
+    }
+
+
+    public UserProfileDto getMyProfile(TokenUserInfoDto tokenUserInfoDto) {
+        String wikiId = tokenUserInfoDto.getWikiId();
+        User user = getUserByWikiId(wikiId);
+
+        Long totalSurveyCnt = surveyRepository.countByOwner(user);
+
+        return new UserProfileDto(user.getWikiId(), user.getNickname(), totalSurveyCnt);
+    }
+
+    public void editMyProfile(TokenUserInfoDto tokenUserInfoDto, EditUserProfileRequest request) {
+        User user = getUserByWikiId(tokenUserInfoDto.getWikiId());
+        user.setNickname(request.getNickname());
+
+        userRepository.save(user);
+    }
+
+    private User getUserByWikiId(String wikiId) {
+        return userRepository.findByWikiId(wikiId)
+                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
     }
 
 }
