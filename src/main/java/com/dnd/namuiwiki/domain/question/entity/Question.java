@@ -1,5 +1,6 @@
 package com.dnd.namuiwiki.domain.question.entity;
 
+import com.dnd.namuiwiki.common.model.BaseTimeEntity;
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
@@ -16,7 +17,7 @@ import java.util.Optional;
 @Getter
 @Builder
 @Document(collection = "questions")
-public class Question {
+public class Question extends BaseTimeEntity {
 
     @Id
     private String id;

@@ -1,5 +1,6 @@
 package com.dnd.namuiwiki.domain.option.entity;
 
+import com.dnd.namuiwiki.common.model.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
@@ -10,7 +11,7 @@ import java.util.Objects;
 @Getter
 @Builder
 @Document(collection = "options")
-public class Option {
+public class Option extends BaseTimeEntity {
 
     @Id
     private String id;

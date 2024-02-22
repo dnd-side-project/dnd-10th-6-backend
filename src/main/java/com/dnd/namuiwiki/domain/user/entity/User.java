@@ -1,5 +1,6 @@
 package com.dnd.namuiwiki.domain.user.entity;
 
+import com.dnd.namuiwiki.common.model.BaseTimeEntity;
 import com.dnd.namuiwiki.domain.oauth.type.OAuthProvider;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import java.util.Objects;
 @Getter
 @Builder
 @Document(collection = "users")
-public class User {
+public class User extends BaseTimeEntity {
     @Id
     private String id;
     private String wikiId;
