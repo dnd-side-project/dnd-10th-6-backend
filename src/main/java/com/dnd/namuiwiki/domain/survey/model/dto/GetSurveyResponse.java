@@ -9,6 +9,7 @@ import com.dnd.namuiwiki.domain.survey.type.Relation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +19,7 @@ public class GetSurveyResponse {
     private String senderName;
     private Period period;
     private Relation relation;
-    //TODO: 설문 작성 날짜 추가
-//    private final Date date;
+    private LocalDateTime createdAt;
     private List<SingleQuestionAndAnswer> questionAndAnswers;
 
     @Getter
@@ -36,7 +36,7 @@ public class GetSurveyResponse {
 
     public static GetSurveyResponse from(Survey survey, List<Question> questions) {
         var singleQuestionAndAnswers = pairQuestionAndAnswer(survey, questions);
-        return new GetSurveyResponse(survey.getSenderName(), survey.getPeriod(), survey.getRelation(), singleQuestionAndAnswers);
+        return new GetSurveyResponse(survey.getSenderName(), survey.getPeriod(), survey.getRelation(), survey.getWrittenAt(), singleQuestionAndAnswers);
     }
 
     private static List<SingleQuestionAndAnswer> pairQuestionAndAnswer(Survey survey, List<Question> questions) {
