@@ -7,10 +7,12 @@ import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @AllArgsConstructor
 public class GetSurveyResponse {
     private String senderName;
@@ -20,6 +22,7 @@ public class GetSurveyResponse {
 //    private final Date date;
     private List<SingleQuestionAndAnswer> questionAndAnswers;
 
+    @Getter
     @AllArgsConstructor
     private static class SingleQuestionAndAnswer {
         private String questionTitle;
