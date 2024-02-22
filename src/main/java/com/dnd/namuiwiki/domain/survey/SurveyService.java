@@ -35,7 +35,6 @@ public class SurveyService {
                 .owner(owner)
                 .sender(sender)
                 .senderName(request.getSenderName())
-                .isAnonymous(request.getIsAnonymous())
                 .period(Period.valueOf(request.getPeriod()))
                 .relation(Relation.valueOf(request.getRelation()))
                 .answers(surveyAnswer.toEntity())

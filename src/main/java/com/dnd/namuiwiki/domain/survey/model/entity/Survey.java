@@ -30,8 +30,6 @@ public class Survey {
 
     private String senderName;
 
-    private Boolean isAnonymous;
-
     private Period period;
 
     private Relation relation;
