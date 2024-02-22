@@ -106,7 +106,11 @@ public class QuestionService {
         optionRepository.deleteAll();
         var allOptions = options.stream().map(opt -> {
             JSONObject option = (JSONObject) opt;
-            return Option.builder().value(option.get("value")).text(option.get("text").toString()).build();
+            return Option.builder()
+                    .order(Integer.parseInt(option.get("order").toString()))
+                    .value(option.get("value"))
+                    .text(option.get("text").toString()).
+                    build();
         }).toList();
         optionRepository.saveAll(allOptions);
     }
