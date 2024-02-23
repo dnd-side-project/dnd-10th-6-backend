@@ -4,6 +4,7 @@ import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.jwt.JwtProvider;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
+import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.QuestionRepository;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.statistic.StatisticsService;
@@ -14,6 +15,7 @@ import com.dnd.namuiwiki.domain.survey.model.dto.GetSurveyResponse;
 import com.dnd.namuiwiki.domain.survey.model.dto.GetAnswersByQuestionResponse;
 import com.dnd.namuiwiki.domain.survey.model.dto.SingleAnswerWithSurveyDetailDto;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
+import com.dnd.namuiwiki.domain.survey.type.AnswerType;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.UserRepository;
@@ -99,7 +101,7 @@ public class SurveyService {
                             .senderName(survey.getSenderName())
                             .period(survey.getPeriod())
                             .relation(survey.getRelation())
-                            .answer(answerOfQuestion.getAnswer())
+                            .answer(convertAnswerToText(question, answerOfQuestion))
                             .reason(answerOfQuestion.getReason())
                             .build();
         }).toList();
@@ -121,5 +123,14 @@ public class SurveyService {
             return surveyRepository.findByOwnerAndRelation(owner, relation, pageable);
         }
             return surveyRepository.findByOwner(owner, pageable);
+    }
+
+    private String convertAnswerToText(Question question, Survey.Answer answer) {
+        if (answer.getType().equals(AnswerType.MANUAL)) {
+            return answer.getAnswer().toString();
+        }
+        Option option = question.getOption(answer.getAnswer().toString())
+                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID));
+        return option.getText();
     }
 }

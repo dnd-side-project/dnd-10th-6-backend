@@ -13,6 +13,6 @@ public class SingleAnswerWithSurveyDetailDto {
     private Relation relation;
     // TODO: 작성 날짜 포함해야 함
     // private Date date;
-    private Object answer;
+    private String answer;
     private String reason;
 }
