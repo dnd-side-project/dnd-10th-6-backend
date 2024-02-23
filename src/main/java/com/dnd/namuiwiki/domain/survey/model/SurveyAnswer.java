@@ -42,6 +42,7 @@ public class SurveyAnswer {
 
         private Answer(QuestionDto question, AnswerType type, Object answer, String reason) {
             validateAnswerType(question.getType(), type);
+            validateReasonRequired(question.isReasonRequired(), reason);
             boolean answerShouldBeNumeric = question.getType().isNumericType() && type.isManual();
             if (answerShouldBeNumeric) {
                 validateAnswerObjectType(answer, Integer.class);
@@ -68,6 +69,12 @@ public class SurveyAnswer {
         private void validateAnswerObjectType(Object answer, Class<?> clazz) {
             if (!clazz.isInstance(answer)) {
                 throw new ApplicationErrorException(ApplicationErrorType.NOT_INTEGER_ANSWER);
+            }
+        }
+
+        private void validateReasonRequired(boolean reasonRequired, String reason) {
+            if(reasonRequired && reason == null) {
+                throw new ApplicationErrorException(ApplicationErrorType.ANSWER_REASON_REQUIRED);
             }
         }
 
