@@ -9,12 +9,13 @@ import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.QuestionRepository;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.statistic.StatisticsService;
-import com.dnd.namuiwiki.domain.survey.model.dto.SentSurveyDto;
 import com.dnd.namuiwiki.domain.survey.model.SurveyAnswer;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyRequest;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyResponse;
 import com.dnd.namuiwiki.domain.survey.model.dto.GetAnswersByQuestionResponse;
+import com.dnd.namuiwiki.domain.survey.model.dto.GetSurveyResponse;
 import com.dnd.namuiwiki.domain.survey.model.dto.ReceivedSurveyDto;
+import com.dnd.namuiwiki.domain.survey.model.dto.SentSurveyDto;
 import com.dnd.namuiwiki.domain.survey.model.dto.SingleAnswerWithSurveyDetailDto;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.AnswerType;
@@ -28,6 +29,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -99,6 +102,13 @@ public class SurveyService {
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
     }
 
+    public GetSurveyResponse getSurvey(String surveyId) {
+        List<Question> questions = questionRepository.findAll();
+        Survey survey = surveyRepository.findById(surveyId)
+                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_SURVEY));
+        return GetSurveyResponse.from(survey, questions);
+    }
+
     public GetAnswersByQuestionResponse getAnswersByQuestion(String wikiId, String questionId, Period period, Relation relation, int pageNo, int pageSize) {
         validateFilter(period, relation);
 
@@ -111,18 +121,18 @@ public class SurveyService {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Survey> surveys = getSurveysByFilter(period, relation, owner, pageable);
         var answers = surveys.map(survey -> {
-                    var answerOfQuestion = survey.getAnswers().stream()
-                            .filter(answer -> answer.getQuestion().getId().equals(questionId))
-                            .findAny()
-                            .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_ID));
-                    return SingleAnswerWithSurveyDetailDto.builder()
-                            .senderName(survey.getSenderName())
-                            .period(survey.getPeriod())
-                            .relation(survey.getRelation())
-                            .createdAt(survey.getWrittenAt())
-                            .answer(convertAnswerToText(question, answerOfQuestion))
-                            .reason(answerOfQuestion.getReason())
-                            .build();
+            var answerOfQuestion = survey.getAnswers().stream()
+                    .filter(answer -> answer.getQuestion().getId().equals(questionId))
+                    .findAny()
+                    .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_ID));
+            return SingleAnswerWithSurveyDetailDto.builder()
+                    .senderName(survey.getSenderName())
+                    .period(survey.getPeriod())
+                    .relation(survey.getRelation())
+                    .createdAt(survey.getWrittenAt())
+                    .answer(convertAnswerToText(question, answerOfQuestion))
+                    .reason(answerOfQuestion.getReason())
+                    .build();
         });
 
         return new GetAnswersByQuestionResponse(question.getTitle(), PageableDto.create(answers));

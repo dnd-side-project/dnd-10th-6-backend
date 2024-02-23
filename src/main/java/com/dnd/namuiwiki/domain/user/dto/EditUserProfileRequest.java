@@ -1,9 +1,11 @@
 package com.dnd.namuiwiki.domain.user.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
+@Schema(description = "프로필 수정 요청 body")
 @Getter
 public class EditUserProfileRequest {
 
