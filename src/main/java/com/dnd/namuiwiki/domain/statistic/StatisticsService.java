@@ -44,7 +44,9 @@ public class StatisticsService {
                 .orElseGet(() -> PopulationStatistic.builder()
                         .statistic(new BorrowingLimitEntireStatistic(0L, 0L))
                         .period(period)
-                        .relation(relation).build());
+                        .questionName(questionName)
+                        .relation(relation)
+                        .build());
     }
 
     private void updateDashboards(User owner, Period period, Relation relation, List<Survey.Answer> statisticalAnswers) {
