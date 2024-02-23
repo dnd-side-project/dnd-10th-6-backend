@@ -5,6 +5,7 @@ import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
+import com.dnd.namuiwiki.domain.survey.type.AnswerType;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import lombok.AllArgsConstructor;
@@ -32,6 +33,9 @@ public class GetSurveyResponse {
         private String reason;
 
         static SingleQuestionAndAnswer from(Question question, Survey.Answer surveyAnswer) {
+            if (surveyAnswer.getType().equals(AnswerType.MANUAL)) {
+                new SingleQuestionAndAnswer(question.getTitle(), surveyAnswer.getAnswer().toString(), surveyAnswer.getAnswer(), surveyAnswer.getReason());
+            }
             Option option = question.getOption(surveyAnswer.getAnswer().toString())
                     .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID));
             return new SingleQuestionAndAnswer(question.getTitle(), option.getText(), surveyAnswer.getAnswer(), surveyAnswer.getReason());
