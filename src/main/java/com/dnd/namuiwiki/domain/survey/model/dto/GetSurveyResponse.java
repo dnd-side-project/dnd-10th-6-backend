@@ -34,7 +34,7 @@ public class GetSurveyResponse {
 
         static SingleQuestionAndAnswer from(Question question, Survey.Answer surveyAnswer) {
             if (surveyAnswer.getType().equals(AnswerType.MANUAL)) {
-                new SingleQuestionAndAnswer(question.getTitle(), surveyAnswer.getAnswer().toString(), surveyAnswer.getAnswer(), surveyAnswer.getReason());
+                return new SingleQuestionAndAnswer(question.getTitle(), surveyAnswer.getAnswer().toString(), surveyAnswer.getAnswer(), surveyAnswer.getReason());
             }
             Option option = question.getOption(surveyAnswer.getAnswer().toString())
                     .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID));
