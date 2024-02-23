@@ -9,6 +9,7 @@ import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.QuestionRepository;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.statistic.StatisticsService;
+import com.dnd.namuiwiki.domain.survey.model.dto.SentSurveyDto;
 import com.dnd.namuiwiki.domain.survey.model.SurveyAnswer;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyRequest;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyResponse;
@@ -64,6 +65,16 @@ public class SurveyService {
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<ReceivedSurveyDto> surveys = surveyRepository.findByOwner(user, pageable)
                 .map(ReceivedSurveyDto::from);
+        return PageableDto.create(surveys);
+    }
+
+    public PageableDto<SentSurveyDto> getSentSurveys(TokenUserInfoDto tokenUserInfoDto, Period period, Relation relation, int pageNo, int pageSize) {
+        User user = getUserByWikiId(tokenUserInfoDto.getWikiId());
+
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<SentSurveyDto> surveys = surveyRepository.findBySender(user, pageable)
+                .map(SentSurveyDto::from);
         return PageableDto.create(surveys);
     }
 
@@ -130,7 +141,7 @@ public class SurveyService {
         if (!relation.isTotal()) {
             return surveyRepository.findByOwnerAndRelation(owner, relation, pageable);
         }
-            return surveyRepository.findByOwner(owner, pageable);
+        return surveyRepository.findByOwner(owner, pageable);
     }
 
     private String convertAnswerToText(Question question, Survey.Answer answer) {
