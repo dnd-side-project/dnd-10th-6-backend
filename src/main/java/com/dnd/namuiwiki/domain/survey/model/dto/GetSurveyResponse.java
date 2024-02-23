@@ -38,7 +38,7 @@ public class GetSurveyResponse {
             }
             Option option = question.getOption(surveyAnswer.getAnswer().toString())
                     .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID));
-            return new SingleQuestionAndAnswer(question.getTitle(), option.getText(), surveyAnswer.getAnswer(), surveyAnswer.getReason());
+            return new SingleQuestionAndAnswer(question.getTitle(), option.getText(), option.getValue(), surveyAnswer.getReason());
         }
     }
 
