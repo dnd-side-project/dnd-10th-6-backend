@@ -75,7 +75,8 @@ public class SurveyService {
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<SentSurveyDto> surveys = surveyRepository.findBySender(user, pageable)
                 .map(SentSurveyDto::from);
-        return PageableDto.create(surveys);    }
+        return PageableDto.create(surveys);
+    }
 
     private void validateNotFromMe(User owner, User sender) {
         if (owner.equals(sender)) {
@@ -140,7 +141,7 @@ public class SurveyService {
         if (!relation.isTotal()) {
             return surveyRepository.findByOwnerAndRelation(owner, relation, pageable);
         }
-            return surveyRepository.findByOwner(owner, pageable);
+        return surveyRepository.findByOwner(owner, pageable);
     }
 
     private String convertAnswerToText(Question question, Survey.Answer answer) {

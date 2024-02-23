@@ -48,7 +48,7 @@ public class UserController {
         return ResponseDto.noContent();
     }
 
-    @GetMapping("profile/surveys")
+    @GetMapping("/profile/surveys")
     public ResponseEntity<?> getSentSurveys(
             @JwtAuthorization TokenUserInfoDto tokenUserInfoDto,
             @RequestParam(name = "period", required = false, defaultValue = "TOTAL") Period period,
