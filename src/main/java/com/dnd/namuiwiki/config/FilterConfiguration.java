@@ -10,7 +10,9 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @RequiredArgsConstructor
@@ -31,7 +33,17 @@ public class FilterConfiguration {
     @Bean
     public FilterRegistrationBean<JwtFilter> jwtFilter() {
         FilterRegistrationBean<JwtFilter> jwtFilterBean = new FilterRegistrationBean<>();
-        jwtFilterBean.setFilter(new JwtFilter(jwtProvider, List.of(permittedURIs), AUTHENTICATION_HEADER));
+        Map<String, String> excludeUrlPatterns = new HashMap<>();
+
+        for (int i = 0; i < permittedURIs.length; i++) {
+            String[] split = permittedURIs[i].split(":");
+            String method = split[0];
+            String path = split[1];
+
+            excludeUrlPatterns.put(path, method);
+        }
+
+        jwtFilterBean.setFilter(new JwtFilter(jwtProvider, excludeUrlPatterns, AUTHENTICATION_HEADER));
         jwtFilterBean.setOrder(2);
         return jwtFilterBean;
     }
