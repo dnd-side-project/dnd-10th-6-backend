@@ -1,7 +1,5 @@
 package com.dnd.namuiwiki.domain.survey.model.dto;
 
-import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
-import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.Period;
@@ -40,8 +38,6 @@ public class GetSurveyResponse {
     }
 
     private static List<SingleQuestionAndAnswer> pairQuestionAndAnswer(Survey survey, List<Question> questions) {
-        validateQuestionAndAnswerSize(survey, questions);
-
         var size = questions.size();
         var answers = survey.getAnswers();
         List<SingleQuestionAndAnswer> questionAndAnswerList = new ArrayList<>();
@@ -51,11 +47,5 @@ public class GetSurveyResponse {
             questionAndAnswerList.add(SingleQuestionAndAnswer.from(question.getTitle(), answer));
         }
         return questionAndAnswerList;
-    }
-
-    private static void validateQuestionAndAnswerSize(Survey survey, List<Question> questions) {
-        if (survey.getAnswers().size() != questions.size()) {
-            throw new ApplicationErrorException(ApplicationErrorType.QUESTION_ANSWER_COUNT_NOT_EQUAL);
-        }
     }
 }
