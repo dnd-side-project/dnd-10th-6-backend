@@ -41,7 +41,7 @@ public class SurveyService {
         User owner = getUserByWikiId(request.getOwner());
         User sender = getUserByAccessToken(accessToken);
 
-//        validateNotFromMe(owner, sender);
+        validateNotFromMe(owner, sender);
 
         Survey survey = surveyRepository.save(Survey.builder()
                 .owner(owner)
