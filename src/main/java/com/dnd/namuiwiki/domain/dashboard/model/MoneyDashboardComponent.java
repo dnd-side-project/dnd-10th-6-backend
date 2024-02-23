@@ -21,7 +21,7 @@ public class MoneyDashboardComponent extends DashboardComponent {
     public void calculate(Statistics statistics) {
         AverageStatistic money = (AverageStatistic) statistics.getStatisticsByDashboardType(this.dashboardType).get(0);
         this.peopleCount = money.getTotalCount();
-        this.average = money.getTotalSum();
+        this.average = money.getAverage();
     }
 
 }

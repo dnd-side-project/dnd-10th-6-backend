@@ -1,5 +1,6 @@
 package com.dnd.namuiwiki.domain.statistic.model;
 
+import com.dnd.namuiwiki.common.util.ArithmeticUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,7 +15,7 @@ public class BorrowingLimitEntireStatistic implements EntireStatistic {
     @Override
     public void updateStatistic(String... args) {
         long borrowingLimit = Long.parseLong(args[0]);
-        long newAverage = (peopleCount + borrowingLimit) / 2;
+        long newAverage = ArithmeticUtils.calculateAverage(peopleCount, borrowingMoneyLimitEntireAverage, borrowingLimit);
 
         increasePeopleCount();
         setBorrowingMoneyLimitEntireAverage(newAverage);
