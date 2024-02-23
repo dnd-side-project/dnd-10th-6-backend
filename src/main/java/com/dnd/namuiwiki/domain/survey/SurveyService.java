@@ -108,6 +108,7 @@ public class SurveyService {
                             .senderName(survey.getSenderName())
                             .period(survey.getPeriod())
                             .relation(survey.getRelation())
+                            .createdAt(survey.getWrittenAt())
                             .answer(convertAnswerToText(question, answerOfQuestion))
                             .reason(answerOfQuestion.getReason())
                             .build();

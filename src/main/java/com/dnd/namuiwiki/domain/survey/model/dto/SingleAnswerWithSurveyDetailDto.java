@@ -5,14 +5,15 @@ import com.dnd.namuiwiki.domain.survey.type.Relation;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 public class SingleAnswerWithSurveyDetailDto {
     private String senderName;
     private Period period;
     private Relation relation;
-    // TODO: 작성 날짜 포함해야 함
-    // private Date date;
+    private LocalDateTime createdAt;
     private String answer;
     private String reason;
 }
