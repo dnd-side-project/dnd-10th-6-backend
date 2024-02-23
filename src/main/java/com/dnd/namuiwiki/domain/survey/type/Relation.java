@@ -20,4 +20,7 @@ public enum Relation {
         return description;
     }
 
+    public boolean isTotal() {
+        return this == TOTAL;
+    }
 }

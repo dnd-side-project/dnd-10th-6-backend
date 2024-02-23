@@ -18,4 +18,8 @@ public enum Period {
         return description;
     }
 
+    public boolean isTotal() {
+        return this == TOTAL;
+    }
+
 }

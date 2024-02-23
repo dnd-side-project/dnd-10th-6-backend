@@ -114,10 +114,10 @@ public class SurveyService {
     }
 
     private Page<Survey> getSurveysByFilter(Period period, Relation relation, User owner, Pageable pageable) {
-        if (!period.equals(Period.TOTAL)) {
+        if (!period.isTotal()) {
             return surveyRepository.findByOwnerAndPeriod(owner, period, pageable);
         }
-        if (!relation.equals(Relation.TOTAL)) {
+        if (!relation.isTotal()) {
             return surveyRepository.findByOwnerAndRelation(owner, relation, pageable);
         }
             return surveyRepository.findByOwner(owner, pageable);
