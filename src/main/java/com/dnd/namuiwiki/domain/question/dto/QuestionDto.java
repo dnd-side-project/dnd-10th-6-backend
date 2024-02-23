@@ -24,6 +24,7 @@ public class QuestionDto {
     private String title;
     private QuestionName name;
     private QuestionType type;
+    private boolean reasonRequired;
     private DashboardType dashboardType;
     private Long surveyOrder;
     private List<OptionDto> options;
@@ -34,6 +35,7 @@ public class QuestionDto {
                 .title(question.getTitle())
                 .name(question.getName())
                 .type(question.getType())
+                .reasonRequired(question.isReasonRequired())
                 .dashboardType(question.getDashboardType())
                 .surveyOrder(question.getSurveyOrder());
 

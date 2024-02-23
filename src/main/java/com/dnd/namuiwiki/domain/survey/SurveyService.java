@@ -1,5 +1,6 @@
 package com.dnd.namuiwiki.domain.survey;
 
+import com.dnd.namuiwiki.common.dto.PageableDto;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.jwt.JwtProvider;
@@ -8,11 +9,12 @@ import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.QuestionRepository;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.statistic.StatisticsService;
+import com.dnd.namuiwiki.domain.survey.model.dto.SentSurveyDto;
 import com.dnd.namuiwiki.domain.survey.model.SurveyAnswer;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyRequest;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyResponse;
-import com.dnd.namuiwiki.domain.survey.model.dto.GetSurveyResponse;
 import com.dnd.namuiwiki.domain.survey.model.dto.GetAnswersByQuestionResponse;
+import com.dnd.namuiwiki.domain.survey.model.dto.ReceivedSurveyDto;
 import com.dnd.namuiwiki.domain.survey.model.dto.SingleAnswerWithSurveyDetailDto;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.AnswerType;
@@ -24,9 +26,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -38,11 +39,10 @@ public class SurveyService {
     private final StatisticsService statisticsService;
 
     public CreateSurveyResponse createSurvey(CreateSurveyRequest request, SurveyAnswer surveyAnswer, String accessToken) {
-        User owner = userRepository.findByWikiId(request.getOwner())
-                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
+        User owner = getUserByWikiId(request.getOwner());
         User sender = getUserByAccessToken(accessToken);
 
-//        validateNotFromMe(owner, sender);
+        validateNotFromMe(owner, sender);
 
         Survey survey = surveyRepository.save(Survey.builder()
                 .owner(owner)
@@ -58,10 +58,35 @@ public class SurveyService {
         return new CreateSurveyResponse(survey.getId());
     }
 
+    public PageableDto<ReceivedSurveyDto> getReceivedSurveys(TokenUserInfoDto tokenUserInfoDto, int pageNo, int pageSize) {
+        User user = getUserByWikiId(tokenUserInfoDto.getWikiId());
+
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<ReceivedSurveyDto> surveys = surveyRepository.findByOwner(user, pageable)
+                .map(ReceivedSurveyDto::from);
+        return PageableDto.create(surveys);
+    }
+
+    public PageableDto<SentSurveyDto> getSentSurveys(TokenUserInfoDto tokenUserInfoDto, Period period, Relation relation, int pageNo, int pageSize) {
+        User user = getUserByWikiId(tokenUserInfoDto.getWikiId());
+
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<SentSurveyDto> surveys = surveyRepository.findBySender(user, pageable)
+                .map(SentSurveyDto::from);
+        return PageableDto.create(surveys);
+    }
+
     private void validateNotFromMe(User owner, User sender) {
         if (owner.equals(sender)) {
             throw new ApplicationErrorException(ApplicationErrorType.CANNOT_SEND_SURVEY_TO_MYSELF);
         }
+    }
+
+    private User getUserByWikiId(String wikiId) {
+        return userRepository.findByWikiId(wikiId)
+                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
     }
 
     private User getUserByAccessToken(String accessToken) {
@@ -72,13 +97,6 @@ public class SurveyService {
         TokenUserInfoDto tokenUserInfoDto = jwtProvider.parseToken(accessToken);
         return userRepository.findByWikiId(tokenUserInfoDto.getWikiId())
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
-    }
-
-    public GetSurveyResponse getSurvey(String surveyId) {
-        List<Question> questions = questionRepository.findAll();
-        Survey survey = surveyRepository.findById(surveyId)
-                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_SURVEY));
-        return GetSurveyResponse.from(survey, questions);
     }
 
     public GetAnswersByQuestionResponse getAnswersByQuestion(String wikiId, String questionId, Period period, Relation relation, int pageNo, int pageSize) {
@@ -92,7 +110,7 @@ public class SurveyService {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Survey> surveys = getSurveysByFilter(period, relation, owner, pageable);
-        var answers = surveys.get().map(survey -> {
+        var answers = surveys.map(survey -> {
                     var answerOfQuestion = survey.getAnswers().stream()
                             .filter(answer -> answer.getQuestion().getId().equals(questionId))
                             .findAny()
@@ -101,12 +119,13 @@ public class SurveyService {
                             .senderName(survey.getSenderName())
                             .period(survey.getPeriod())
                             .relation(survey.getRelation())
+                            .createdAt(survey.getWrittenAt())
                             .answer(convertAnswerToText(question, answerOfQuestion))
                             .reason(answerOfQuestion.getReason())
                             .build();
-        }).toList();
+        });
 
-        return new GetAnswersByQuestionResponse(question.getTitle(), answers);
+        return new GetAnswersByQuestionResponse(question.getTitle(), PageableDto.create(answers));
     }
 
     private void validateFilter(Period period, Relation relation) {
@@ -122,7 +141,7 @@ public class SurveyService {
         if (!relation.isTotal()) {
             return surveyRepository.findByOwnerAndRelation(owner, relation, pageable);
         }
-            return surveyRepository.findByOwner(owner, pageable);
+        return surveyRepository.findByOwner(owner, pageable);
     }
 
     private String convertAnswerToText(Question question, Survey.Answer answer) {

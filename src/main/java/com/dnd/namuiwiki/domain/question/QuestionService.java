@@ -34,8 +34,9 @@ public class QuestionService {
     @Value("${setting.password}")
     private String SETTING_PASSWORD;
 
-    public List<QuestionDto> getQuestions() {
+    public List<QuestionDto> getQuestions(QuestionType questionType) {
         return questionRepository.findAll().stream()
+                .filter(q -> questionType == null || q.getType().equals(questionType))
                 .sorted(Comparator.comparing(Question::getSurveyOrder))
                 .map(QuestionDto::from)
                 .toList();
@@ -80,6 +81,7 @@ public class QuestionService {
                     .surveyOrder((Long) qq.get("surveyOrder"))
                     .dashboardType(DashboardType.valueOf(qq.get("dashboardType").toString()))
                     .name(name)
+                    .reasonRequired((boolean) qq.get("reasonRequired"))
                     .type(type);
 
             if (type.isChoiceType()) {
@@ -109,8 +111,8 @@ public class QuestionService {
             return Option.builder()
                     .order(Integer.parseInt(option.get("order").toString()))
                     .value(option.get("value"))
-                    .text(option.get("text").toString()).
-                    build();
+                    .text(option.get("text").toString())
+                    .build();
         }).toList();
         optionRepository.saveAll(allOptions);
     }

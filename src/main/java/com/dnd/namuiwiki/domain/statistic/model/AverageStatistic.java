@@ -2,6 +2,7 @@ package com.dnd.namuiwiki.domain.statistic.model;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
+import com.dnd.namuiwiki.common.util.ArithmeticUtils;
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.entity.Question;
@@ -11,30 +12,17 @@ import lombok.Getter;
 
 @Getter
 public class AverageStatistic extends Statistic {
-    private Long totalSum;
+    private long average;
 
     public AverageStatistic(
             String questionId,
             QuestionName questionName,
             DashboardType dashboardType,
             Long totalCount,
-            Long totalSum
+            Long average
     ) {
         super(questionId, questionName, dashboardType, totalCount);
-        this.totalSum = totalSum;
-    }
-
-    public Long increaseTotalSum(Long sum) {
-        return totalSum += sum;
-    }
-
-    public static AverageStatistic create(Question question) {
-        return new AverageStatistic(
-                question.getId(),
-                question.getName(),
-                question.getDashboardType(),
-                0L,
-                0L);
+        this.average = average;
     }
 
     @Override
@@ -52,8 +40,21 @@ public class AverageStatistic extends Statistic {
                 throw new ApplicationErrorException(ApplicationErrorType.INTERNAL_ERROR, "Invalid statistics type");
         }
 
+        updateAverage(value);
         increaseTotalCount();
-        increaseTotalSum(value);
+    }
+
+    public void updateAverage(Long newNumber) {
+        average = ArithmeticUtils.calculateAverage(totalCount, average, newNumber);
+    }
+
+    public static AverageStatistic create(Question question) {
+        return new AverageStatistic(
+                question.getId(),
+                question.getName(),
+                question.getDashboardType(),
+                0L,
+                0L);
     }
 
     private long getValueFromManualAnswer(Survey.Answer answer) {

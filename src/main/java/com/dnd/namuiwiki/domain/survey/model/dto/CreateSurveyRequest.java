@@ -17,9 +17,6 @@ public class CreateSurveyRequest {
     @NotEmpty
     private String owner;
 
-    @NotEmpty
-    private String sender;
-
     @Size(min = 2, max = 6)
     private String senderName;
 

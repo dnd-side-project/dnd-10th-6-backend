@@ -42,10 +42,15 @@ public class SurveyAnswer {
 
         private Answer(QuestionDto question, AnswerType type, Object answer, String reason) {
             validateAnswerType(question.getType(), type);
-            boolean answerShouldBeNumeric = question.getType().isNumericType() && type.isManual();
-            if (answerShouldBeNumeric) {
+            validateReasonRequired(question.isReasonRequired(), reason);
+            boolean shouldBeNumericAnswer = question.getType().isNumericType() && type.isManual();
+            if (shouldBeNumericAnswer) {
                 validateAnswerObjectType(answer, Integer.class);
-                this.answer = Long.valueOf(answer.toString());
+                long longAnswer = Long.parseLong(answer.toString());
+                if (question.getName().isBorrowingLimit()) {
+                    validateBorrowingLimit(longAnswer);
+                }
+                this.answer = longAnswer;
             } else {
                 validateAnswerObjectType(answer, String.class);
                 this.answer = answer;
@@ -54,6 +59,12 @@ public class SurveyAnswer {
             this.question = question;
             this.type = type;
             this.reason = reason;
+        }
+
+        private void validateBorrowingLimit(long longAnswer) {
+            if (!(0 <= longAnswer && longAnswer <= 1_000_000_000)) {
+                throw new ApplicationErrorException(ApplicationErrorType.INVALID_BORROWING_LIMIT);
+            }
         }
 
         private Survey.Answer toEntity() {
@@ -68,6 +79,12 @@ public class SurveyAnswer {
         private void validateAnswerObjectType(Object answer, Class<?> clazz) {
             if (!clazz.isInstance(answer)) {
                 throw new ApplicationErrorException(ApplicationErrorType.NOT_INTEGER_ANSWER);
+            }
+        }
+
+        private void validateReasonRequired(boolean reasonRequired, String reason) {
+            if (reasonRequired && reason == null) {
+                throw new ApplicationErrorException(ApplicationErrorType.ANSWER_REASON_REQUIRED);
             }
         }
 
