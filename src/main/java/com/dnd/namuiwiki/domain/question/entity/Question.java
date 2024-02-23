@@ -26,6 +26,8 @@ public class Question extends BaseTimeEntity {
     private QuestionType type;
     private DashboardType dashboardType;
     private Long surveyOrder;
+    private boolean reasonRequired;
+
     @DocumentReference
     private Map<String, Option> options;
 
