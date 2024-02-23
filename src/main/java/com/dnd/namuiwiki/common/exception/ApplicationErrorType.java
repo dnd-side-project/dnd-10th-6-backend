@@ -54,6 +54,7 @@ public enum ApplicationErrorType {
     NOT_INTEGER_ANSWER(HttpStatus.CONFLICT, "정수형 답변이 아닙니다."),
     NOT_STRING_ANSWER(HttpStatus.NOT_FOUND, "문자형 답변이 아닙니다."),
     CANNOT_SEND_SURVEY_TO_MYSELF(HttpStatus.BAD_REQUEST, "자신에게 설문을 보낼 수 없습니다."),
+    ANSWER_REASON_REQUIRED(HttpStatus.CONFLICT, "reason 필드가 필요한 질문입니다."),
 
     /**
      * Survey Error Type

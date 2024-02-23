@@ -19,7 +19,6 @@ public class AnswerDto {
     @NotEmpty
     private Object answer;
 
-    @NotEmpty
     private String reason;
 
 }

@@ -6,6 +6,7 @@
       "type": "OX",
       "dashboardType": "CHARACTER",
       "name": "FRIENDLINESS_LEVEL",
+      "reasonRequired": true,
       "key": [
         1,
         2
@@ -17,6 +18,7 @@
       "type": "OX",
       "dashboardType": "CHARACTER",
       "name": "PERSONALITY_TYPE",
+      "reasonRequired": true,
       "key": [
         1,
         3
@@ -28,6 +30,7 @@
       "type": "OX",
       "dashboardType": "CHARACTER",
       "name": "MBTI_IMMERSION",
+      "reasonRequired": true,
       "key": [
         1,
         4
@@ -39,6 +42,7 @@
       "type": "OX",
       "dashboardType": "CHARACTER",
       "name": "WEEKEND_COMMITMENTS",
+      "reasonRequired": true,
       "key": [
         1,
         5
@@ -50,6 +54,7 @@
       "type": "MULTIPLE_CHOICE",
       "dashboardType": "BEST_WORTH",
       "name": "CORE_VALUE",
+      "reasonRequired": true,
       "key": [
         6,
         7,
@@ -64,6 +69,7 @@
       "type": "MULTIPLE_CHOICE",
       "dashboardType": "HAPPY",
       "name": "HAPPY_BEHAVIOR",
+      "reasonRequired": true,
       "key": [
         10,
         11,
@@ -78,6 +84,7 @@
       "type": "MULTIPLE_CHOICE",
       "dashboardType": "SAD",
       "name": "SAD_ANGRY_BEHAVIOR",
+      "reasonRequired": true,
       "key": [
         14,
         15,
@@ -92,6 +99,7 @@
       "type": "NUMERIC_CHOICE",
       "dashboardType": "MONEY",
       "name": "BORROWING_LIMIT",
+      "reasonRequired": true,
       "key": [
         18,
         19,
@@ -105,42 +113,48 @@
       "surveyOrder": 9,
       "type": "SHORT_ANSWER",
       "dashboardType": "NONE",
-      "name": "FIRST_IMPRESSION"
+      "name": "FIRST_IMPRESSION",
+      "reasonRequired": false
     },
     {
       "title": "{{userName}}님을<br/><b>5글자로 표현</b>한다면?",
       "surveyOrder": 10,
       "type": "SHORT_ANSWER",
       "dashboardType": "NONE",
-      "name": "FIVE_LETTER_WORD"
+      "name": "FIVE_LETTER_WORD",
+      "reasonRequired": false
     },
     {
       "title": "{{userName}}님의<br/><b>이런점은 꼭 배우고 싶어요!</b>",
       "surveyOrder": 11,
       "type": "SHORT_ANSWER",
       "dashboardType": "NONE",
-      "name": "LEARNING_ASPIRATION"
+      "name": "LEARNING_ASPIRATION",
+      "reasonRequired": false
     },
     {
       "title": "{{userName}}님이<br/><b>가장 많이 사용하는 단어는?</b>",
       "surveyOrder": 12,
       "type": "SHORT_ANSWER",
       "dashboardType": "NONE",
-      "name": "MOST_USED_WORD"
+      "name": "MOST_USED_WORD",
+      "reasonRequired": false
     },
     {
       "title": "{{userName}}님이<br/><b>혼자 몰래 좋아하고 있는 것</b>은 무엇일까요?",
       "surveyOrder": 13,
       "type": "SHORT_ANSWER",
       "dashboardType": "NONE",
-      "name": "SECRET_PLEASURE"
+      "name": "SECRET_PLEASURE",
+      "reasonRequired": false
     },
     {
       "title": "{{userName}}님을 보면<br/><b>어떤 캐릭터(연예인)</b>가 떠오르나요?",
       "surveyOrder": 14,
       "type": "SHORT_ANSWER",
       "dashboardType": "NONE",
-      "name": "CHARACTER_CELEBRITY_ASSOCIATION"
+      "name": "CHARACTER_CELEBRITY_ASSOCIATION",
+      "reasonRequired": false
     }
   ],
   "options": [
