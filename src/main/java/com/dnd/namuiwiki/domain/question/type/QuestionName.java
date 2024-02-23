@@ -14,5 +14,9 @@ public enum QuestionName {
     LEARNING_ASPIRATION,
     MOST_USED_WORD,
     SECRET_PLEASURE,
-    CHARACTER_CELEBRITY_ASSOCIATION
+    CHARACTER_CELEBRITY_ASSOCIATION;
+
+    public boolean isBorrowingLimit() {
+        return this == BORROWING_LIMIT;
+    }
 }
