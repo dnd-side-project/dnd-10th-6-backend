@@ -118,7 +118,8 @@ public class SurveyService {
         User owner = userRepository.findByWikiId(wikiId)
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<Survey> surveys = getSurveysByFilter(period, relation, owner, pageable);
         var answers = surveys.map(survey -> {
             var answerOfQuestion = survey.getAnswers().stream()
