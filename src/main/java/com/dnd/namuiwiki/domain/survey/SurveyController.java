@@ -2,14 +2,11 @@ package com.dnd.namuiwiki.domain.survey;
 
 import com.dnd.namuiwiki.common.dto.ResponseDto;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyRequest;
+import com.dnd.namuiwiki.domain.survey.model.dto.GetSurveyResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -26,6 +23,12 @@ public class SurveyController {
         var surveyAnswers = surveyAnswerService.getSurveyAnswers(request.getAnswers());
         var response = surveyService.createSurvey(request, surveyAnswers, accessToken);
         return ResponseDto.created(response);
+    }
+
+    @GetMapping("/{surveyId}")
+    public ResponseEntity<?> getSurvey(@PathVariable("surveyId") String surveyId) {
+        var response = surveyService.getSurvey(surveyId);
+        return ResponseDto.ok(response);
     }
 
 }

@@ -53,7 +53,18 @@ public enum ApplicationErrorType {
     CONFLICT_OPTION_QUESTION(HttpStatus.CONFLICT, "문항에 해당 옵션이 없습니다."),
     NOT_INTEGER_ANSWER(HttpStatus.CONFLICT, "정수형 답변이 아닙니다."),
     NOT_STRING_ANSWER(HttpStatus.NOT_FOUND, "문자형 답변이 아닙니다."),
-    CANNOT_SEND_SURVEY_TO_MYSELF(HttpStatus.BAD_REQUEST, "자신에게 설문을 보낼 수 없습니다.");
+    CANNOT_SEND_SURVEY_TO_MYSELF(HttpStatus.BAD_REQUEST, "자신에게 설문을 보낼 수 없습니다."),
+
+    /**
+     * Survey Error Type
+     */
+    NOT_FOUND_SURVEY(HttpStatus.NOT_FOUND, "존재하지 않는 설문입니다."),
+    QUESTION_ANSWER_COUNT_NOT_EQUAL(HttpStatus.INTERNAL_SERVER_ERROR, "문항과 답변의 개수가 일치하지 않습니다."),
+
+    /**
+     * Filter Error Type
+     */
+    INVALID_FILTER(HttpStatus.BAD_REQUEST, "동시에 두가지 필터를 사용할 수 없습니다.");
 
 
     @Getter
