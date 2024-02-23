@@ -1,5 +1,6 @@
 package com.dnd.namuiwiki.domain.option.entity;
 
+import com.dnd.namuiwiki.common.model.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
@@ -10,12 +11,13 @@ import java.util.Objects;
 @Getter
 @Builder
 @Document(collection = "options")
-public class Option {
+public class Option extends BaseTimeEntity {
 
     @Id
     private String id;
     private Object value;
     private String text;
+    private int order;
 
     @Override
     public boolean equals(Object o) {
@@ -29,4 +31,5 @@ public class Option {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }

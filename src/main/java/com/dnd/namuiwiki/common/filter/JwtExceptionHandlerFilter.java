@@ -14,12 +14,15 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
 public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
 
     private final ObjectMapper objectMapper;
+
+    private final String[] allowedOrigins;
 
     private final List<String> excludeUrlPatterns;
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
@@ -32,6 +35,12 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
             ErrorResponseDto errorResponseDto = new ErrorResponseDto(ApplicationErrorType.AUTHENTICATION_FAILED.name(), e.getMessage());
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setCharacterEncoding("UTF-8");
+
+            String origin = request.getHeader("origin");
+            if (Arrays.asList(allowedOrigins).contains(origin)) {
+                response.setHeader("Access-Control-Allow-Origin", origin);
+            }
+
             response.getWriter().write(convertObjectToJson(errorResponseDto));
         }
     }
