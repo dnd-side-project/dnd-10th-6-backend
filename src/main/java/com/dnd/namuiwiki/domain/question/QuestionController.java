@@ -1,6 +1,7 @@
 package com.dnd.namuiwiki.domain.question;
 
 import com.dnd.namuiwiki.common.dto.ResponseDto;
+import com.dnd.namuiwiki.domain.question.type.QuestionType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +25,10 @@ public class QuestionController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getQuestions() {
-        var response = questionService.getQuestions();
+    public ResponseEntity<?> getQuestions(
+            @RequestParam(required = false, name = "type") QuestionType questionType
+    ) {
+        var response = questionService.getQuestions(questionType);
         return ResponseDto.ok(response);
     }
 

@@ -34,8 +34,9 @@ public class QuestionService {
     @Value("${setting.password}")
     private String SETTING_PASSWORD;
 
-    public List<QuestionDto> getQuestions() {
+    public List<QuestionDto> getQuestions(QuestionType questionType) {
         return questionRepository.findAll().stream()
+                .filter(q -> questionType == null || q.getType().equals(questionType))
                 .sorted(Comparator.comparing(Question::getSurveyOrder))
                 .map(QuestionDto::from)
                 .toList();
