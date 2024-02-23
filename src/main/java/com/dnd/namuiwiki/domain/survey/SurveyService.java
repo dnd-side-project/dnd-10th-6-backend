@@ -93,7 +93,7 @@ public class SurveyService {
     }
 
     private User getUserByAccessToken(String accessToken) {
-        if (accessToken == null) {
+        if (accessToken == null || accessToken.isEmpty()) {
             return null;
         }
 
