@@ -14,7 +14,7 @@ public class BorrowingLimitEntireStatistic implements EntireStatistic {
     @Override
     public void updateStatistic(String... args) {
         long borrowingLimit = Long.parseLong(args[0]);
-        long newAverage = (peopleCount * borrowingMoneyLimitEntireAverage + borrowingLimit) / (peopleCount + 1);
+        long newAverage = (peopleCount + borrowingLimit) / 2;
 
         increasePeopleCount();
         setBorrowingMoneyLimitEntireAverage(newAverage);
