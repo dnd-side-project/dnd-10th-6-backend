@@ -22,12 +22,12 @@ public class AnswerController {
     public ResponseEntity<?> getAnswersByQuestion(
             @JwtAuthorization TokenUserInfoDto tokenUserInfoDto,
             @RequestParam(name = "questionId") String questionId,
-            @RequestParam(name = "period", required = false, defaultValue = "TOTAL") String period,
-            @RequestParam(name = "relation", required = false, defaultValue = "TOTAL") String relation,
+            @RequestParam(name = "period", required = false, defaultValue = "TOTAL") Period period,
+            @RequestParam(name = "relation", required = false, defaultValue = "TOTAL") Relation relation,
             @RequestParam(name = "pageNo", required = false, defaultValue = "0") int pageNo,
             @RequestParam(name = "pageSize", required = false, defaultValue = "20") int pageSize){
 
-        var answersByQuestion = surveyService.getAnswersByQuestion(tokenUserInfoDto.getWikiId(), questionId, Period.valueOf(period), Relation.valueOf(relation), pageNo, pageSize);
+        var answersByQuestion = surveyService.getAnswersByQuestion(tokenUserInfoDto.getWikiId(), questionId, period, relation, pageNo, pageSize);
         return ResponseDto.ok(answersByQuestion);
     }
 }
