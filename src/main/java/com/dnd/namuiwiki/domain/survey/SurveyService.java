@@ -99,7 +99,7 @@ public class SurveyService {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Survey> surveys = getSurveysByFilter(period, relation, owner, pageable);
-        var answers = surveys.get().map(survey -> {
+        var answers = surveys.map(survey -> {
                     var answerOfQuestion = survey.getAnswers().stream()
                             .filter(answer -> answer.getQuestion().getId().equals(questionId))
                             .findAny()
@@ -112,9 +112,9 @@ public class SurveyService {
                             .answer(convertAnswerToText(question, answerOfQuestion))
                             .reason(answerOfQuestion.getReason())
                             .build();
-        }).toList();
+        });
 
-        return new GetAnswersByQuestionResponse(question.getTitle(), answers);
+        return new GetAnswersByQuestionResponse(question.getTitle(), PageableDto.create(answers));
     }
 
     private void validateFilter(Period period, Relation relation) {
