@@ -1,7 +1,11 @@
 package com.dnd.namuiwiki.domain.survey.model.dto;
 
+import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
+import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
+import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
+import com.dnd.namuiwiki.domain.survey.type.AnswerType;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import lombok.AllArgsConstructor;
@@ -24,11 +28,17 @@ public class GetSurveyResponse {
     @AllArgsConstructor
     private static class SingleQuestionAndAnswer {
         private String questionTitle;
-        private Object answer;
+        private String text;
+        private Object value;
         private String reason;
 
-        static SingleQuestionAndAnswer from(String questionTitle, Survey.Answer surveyAnswer) {
-            return new SingleQuestionAndAnswer(questionTitle, surveyAnswer.getAnswer(), surveyAnswer.getReason());
+        static SingleQuestionAndAnswer from(Question question, Survey.Answer surveyAnswer) {
+            if (surveyAnswer.getType().equals(AnswerType.MANUAL)) {
+                return new SingleQuestionAndAnswer(question.getTitle(), surveyAnswer.getAnswer().toString(), surveyAnswer.getAnswer(), surveyAnswer.getReason());
+            }
+            Option option = question.getOption(surveyAnswer.getAnswer().toString())
+                    .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID));
+            return new SingleQuestionAndAnswer(question.getTitle(), option.getText(), surveyAnswer.getAnswer(), surveyAnswer.getReason());
         }
     }
 
@@ -44,7 +54,7 @@ public class GetSurveyResponse {
         for (int i = 0; i < size; i++) {
             var question = questions.get(i);
             var answer = answers.get(i);
-            questionAndAnswerList.add(SingleQuestionAndAnswer.from(question.getTitle(), answer));
+            questionAndAnswerList.add(SingleQuestionAndAnswer.from(question, answer));
         }
         return questionAndAnswerList;
     }
