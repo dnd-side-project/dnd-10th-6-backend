@@ -14,6 +14,7 @@ import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class StatisticsService {
     private final DashboardRepository dashboardRepository;
     private final StatisticsRepository statisticsRepository;
 
+    @Async
     public void updateStatistics(Survey survey) {
         User owner = survey.getOwner();
         Period period = survey.getPeriod();
