@@ -17,6 +17,7 @@ import lombok.Getter;
 public abstract class DashboardComponent {
 
     protected final DashboardType dashboardType;
+    protected final String questionId;
 
     public abstract void calculate(Statistics statistics);
 
