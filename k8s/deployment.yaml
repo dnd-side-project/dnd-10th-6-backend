@@ -18,6 +18,13 @@ spec:
       containers:
         - name: "namui-wiki"
           image: "ghcr.io/rlacksgus97/namui-wiki:7900533613"
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 1Gi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
           volumeMounts:
             - name: application-properties
               mountPath: /config
