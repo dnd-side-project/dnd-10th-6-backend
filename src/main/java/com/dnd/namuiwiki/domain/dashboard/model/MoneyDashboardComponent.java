@@ -11,8 +11,8 @@ public class MoneyDashboardComponent extends DashboardComponent {
     private long average;
     private long entireAverage;
 
-    public MoneyDashboardComponent(Statistics statistics, long entireAverage) {
-        super(DashboardType.MONEY);
+    public MoneyDashboardComponent(Statistics statistics, long entireAverage, String questionId) {
+        super(DashboardType.MONEY, questionId);
         calculate(statistics);
         this.entireAverage = entireAverage;
     }

@@ -12,8 +12,8 @@ import java.util.List;
 public class SadDashboardComponent extends DashboardComponent {
     private List<RatioDto> rank;
 
-    public SadDashboardComponent(Statistics statistics) {
-        super(DashboardType.SAD);
+    public SadDashboardComponent(Statistics statistics, String questionId) {
+        super(DashboardType.SAD, questionId);
         calculate(statistics);
     }
 
