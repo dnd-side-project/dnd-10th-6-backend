@@ -81,9 +81,9 @@ jobs:
       - name: Change config repo values.yaml
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.spec.template.spec.containers.[0].image = "${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}"' k8s/deployment.yaml
+          cmd: yq -i '.spec.template.spec.containers.[0].image = "${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}"' k8s/production/deployment.yaml
 
       - name: Deploy
         run: |
-          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/production/deployment.yaml
 
