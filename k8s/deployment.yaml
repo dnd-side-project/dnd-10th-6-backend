@@ -5,7 +5,7 @@ metadata:
   labels:
     app: "namui-wiki"
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: "namui-wiki"
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: "namui-wiki"
-          image: "ghcr.io/rlacksgus97/namui-wiki:7900533613"
+          image: "ghcr.io/rlacksgus97/namui-wiki:latest"
           resources:
             requests:
               cpu: 1000m

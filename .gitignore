@@ -39,3 +39,5 @@ out/
 ### application profiles ###
 application*.yml
 application.properties
+
+.DS_Store
