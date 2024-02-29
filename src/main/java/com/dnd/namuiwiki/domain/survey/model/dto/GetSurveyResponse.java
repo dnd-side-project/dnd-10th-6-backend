@@ -13,7 +13,9 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @AllArgsConstructor
@@ -48,14 +50,12 @@ public class GetSurveyResponse {
     }
 
     private static List<SingleQuestionAndAnswer> pairQuestionAndAnswer(Survey survey, List<Question> questions) {
-        var size = questions.size();
+        Map<String, Question> questionMap = new HashMap<>();
+        questions.forEach(question -> questionMap.put(question.getId(), question));
+
         var answers = survey.getAnswers();
         List<SingleQuestionAndAnswer> questionAndAnswerList = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            var question = questions.get(i);
-            var answer = answers.get(i);
-            questionAndAnswerList.add(SingleQuestionAndAnswer.from(question, answer));
-        }
+        answers.forEach(answer -> questionAndAnswerList.add(SingleQuestionAndAnswer.from(questionMap.get(answer.getQuestion().getId()), answer)));
         return questionAndAnswerList;
     }
 
