@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: "namui-wiki"
-          image: "ghcr.io/rlacksgus97/namui-wiki:latest"
+          image: ghcr.io/rlacksgus97/namui-wiki
           resources:
             requests:
               cpu: 1000m
