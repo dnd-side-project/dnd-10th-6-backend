@@ -9,57 +9,57 @@ import com.dnd.namuiwiki.domain.statistic.model.RatioStatistic;
 import com.dnd.namuiwiki.domain.statistic.model.Statistic;
 import com.dnd.namuiwiki.domain.statistic.model.Statistics;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 public class CharacterDashboardComponent extends DashboardComponent {
-
-    private boolean friendly;
-    private boolean similar;
-    private boolean mbti;
-    private boolean busy;
+    private List<Character> characters;
 
     public CharacterDashboardComponent(Statistics statistics) {
         super(DashboardType.CHARACTER);
+        this.characters = new ArrayList<>();
         calculate(statistics);
     }
 
     @Override
     public void calculate(Statistics statistics) {
         List<Statistic> character = statistics.getStatisticsByDashboardType(this.dashboardType);
-        character.forEach(statistic -> {
+        this.characters = character.stream().map(Character::from).toList();
+    }
+
+    @RequiredArgsConstructor
+    @Getter
+    static class Character {
+        private final String name;
+        private final boolean value;
+        private final String questionId;
+
+        private static Character from(Statistic statistic) {
             RatioStatistic ratioStatistic = (RatioStatistic) statistic;
             List<Legend> legends = ratioStatistic.getLegends();
             QuestionName questionName = ratioStatistic.getQuestionName();
 
-            switch (questionName) {
-                case FRIENDLINESS_LEVEL:
-                    this.friendly = getLegendByValue(legends, true).getCount() >=
-                            getLegendByValue(legends, false).getCount();
-                    break;
-                case PERSONALITY_TYPE:
-                    this.similar = getLegendByValue(legends, true).getCount() >=
-                            getLegendByValue(legends, false).getCount();
-                    break;
-                case MBTI_IMMERSION:
-                    this.mbti = getLegendByValue(legends, true).getCount() >=
-                            getLegendByValue(legends, false).getCount();
-                    break;
-                case WEEKEND_COMMITMENTS:
-                    this.busy = getLegendByValue(legends, true).getCount() >=
-                            getLegendByValue(legends, false).getCount();
-                    break;
-                default:
-                    break;
-            }
-        });
-    }
+            return new Character(
+                    questionName.name(),
+                    getCharacterRatioResult(legends),
+                    statistic.getQuestionId()
+            );
+        }
 
-    private Legend getLegendByValue(List<Legend> legends, boolean value) {
-        return legends.stream()
-                .filter(legend -> value == (boolean) legend.getValue())
-                .findFirst().orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INTERNAL_ERROR));
+        private static Legend getLegendByValue(List<Legend> legends, boolean value) {
+            return legends.stream()
+                    .filter(legend -> value == (boolean) legend.getValue())
+                    .findFirst()
+                    .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INTERNAL_ERROR));
+        }
+
+        private static boolean getCharacterRatioResult(List<Legend> legends) {
+            return getLegendByValue(legends, true).getCount() >=
+                    getLegendByValue(legends, false).getCount();
+        }
     }
 
 }
