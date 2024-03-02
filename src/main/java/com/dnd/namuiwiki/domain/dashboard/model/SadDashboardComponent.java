@@ -10,10 +10,13 @@ import java.util.List;
 
 @Getter
 public class SadDashboardComponent extends DashboardComponent {
+    private final String questionId;
     private List<RatioDto> rank;
 
     public SadDashboardComponent(Statistics statistics, String questionId) {
-        super(DashboardType.SAD, questionId);
+        super(DashboardType.SAD);
+        this.questionId = questionId;
+
         calculate(statistics);
     }
 

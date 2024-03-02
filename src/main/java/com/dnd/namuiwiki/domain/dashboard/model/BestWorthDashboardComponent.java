@@ -10,10 +10,13 @@ import java.util.List;
 
 @Getter
 public class BestWorthDashboardComponent extends DashboardComponent {
+    private final String questionId;
     private List<RatioDto> rank;
 
     public BestWorthDashboardComponent(Statistics statistics, String questionId) {
-        super(DashboardType.BEST_WORTH, questionId);
+        super(DashboardType.BEST_WORTH);
+        this.questionId = questionId;
+
         calculate(statistics);
     }
 

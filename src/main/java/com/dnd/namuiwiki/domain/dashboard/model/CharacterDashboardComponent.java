@@ -20,8 +20,8 @@ public class CharacterDashboardComponent extends DashboardComponent {
     private boolean mbti;
     private boolean busy;
 
-    public CharacterDashboardComponent(Statistics statistics, String questionId) {
-        super(DashboardType.CHARACTER, questionId);
+    public CharacterDashboardComponent(Statistics statistics) {
+        super(DashboardType.CHARACTER);
         calculate(statistics);
     }
 
