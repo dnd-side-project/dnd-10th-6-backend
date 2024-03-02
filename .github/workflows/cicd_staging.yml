@@ -79,5 +79,5 @@ jobs:
 
       - name: Deploy
         run: |
-          kubectl apply -f k8s/staging/deployment.yaml
+          kubectl rollout restart deployment stg-namui-wiki
 
