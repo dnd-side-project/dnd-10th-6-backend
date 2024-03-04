@@ -55,7 +55,6 @@ public class Survey extends BaseTimeEntity {
     @Getter
     @Builder
     @NoArgsConstructor
-    @AllArgsConstructor
     public static class Answer {
 
         @DocumentReference(collection = "questions", lazy = true)
@@ -64,7 +63,7 @@ public class Survey extends BaseTimeEntity {
         private Object answer;
         private String reason;
 
-        public Answer(QuestionDto question, AnswerType type, Object answer, String reason) {
+        public Answer(Question question, AnswerType type, Object answer, String reason) {
             validateAnswerType(question.getType(), type);
             validateReasonRequired(question.isReasonRequired(), reason);
             boolean shouldBeNumericAnswer = question.getType().isNumericType() && type.isManual();
@@ -80,7 +79,7 @@ public class Survey extends BaseTimeEntity {
                 this.answer = answer;
             }
 
-            this.question = question.toEntity();
+            this.question = question;
             this.type = type;
             this.reason = reason;
         }

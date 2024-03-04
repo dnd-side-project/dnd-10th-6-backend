@@ -2,6 +2,7 @@ package com.dnd.namuiwiki.domain.survey.model;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.domain.question.dto.QuestionDto;
+import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionType;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.AnswerType;
@@ -20,8 +21,8 @@ class SurveyAnswerTest {
     void size() {
         // given
         Survey survey = Survey.builder().answers(List.of(
-                        new Survey.Answer(QuestionDto.builder().id("questionId").options(List.of()).type(QuestionType.OX).build(), AnswerType.OPTION, "O", null),
-                        new Survey.Answer(QuestionDto.builder().id("questionId").options(List.of()).type(QuestionType.SHORT_ANSWER).build(), AnswerType.MANUAL, "답변", null)
+                        new Survey.Answer(Question.builder().id("questionId").type(QuestionType.OX).build(), AnswerType.OPTION, "O", null),
+                        new Survey.Answer(Question.builder().id("questionId").type(QuestionType.SHORT_ANSWER).build(), AnswerType.MANUAL, "답변", null)
                 ))
                 .build();
 
@@ -36,7 +37,7 @@ class SurveyAnswerTest {
     @DisplayName("OX 문항에서 answer.type이 'OPTION'이 아닐 경우 에러가 발생한다.")
     void throwExceptionIfAnswerTypeIsNotOption() {
         // given
-        QuestionDto question = QuestionDto.builder().type(QuestionType.OX).build();
+        Question question = Question.builder().type(QuestionType.OX).build();
         AnswerType answerType = AnswerType.MANUAL;
 
         // then
@@ -48,7 +49,7 @@ class SurveyAnswerTest {
     @DisplayName("SHORT_ANSWER 문항에서 answer.type이 'MANUAL'이 아닐 경우 에러가 발생한다.")
     void throwExceptionIfAnswerTypeIsNotManual() {
         // given
-        QuestionDto question = QuestionDto.builder().type(QuestionType.SHORT_ANSWER).build();
+        Question question = Question.builder().type(QuestionType.SHORT_ANSWER).build();
         AnswerType answerType = AnswerType.OPTION;
 
         // then

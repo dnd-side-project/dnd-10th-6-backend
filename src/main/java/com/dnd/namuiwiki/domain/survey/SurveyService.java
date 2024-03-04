@@ -8,7 +8,6 @@ import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.option.OptionRepository;
 import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.QuestionRepository;
-import com.dnd.namuiwiki.domain.question.dto.QuestionDto;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.statistic.StatisticsService;
 import com.dnd.namuiwiki.domain.survey.model.dto.AnswerDto;
@@ -69,7 +68,7 @@ public class SurveyService {
         return answersRequest.stream().map(answer -> {
             Question question = getQuestionById(answer.getQuestionId());
             AnswerType answerType = AnswerType.valueOf(answer.getType());
-            var surveyAnswer = new Survey.Answer(QuestionDto.from(question), answerType, answer.getAnswer(), answer.getReason());
+            var surveyAnswer = new Survey.Answer(question, answerType, answer.getAnswer(), answer.getReason());
 
             if (answerType.isOption()) {
                 String optionId = answer.getAnswer().toString();
