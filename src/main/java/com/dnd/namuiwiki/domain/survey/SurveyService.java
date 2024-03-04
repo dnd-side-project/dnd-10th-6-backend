@@ -5,11 +5,14 @@ import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.jwt.JwtProvider;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
+import com.dnd.namuiwiki.domain.option.OptionRepository;
 import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.QuestionRepository;
+import com.dnd.namuiwiki.domain.question.dto.QuestionDto;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.statistic.StatisticsService;
 import com.dnd.namuiwiki.domain.survey.model.SurveyAnswer;
+import com.dnd.namuiwiki.domain.survey.model.dto.AnswerDto;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyRequest;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyResponse;
 import com.dnd.namuiwiki.domain.survey.model.dto.GetAnswersByQuestionResponse;
@@ -38,10 +41,12 @@ public class SurveyService {
     private final UserRepository userRepository;
     private final SurveyRepository surveyRepository;
     private final QuestionRepository questionRepository;
+    private final OptionRepository optionRepository;
     private final JwtProvider jwtProvider;
     private final StatisticsService statisticsService;
 
-    public CreateSurveyResponse createSurvey(CreateSurveyRequest request, SurveyAnswer surveyAnswer, String accessToken) {
+    public CreateSurveyResponse createSurvey(CreateSurveyRequest request, String accessToken) {
+        SurveyAnswer surveyAnswer = getSurveyAnswers(request.getAnswers());
         User owner = getUserByWikiId(request.getOwner());
         User sender = getUserByAccessToken(accessToken);
 
@@ -59,6 +64,38 @@ public class SurveyService {
         statisticsService.updateStatistics(survey);
 
         return new CreateSurveyResponse(survey.getId());
+    }
+
+    public SurveyAnswer getSurveyAnswers(List<AnswerDto> answersRequest) {
+        var answers = answersRequest.stream().map(answer -> {
+            Question question = getQuestionById(answer.getQuestionId());
+            AnswerType answerType = AnswerType.valueOf(answer.getType());
+            var surveyAnswer = SurveyAnswer.create(
+                    QuestionDto.from(question), answerType, answer.getAnswer(), answer.getReason());
+
+            if (answerType.isOption()) {
+                String optionId = answer.getAnswer().toString();
+                validateOptionExists(optionId, question);
+            }
+
+            return surveyAnswer;
+        }).toList();
+
+        return new SurveyAnswer(answers);
+    }
+
+    private void validateOptionExists(String optionId, Question question) {
+        if (!optionRepository.existsById(optionId)) {
+            throw new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID);
+        }
+        if (!question.getOptions().containsKey(optionId)) {
+            throw new ApplicationErrorException(ApplicationErrorType.CONFLICT_OPTION_QUESTION);
+        }
+    }
+
+    private Question getQuestionById(String questionId) {
+        return questionRepository.findById(questionId)
+                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_ID));
     }
 
     public PageableDto<ReceivedSurveyDto> getReceivedSurveys(TokenUserInfoDto tokenUserInfoDto, int pageNo, int pageSize) {

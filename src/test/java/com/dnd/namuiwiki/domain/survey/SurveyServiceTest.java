@@ -3,9 +3,9 @@ package com.dnd.namuiwiki.domain.survey;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.domain.jwt.JwtProvider;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
+import com.dnd.namuiwiki.domain.option.OptionRepository;
 import com.dnd.namuiwiki.domain.question.QuestionRepository;
 import com.dnd.namuiwiki.domain.statistic.StatisticsService;
-import com.dnd.namuiwiki.domain.survey.model.SurveyAnswer;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyRequest;
 import com.dnd.namuiwiki.domain.user.UserRepository;
 import com.dnd.namuiwiki.domain.user.entity.User;
@@ -32,18 +32,17 @@ class SurveyServiceTest {
     @Mock
     private QuestionRepository questionRepository;
     @Mock
+    private OptionRepository optionRepository;
+    @Mock
     private JwtProvider jwtProvider;
     @Mock
     private StatisticsService statisticsService;
 
     private SurveyService surveyService;
 
-    SurveyServiceTest() {
-    }
-
     @BeforeEach
     void beforeEach() {
-        surveyService = new SurveyService(userRepository, surveyRepository, questionRepository, jwtProvider, statisticsService);
+        surveyService = new SurveyService(userRepository, surveyRepository, questionRepository, optionRepository, jwtProvider, statisticsService);
     }
 
     @Test
@@ -53,8 +52,7 @@ class SurveyServiceTest {
         String ownerWikiId = "ownerWikiId";
         String senderWikiId = "senderWikiId";
         String accessToken = "accessToken";
-        CreateSurveyRequest request = CreateSurveyRequest.builder().owner(ownerWikiId).build();
-        SurveyAnswer surveyAnswer = new SurveyAnswer(List.of());
+        CreateSurveyRequest request = CreateSurveyRequest.builder().answers(List.of()).owner(ownerWikiId).build();
         User user = User.builder().wikiId(ownerWikiId).build();
 
         given(jwtProvider.parseToken(eq(accessToken))).willReturn(new TokenUserInfoDto(senderWikiId));
@@ -62,7 +60,7 @@ class SurveyServiceTest {
         given(userRepository.findByWikiId(eq(ownerWikiId))).willReturn(Optional.ofNullable(user));
 
         // when, then
-        assertThatThrownBy(() -> surveyService.createSurvey(request, surveyAnswer, accessToken))
+        assertThatThrownBy(() -> surveyService.createSurvey(request, accessToken))
                 .isInstanceOf(ApplicationErrorException.class)
                 .hasMessageMatching("자신에게 설문을 보낼 수 없습니다.");
     }
