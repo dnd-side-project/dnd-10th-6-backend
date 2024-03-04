@@ -3,6 +3,7 @@ package com.dnd.namuiwiki.domain.survey.model;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.domain.question.dto.QuestionDto;
 import com.dnd.namuiwiki.domain.question.type.QuestionType;
+import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.AnswerType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,8 +20,8 @@ class SurveyAnswerTest {
     void size() {
         // given
         SurveyAnswer surveyAnswer = new SurveyAnswer(List.of(
-                SurveyAnswer.create(QuestionDto.builder().type(QuestionType.OX).build(), AnswerType.OPTION, "O", null),
-                SurveyAnswer.create(QuestionDto.builder().type(QuestionType.SHORT_ANSWER).build(), AnswerType.MANUAL, "답변", null)
+                new Survey.Answer(QuestionDto.builder().id("questionId").options(List.of()).type(QuestionType.OX).build(), AnswerType.OPTION, "O", null),
+                new Survey.Answer(QuestionDto.builder().id("questionId").options(List.of()).type(QuestionType.SHORT_ANSWER).build(), AnswerType.MANUAL, "답변", null)
         ));
 
         // when
@@ -38,7 +39,7 @@ class SurveyAnswerTest {
         AnswerType answerType = AnswerType.MANUAL;
 
         // then
-        assertThatThrownBy(() -> SurveyAnswer.create(question, answerType, null, null))
+        assertThatThrownBy(() -> new Survey.Answer(question, answerType, null, null))
                 .isInstanceOf(ApplicationErrorException.class);
     }
 
@@ -50,7 +51,7 @@ class SurveyAnswerTest {
         AnswerType answerType = AnswerType.OPTION;
 
         // then
-        assertThatThrownBy(() -> SurveyAnswer.create(question, answerType, null, null))
+        assertThatThrownBy(() -> new Survey.Answer(question, answerType, null, null))
                 .isInstanceOf(ApplicationErrorException.class);
     }
 

@@ -91,7 +91,7 @@ class SurveyServiceTest {
             // given
             QuestionType questionType = QuestionType.OX;
             Option option = Option.builder().id("optionId").build();
-            Question question = Question.builder().type(questionType).options(Map.of(option.getId(), option)).build();
+            Question question = Question.builder().id("questionId").type(questionType).options(Map.of(option.getId(), option)).build();
             var answers = List.of(answerOfOptionType);
 
             given(optionRepository.existsById(any(String.class))).willReturn(true);
@@ -109,7 +109,7 @@ class SurveyServiceTest {
         void throwExceptionIfOptionDocuementNotExists() {
             // given
             QuestionType questionType = QuestionType.OX;
-            Question question = Question.builder().type(questionType).options(Map.of()).build();
+            Question question = Question.builder().id("questionId").type(questionType).options(Map.of()).build();
             var answers = List.of(answerOfOptionType);
 
             given(optionRepository.existsById(any(String.class))).willReturn(false);
@@ -142,7 +142,7 @@ class SurveyServiceTest {
             QuestionType questionType = QuestionType.OX;
             Option option = Option.builder().id("notOptionId").build();
             Option realOption = Option.builder().id("realOptionId").build();
-            Question question = Question.builder().type(questionType).options(Map.of(realOption.getId(), realOption)).build();
+            Question question = Question.builder().id("questionId").type(questionType).options(Map.of(realOption.getId(), realOption)).build();
             var answers = List.of(answerOfOptionType);
 
             given(optionRepository.existsById(any(String.class))).willReturn(true);
@@ -170,7 +170,7 @@ class SurveyServiceTest {
         void answerIsPlainText() {
             // given
             QuestionType questionType = QuestionType.SHORT_ANSWER;
-            Question question = Question.builder().type(questionType).options(Map.of()).build();
+            Question question = Question.builder().id("questionId").type(questionType).options(Map.of()).build();
             var answers = List.of(answerOfManualType);
 
             given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
@@ -188,7 +188,7 @@ class SurveyServiceTest {
         void sizeOfOptionListIsZero() {
             // given
             QuestionType questionType = QuestionType.SHORT_ANSWER;
-            Question question = Question.builder().type(questionType).options(Map.of()).build();
+            Question question = Question.builder().id("questionId").type(questionType).options(Map.of()).build();
             var answers = List.of(answerOfManualType);
 
             given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
@@ -212,7 +212,7 @@ class SurveyServiceTest {
         void typeOfAnswerShouldBeInteger() {
             // given
             QuestionType questionType = QuestionType.NUMERIC_CHOICE;
-            Question question = Question.builder().type(questionType).options(Map.of()).name(QuestionName.BORROWING_LIMIT).build();
+            Question question = Question.builder().id("questionId").type(questionType).options(Map.of()).name(QuestionName.BORROWING_LIMIT).build();
             int intAnswer = 100000;
             var answers = List.of(AnswerDto.builder()
                     .type("MANUAL")

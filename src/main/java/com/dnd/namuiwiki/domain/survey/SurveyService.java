@@ -70,8 +70,7 @@ public class SurveyService {
         var answers = answersRequest.stream().map(answer -> {
             Question question = getQuestionById(answer.getQuestionId());
             AnswerType answerType = AnswerType.valueOf(answer.getType());
-            var surveyAnswer = SurveyAnswer.create(
-                    QuestionDto.from(question), answerType, answer.getAnswer(), answer.getReason());
+            var surveyAnswer = new Survey.Answer(QuestionDto.from(question), answerType, answer.getAnswer(), answer.getReason());
 
             if (answerType.isOption()) {
                 String optionId = answer.getAnswer().toString();
