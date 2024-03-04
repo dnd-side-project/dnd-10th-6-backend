@@ -79,6 +79,12 @@ public class SurveyService {
         }).toList();
     }
 
+    private void validateNotFromMe(User owner, User sender) {
+        if (owner.equals(sender)) {
+            throw new ApplicationErrorException(ApplicationErrorType.CANNOT_SEND_SURVEY_TO_MYSELF);
+        }
+    }
+
     private void validateOptionExists(String optionId, Question question) {
         if (!optionRepository.existsById(optionId)) {
             throw new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID);
@@ -86,11 +92,6 @@ public class SurveyService {
         if (!question.getOptions().containsKey(optionId)) {
             throw new ApplicationErrorException(ApplicationErrorType.CONFLICT_OPTION_QUESTION);
         }
-    }
-
-    private Question getQuestionById(String questionId) {
-        return questionRepository.findById(questionId)
-                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_ID));
     }
 
     public PageableDto<ReceivedSurveyDto> getReceivedSurveys(TokenUserInfoDto tokenUserInfoDto, int pageNo, int pageSize) {
@@ -111,27 +112,6 @@ public class SurveyService {
         Page<SentSurveyDto> surveys = surveyRepository.findBySender(user, pageable)
                 .map(SentSurveyDto::from);
         return PageableDto.create(surveys);
-    }
-
-    private void validateNotFromMe(User owner, User sender) {
-        if (owner.equals(sender)) {
-            throw new ApplicationErrorException(ApplicationErrorType.CANNOT_SEND_SURVEY_TO_MYSELF);
-        }
-    }
-
-    private User getUserByWikiId(String wikiId) {
-        return userRepository.findByWikiId(wikiId)
-                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
-    }
-
-    private User getUserByAccessToken(String accessToken) {
-        if (accessToken == null || accessToken.isEmpty()) {
-            return null;
-        }
-
-        TokenUserInfoDto tokenUserInfoDto = jwtProvider.parseToken(accessToken);
-        return userRepository.findByWikiId(tokenUserInfoDto.getWikiId())
-                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
     }
 
     public GetSurveyResponse getSurvey(String surveyId) {
@@ -194,5 +174,25 @@ public class SurveyService {
         Option option = question.getOption(answer.getAnswer().toString())
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID));
         return option.getText();
+    }
+
+    private Question getQuestionById(String questionId) {
+        return questionRepository.findById(questionId)
+                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_ID));
+    }
+
+    private User getUserByWikiId(String wikiId) {
+        return userRepository.findByWikiId(wikiId)
+                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
+    }
+
+    private User getUserByAccessToken(String accessToken) {
+        if (accessToken == null || accessToken.isEmpty()) {
+            return null;
+        }
+
+        TokenUserInfoDto tokenUserInfoDto = jwtProvider.parseToken(accessToken);
+        return userRepository.findByWikiId(tokenUserInfoDto.getWikiId())
+                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
     }
 }
