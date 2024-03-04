@@ -11,7 +11,6 @@ import com.dnd.namuiwiki.domain.question.QuestionRepository;
 import com.dnd.namuiwiki.domain.question.dto.QuestionDto;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.statistic.StatisticsService;
-import com.dnd.namuiwiki.domain.survey.model.SurveyAnswer;
 import com.dnd.namuiwiki.domain.survey.model.dto.AnswerDto;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyRequest;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyResponse;
@@ -46,7 +45,7 @@ public class SurveyService {
     private final StatisticsService statisticsService;
 
     public CreateSurveyResponse createSurvey(CreateSurveyRequest request, String accessToken) {
-        SurveyAnswer surveyAnswer = getSurveyAnswers(request.getAnswers());
+        List<Survey.Answer> surveyAnswer = getSurveyAnswers(request.getAnswers());
         User owner = getUserByWikiId(request.getOwner());
         User sender = getUserByAccessToken(accessToken);
 
@@ -58,7 +57,7 @@ public class SurveyService {
                 .senderName(request.getSenderName())
                 .period(Period.valueOf(request.getPeriod()))
                 .relation(Relation.valueOf(request.getRelation()))
-                .answers(surveyAnswer.toEntity())
+                .answers(surveyAnswer)
                 .build());
 
         statisticsService.updateStatistics(survey);
@@ -66,8 +65,8 @@ public class SurveyService {
         return new CreateSurveyResponse(survey.getId());
     }
 
-    public SurveyAnswer getSurveyAnswers(List<AnswerDto> answersRequest) {
-        var answers = answersRequest.stream().map(answer -> {
+    public List<Survey.Answer> getSurveyAnswers(List<AnswerDto> answersRequest) {
+        return answersRequest.stream().map(answer -> {
             Question question = getQuestionById(answer.getQuestionId());
             AnswerType answerType = AnswerType.valueOf(answer.getType());
             var surveyAnswer = new Survey.Answer(QuestionDto.from(question), answerType, answer.getAnswer(), answer.getReason());
@@ -79,8 +78,6 @@ public class SurveyService {
 
             return surveyAnswer;
         }).toList();
-
-        return new SurveyAnswer(answers);
     }
 
     private void validateOptionExists(String optionId, Question question) {

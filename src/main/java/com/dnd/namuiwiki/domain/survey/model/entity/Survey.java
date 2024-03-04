@@ -44,6 +44,14 @@ public class Survey extends BaseTimeEntity {
 
     private List<Answer> answers;
 
+    public Survey.Answer getAnswer(int index) {
+        return answers.get(index);
+    }
+
+    public int size() {
+        return answers.size();
+    }
+
     @Getter
     @Builder
     @NoArgsConstructor
@@ -81,15 +89,6 @@ public class Survey extends BaseTimeEntity {
             if (!(0 <= longAnswer && longAnswer <= 1_000_000_000)) {
                 throw new ApplicationErrorException(ApplicationErrorType.INVALID_BORROWING_LIMIT);
             }
-        }
-
-        public Survey.Answer toEntity() {
-            return Survey.Answer.builder()
-                    .question(question)
-                    .type(type)
-                    .answer(answer)
-                    .reason(reason)
-                    .build();
         }
 
         private void validateAnswerObjectType(Object answer, Class<?> clazz) {

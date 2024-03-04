@@ -19,13 +19,14 @@ class SurveyAnswerTest {
     @DisplayName("SurveyAnswer의 size 메서드 테스트")
     void size() {
         // given
-        SurveyAnswer surveyAnswer = new SurveyAnswer(List.of(
-                new Survey.Answer(QuestionDto.builder().id("questionId").options(List.of()).type(QuestionType.OX).build(), AnswerType.OPTION, "O", null),
-                new Survey.Answer(QuestionDto.builder().id("questionId").options(List.of()).type(QuestionType.SHORT_ANSWER).build(), AnswerType.MANUAL, "답변", null)
-        ));
+        Survey survey = Survey.builder().answers(List.of(
+                        new Survey.Answer(QuestionDto.builder().id("questionId").options(List.of()).type(QuestionType.OX).build(), AnswerType.OPTION, "O", null),
+                        new Survey.Answer(QuestionDto.builder().id("questionId").options(List.of()).type(QuestionType.SHORT_ANSWER).build(), AnswerType.MANUAL, "답변", null)
+                ))
+                .build();
 
         // when
-        int size = surveyAnswer.size();
+        int size = survey.size();
 
         // then
         assertThat(size).isEqualTo(2);

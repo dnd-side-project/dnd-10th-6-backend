@@ -10,9 +10,9 @@ import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.question.type.QuestionType;
 import com.dnd.namuiwiki.domain.statistic.StatisticsService;
-import com.dnd.namuiwiki.domain.survey.model.SurveyAnswer;
 import com.dnd.namuiwiki.domain.survey.model.dto.AnswerDto;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyRequest;
+import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.user.UserRepository;
 import com.dnd.namuiwiki.domain.user.entity.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -98,7 +98,7 @@ class SurveyServiceTest {
             given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
 
             // when
-            SurveyAnswer surveyAnswer = surveyService.getSurveyAnswers(answers);
+            List<Survey.Answer> surveyAnswer = surveyService.getSurveyAnswers(answers);
 
             // then
             assertThat(surveyAnswer.size()).isEqualTo(1);
