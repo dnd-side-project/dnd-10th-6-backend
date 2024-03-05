@@ -92,16 +92,15 @@ class SurveyServiceTest {
             QuestionType questionType = QuestionType.OX;
             Option option = Option.builder().id("optionId").build();
             Question question = Question.builder().id("questionId").type(questionType).options(Map.of(option.getId(), option)).build();
-            var answers = List.of(answerOfOptionType);
 
             given(optionRepository.existsById(any(String.class))).willReturn(true);
             given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
 
             // when
-            List<Survey.Answer> surveyAnswer = surveyService.getSurveyAnswers(answers);
+            Survey.Answer surveyAnswer = surveyService.convertAnswer(answerOfOptionType);
 
             // then
-            assertThat(surveyAnswer.size()).isEqualTo(1);
+            assertThat(surveyAnswer.getAnswer()).isEqualTo(option.getId());
         }
 
         @Test
@@ -110,13 +109,12 @@ class SurveyServiceTest {
             // given
             QuestionType questionType = QuestionType.OX;
             Question question = Question.builder().id("questionId").type(questionType).options(Map.of()).build();
-            var answers = List.of(answerOfOptionType);
 
             given(optionRepository.existsById(any(String.class))).willReturn(false);
             given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
 
             // then
-            assertThatThrownBy(() -> surveyService.getSurveyAnswers(answers))
+            assertThatThrownBy(() -> surveyService.convertAnswer(answerOfOptionType))
                     .isInstanceOf(ApplicationErrorException.class)
                     .hasMessageMatching("옵션을 찾을 수 없습니다.");
         }
@@ -125,12 +123,10 @@ class SurveyServiceTest {
         @DisplayName("questionId에 해당하는 Question이 없을 경우 에러 발생")
         void throwExceptionIfQuestionDocuementNotExists() {
             // given
-            var answers = List.of(answerOfOptionType);
-
             given(questionRepository.findById(any(String.class))).willReturn(Optional.empty());
 
             // then
-            assertThatThrownBy(() -> surveyService.getSurveyAnswers(answers))
+            assertThatThrownBy(() -> surveyService.convertAnswer(answerOfOptionType))
                     .isInstanceOf(ApplicationErrorException.class)
                     .hasMessageMatching("문항을 찾을 수 없습니다.");
         }
@@ -149,7 +145,7 @@ class SurveyServiceTest {
             given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
 
             // then
-            assertThatThrownBy(() -> surveyService.getSurveyAnswers(answers))
+            assertThatThrownBy(() -> surveyService.convertAnswer(answerOfOptionType))
                     .isInstanceOf(ApplicationErrorException.class)
                     .hasMessageMatching("문항에 해당 옵션이 없습니다.");
         }
@@ -176,7 +172,7 @@ class SurveyServiceTest {
             given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
 
             // when
-            var answer = surveyService.getSurveyAnswers(answers).get(0);
+            Survey.Answer answer = surveyService.convertAnswer(answerOfManualType);
 
             // then
             String expected = "직접 작성한 답변";
@@ -194,7 +190,7 @@ class SurveyServiceTest {
             given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
 
             // when
-            var answer = surveyService.getSurveyAnswers(answers).get(0);
+            Survey.Answer answer = surveyService.convertAnswer(answerOfManualType);
 
             // then
             int expected = 0;
@@ -214,16 +210,15 @@ class SurveyServiceTest {
             QuestionType questionType = QuestionType.NUMERIC_CHOICE;
             Question question = Question.builder().id("questionId").type(questionType).options(Map.of()).name(QuestionName.BORROWING_LIMIT).build();
             int intAnswer = 100000;
-            var answers = List.of(AnswerDto.builder()
-                    .type("MANUAL")
-                    .questionId("questionId")
-                    .answer(intAnswer)
-                    .build());
 
             given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
 
             // when
-            var answer = surveyService.getSurveyAnswers(answers).get(0);
+            Survey.Answer answer = surveyService.convertAnswer(AnswerDto.builder()
+                    .type("MANUAL")
+                    .questionId("questionId")
+                    .answer(intAnswer)
+                    .build());
 
             // then
             assertThat(answer.getAnswer() instanceof Long).isTrue();
@@ -236,16 +231,16 @@ class SurveyServiceTest {
             QuestionType questionType = QuestionType.NUMERIC_CHOICE;
             Question question = Question.builder().type(questionType).options(Map.of()).build();
             String stringAnswer = "100000";
-            var answers = List.of(AnswerDto.builder()
+            var answer = AnswerDto.builder()
                     .type("MANUAL")
                     .questionId("questionId")
                     .answer(stringAnswer)
-                    .build());
+                    .build();
 
             given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
 
             // then
-            assertThatThrownBy(() -> surveyService.getSurveyAnswers(answers))
+            assertThatThrownBy(() -> surveyService.convertAnswer(answer))
                     .isInstanceOf(ApplicationErrorException.class)
                     .hasMessageMatching("정수형 답변이 아닙니다.");
         }

@@ -44,7 +44,7 @@ public class SurveyService {
     private final StatisticsService statisticsService;
 
     public CreateSurveyResponse createSurvey(CreateSurveyRequest request, String accessToken) {
-        List<Survey.Answer> surveyAnswer = getSurveyAnswers(request.getAnswers());
+        List<Survey.Answer> surveyAnswer = request.getAnswers().stream().map(this::convertAnswer).toList();
         User owner = getUserByWikiId(request.getOwner());
         User sender = getUserByAccessToken(accessToken);
 
@@ -64,19 +64,17 @@ public class SurveyService {
         return new CreateSurveyResponse(survey.getId());
     }
 
-    public List<Survey.Answer> getSurveyAnswers(List<AnswerDto> answersRequest) {
-        return answersRequest.stream().map(answer -> {
-            Question question = getQuestionById(answer.getQuestionId());
-            AnswerType answerType = AnswerType.valueOf(answer.getType());
-            var surveyAnswer = new Survey.Answer(question, answerType, answer.getAnswer(), answer.getReason());
+    public Survey.Answer convertAnswer(AnswerDto answer) {
+        Question question = getQuestionById(answer.getQuestionId());
+        AnswerType answerType = AnswerType.valueOf(answer.getType());
+        var surveyAnswer = new Survey.Answer(question, answerType, answer.getAnswer(), answer.getReason());
 
-            if (answerType.isOption()) {
-                String optionId = answer.getAnswer().toString();
-                validateOptionExists(optionId, question);
-            }
+        if (answerType.isOption()) {
+            String optionId = answer.getAnswer().toString();
+            validateOptionExists(optionId, question);
+        }
 
-            return surveyAnswer;
-        }).toList();
+        return surveyAnswer;
     }
 
     private void validateNotFromMe(User owner, User sender) {
