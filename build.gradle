@@ -28,9 +28,13 @@ repositories {
 
 dependencies {
     /* spring starter */
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
+    /* micrometer */
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 
     /* lombok */
     compileOnly 'org.projectlombok:lombok'
