@@ -7,7 +7,7 @@ import com.dnd.namuiwiki.domain.dashboard.model.entity.Dashboard;
 import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.statistic.model.BorrowingLimitEntireStatistic;
-import com.dnd.namuiwiki.domain.statistic.model.Statistics;
+import com.dnd.namuiwiki.domain.dashboard.model.Statistics;
 import com.dnd.namuiwiki.domain.statistic.model.entity.PopulationStatistic;
 import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;

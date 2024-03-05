@@ -1,4 +1,4 @@
-package com.dnd.namuiwiki.domain.statistic.model;
+package com.dnd.namuiwiki.domain.dashboard.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

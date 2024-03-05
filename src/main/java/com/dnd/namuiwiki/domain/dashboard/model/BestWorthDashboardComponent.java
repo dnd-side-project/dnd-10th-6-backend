@@ -2,8 +2,6 @@ package com.dnd.namuiwiki.domain.dashboard.model;
 
 import com.dnd.namuiwiki.domain.dashboard.model.dto.RatioDto;
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
-import com.dnd.namuiwiki.domain.statistic.model.RatioStatistic;
-import com.dnd.namuiwiki.domain.statistic.model.Statistics;
 import lombok.Getter;
 
 import java.util.List;

@@ -1,7 +1,6 @@
 package com.dnd.namuiwiki.domain.dashboard.model;
 
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
-import com.dnd.namuiwiki.domain.statistic.model.Statistics;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

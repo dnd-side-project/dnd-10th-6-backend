@@ -1,7 +1,7 @@
 package com.dnd.namuiwiki.domain.dashboard.model.entity;
 
 import com.dnd.namuiwiki.common.model.BaseTimeEntity;
-import com.dnd.namuiwiki.domain.statistic.model.Statistics;
+import com.dnd.namuiwiki.domain.dashboard.model.Statistics;
 import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
