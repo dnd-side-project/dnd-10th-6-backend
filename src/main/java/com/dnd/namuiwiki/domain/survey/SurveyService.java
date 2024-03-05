@@ -18,6 +18,7 @@ import com.dnd.namuiwiki.domain.survey.model.dto.GetSurveyResponse;
 import com.dnd.namuiwiki.domain.survey.model.dto.ReceivedSurveyDto;
 import com.dnd.namuiwiki.domain.survey.model.dto.SentSurveyDto;
 import com.dnd.namuiwiki.domain.survey.model.dto.SingleAnswerWithSurveyDetailDto;
+import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.AnswerType;
 import com.dnd.namuiwiki.domain.survey.type.Period;
@@ -48,7 +49,7 @@ public class SurveyService {
         User sender = getUserByAccessToken(accessToken);
         validateNotFromMe(owner, sender);
 
-        List<Survey.Answer> surveyAnswer = request.getAnswers().stream().map(this::convertAnswer).toList();
+        List<Answer> surveyAnswer = request.getAnswers().stream().map(this::convertAnswer).toList();
         Survey survey = surveyRepository.save(Survey.builder()
                 .owner(owner)
                 .sender(sender)
@@ -63,10 +64,10 @@ public class SurveyService {
         return new CreateSurveyResponse(survey.getId());
     }
 
-    public Survey.Answer convertAnswer(AnswerDto answer) {
+    public Answer convertAnswer(AnswerDto answer) {
         Question question = getQuestionById(answer.getQuestionId());
         AnswerType answerType = AnswerType.valueOf(answer.getType());
-        var surveyAnswer = new Survey.Answer(question, answerType, answer.getAnswer(), answer.getReason());
+        var surveyAnswer = new Answer(question, answerType, answer.getAnswer(), answer.getReason());
 
         if (answerType.isOption()) {
             String optionId = answer.getAnswer().toString();
@@ -164,7 +165,7 @@ public class SurveyService {
         return surveyRepository.findByOwner(owner, pageable);
     }
 
-    private String convertAnswerToText(Question question, Survey.Answer answer) {
+    private String convertAnswerToText(Question question, Answer answer) {
         if (answer.getType().equals(AnswerType.MANUAL)) {
             return answer.getAnswer().toString();
         }

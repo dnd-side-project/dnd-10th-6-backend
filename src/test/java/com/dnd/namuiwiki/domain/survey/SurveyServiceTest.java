@@ -12,7 +12,7 @@ import com.dnd.namuiwiki.domain.question.type.QuestionType;
 import com.dnd.namuiwiki.domain.statistic.StatisticsService;
 import com.dnd.namuiwiki.domain.survey.model.dto.AnswerDto;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyRequest;
-import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
+import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import com.dnd.namuiwiki.domain.user.UserRepository;
 import com.dnd.namuiwiki.domain.user.entity.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -97,7 +97,7 @@ class SurveyServiceTest {
             given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
 
             // when
-            Survey.Answer surveyAnswer = surveyService.convertAnswer(answerOfOptionType);
+            Answer surveyAnswer = surveyService.convertAnswer(answerOfOptionType);
 
             // then
             assertThat(surveyAnswer.getAnswer()).isEqualTo(option.getId());
@@ -172,7 +172,7 @@ class SurveyServiceTest {
             given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
 
             // when
-            Survey.Answer answer = surveyService.convertAnswer(answerOfManualType);
+            Answer answer = surveyService.convertAnswer(answerOfManualType);
 
             // then
             String expected = "직접 작성한 답변";
@@ -190,7 +190,7 @@ class SurveyServiceTest {
             given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
 
             // when
-            Survey.Answer answer = surveyService.convertAnswer(answerOfManualType);
+            Answer answer = surveyService.convertAnswer(answerOfManualType);
 
             // then
             int expected = 0;
@@ -214,7 +214,7 @@ class SurveyServiceTest {
             given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
 
             // when
-            Survey.Answer answer = surveyService.convertAnswer(AnswerDto.builder()
+            Answer answer = surveyService.convertAnswer(AnswerDto.builder()
                     .type("MANUAL")
                     .questionId("questionId")
                     .answer(intAnswer)

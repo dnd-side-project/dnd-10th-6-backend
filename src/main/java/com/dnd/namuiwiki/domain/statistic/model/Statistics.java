@@ -3,7 +3,7 @@ package com.dnd.namuiwiki.domain.statistic.model;
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.statistic.type.StatisticsType;
-import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
+import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -28,7 +28,7 @@ public class Statistics {
         return Optional.ofNullable(statistics.get(questionId));
     }
 
-    public void updateStatistics(List<Survey.Answer> answers) {
+    public void updateStatistics(List<Answer> answers) {
         answers.forEach(answer -> {
             Question question = answer.getQuestion();
             Statistic statistic = get(question.getId()).orElseGet(() -> createAndPut(question));

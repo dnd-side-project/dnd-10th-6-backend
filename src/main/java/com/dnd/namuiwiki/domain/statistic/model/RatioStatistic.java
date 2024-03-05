@@ -6,7 +6,7 @@ import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
-import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
+import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +47,7 @@ public class RatioStatistic extends Statistic {
     }
 
     @Override
-    public void updateStatistic(Survey.Answer answer) {
+    public void updateStatistic(Answer answer) {
         if (answer.getType().isManual()) {
             return;
         }

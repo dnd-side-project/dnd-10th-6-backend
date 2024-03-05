@@ -9,6 +9,7 @@ import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.statistic.model.BorrowingLimitEntireStatistic;
 import com.dnd.namuiwiki.domain.statistic.model.Statistics;
 import com.dnd.namuiwiki.domain.statistic.model.entity.PopulationStatistic;
+import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
@@ -49,20 +50,20 @@ public class StatisticsService {
                         .build());
     }
 
-    private void updateDashboards(User owner, Period period, Relation relation, List<Survey.Answer> statisticalAnswers) {
+    private void updateDashboards(User owner, Period period, Relation relation, List<Answer> statisticalAnswers) {
         updateDashboardByCategory(owner, null, null, statisticalAnswers);
         updateDashboardByCategory(owner, period, null, statisticalAnswers);
         updateDashboardByCategory(owner, null, relation, statisticalAnswers);
     }
 
-    private void updateDashboardByCategory(User owner, Period period, Relation relation, List<Survey.Answer> answers) {
+    private void updateDashboardByCategory(User owner, Period period, Relation relation, List<Answer> answers) {
         Dashboard dashboard = dashboardRepository.findByUserAndPeriodAndRelation(owner, period, relation)
                 .orElseGet(() -> {
                     Dashboard newDashboard = Dashboard.builder()
                             .user(owner)
                             .period(period)
                             .relation(relation)
-                            .statistics(Statistics.from(answers.stream().map(Survey.Answer::getQuestion).toList()))
+                            .statistics(Statistics.from(answers.stream().map(Answer::getQuestion).toList()))
                             .build();
                     return dashboardRepository.save(newDashboard);
                 });
@@ -70,8 +71,8 @@ public class StatisticsService {
         dashboardRepository.save(dashboard);
     }
 
-    private void updateBorrowingLimitStatistic(Period period, Relation relation, List<Survey.Answer> answers) {
-        Survey.Answer borroingLimitAnswer = answers.stream()
+    private void updateBorrowingLimitStatistic(Period period, Relation relation, List<Answer> answers) {
+        Answer borroingLimitAnswer = answers.stream()
                 .filter(answer -> answer.getQuestion().getName() == QuestionName.BORROWING_LIMIT)
                 .findFirst()
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_DATA_ARGUMENT));
