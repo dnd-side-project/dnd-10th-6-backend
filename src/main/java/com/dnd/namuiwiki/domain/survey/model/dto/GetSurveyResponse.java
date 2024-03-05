@@ -4,6 +4,7 @@ import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.entity.Question;
+import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.AnswerType;
 import com.dnd.namuiwiki.domain.survey.type.Period;
@@ -34,7 +35,7 @@ public class GetSurveyResponse {
         private Object value;
         private String reason;
 
-        static SingleQuestionAndAnswer from(Question question, Survey.Answer surveyAnswer) {
+        static SingleQuestionAndAnswer from(Question question, Answer surveyAnswer) {
             if (surveyAnswer.getType().equals(AnswerType.MANUAL)) {
                 return new SingleQuestionAndAnswer(question.getTitle(), surveyAnswer.getAnswer().toString(), surveyAnswer.getAnswer(), surveyAnswer.getReason());
             }
