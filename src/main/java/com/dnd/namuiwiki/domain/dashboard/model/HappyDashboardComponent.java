@@ -11,9 +11,12 @@ import java.util.List;
 @Getter
 public class HappyDashboardComponent extends DashboardComponent {
     private List<RatioDto> rank;
+    private final String questionId;
 
     public HappyDashboardComponent(Statistics statistics, String questionId) {
-        super(DashboardType.HAPPY, questionId);
+        super(DashboardType.HAPPY);
+        this.questionId = questionId;
+
         calculate(statistics);
     }
 
