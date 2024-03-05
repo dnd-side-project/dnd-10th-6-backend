@@ -44,12 +44,11 @@ public class SurveyService {
     private final StatisticsService statisticsService;
 
     public CreateSurveyResponse createSurvey(CreateSurveyRequest request, String accessToken) {
-        List<Survey.Answer> surveyAnswer = request.getAnswers().stream().map(this::convertAnswer).toList();
         User owner = getUserByWikiId(request.getOwner());
         User sender = getUserByAccessToken(accessToken);
-
         validateNotFromMe(owner, sender);
 
+        List<Survey.Answer> surveyAnswer = request.getAnswers().stream().map(this::convertAnswer).toList();
         Survey survey = surveyRepository.save(Survey.builder()
                 .owner(owner)
                 .sender(sender)
