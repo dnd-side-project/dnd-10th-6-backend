@@ -2,20 +2,11 @@ package com.dnd.namuiwiki.domain.dashboard;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
-import com.dnd.namuiwiki.domain.dashboard.model.BestWorthDashboardComponent;
-import com.dnd.namuiwiki.domain.dashboard.model.CharacterDashboardComponent;
-import com.dnd.namuiwiki.domain.dashboard.model.DashboardComponent;
-import com.dnd.namuiwiki.domain.dashboard.model.HappyDashboardComponent;
-import com.dnd.namuiwiki.domain.dashboard.model.MoneyDashboardComponent;
-import com.dnd.namuiwiki.domain.dashboard.model.SadDashboardComponent;
-import com.dnd.namuiwiki.domain.dashboard.model.Statistics;
 import com.dnd.namuiwiki.domain.dashboard.model.dto.DashboardDto;
 import com.dnd.namuiwiki.domain.dashboard.model.entity.Dashboard;
-import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.statistic.StatisticsService;
-import com.dnd.namuiwiki.domain.statistic.model.BorrowingLimitEntireStatistic;
 import com.dnd.namuiwiki.domain.statistic.model.entity.PopulationStatistic;
 import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
@@ -45,27 +36,8 @@ public class DashboardService {
             return null;
         }
 
-        Statistics statistics = dashboard.get().getStatistics();
-        return createDashboardDto(period, relation, statistics);
-    }
-
-    private DashboardDto createDashboardDto(Period period, Relation relation, Statistics statistics) {
-        List<DashboardComponent> dashboardComponents = List.of(
-                new BestWorthDashboardComponent(statistics.getStatisticsByDashboardType(DashboardType.BEST_WORTH)),
-                new HappyDashboardComponent(statistics.getStatisticsByDashboardType(DashboardType.HAPPY)),
-                new SadDashboardComponent(statistics.getStatisticsByDashboardType(DashboardType.SAD)),
-                new CharacterDashboardComponent(statistics.getStatisticsByDashboardType(DashboardType.CHARACTER)),
-                getMoneyDashboardComponent(statistics, period, relation)
-        );
-        return new DashboardDto(dashboardComponents);
-    }
-
-    private MoneyDashboardComponent getMoneyDashboardComponent(Statistics statistics, Period period, Relation relation) {
         PopulationStatistic populationStatistic = statisticsService.getPopulationStatistic(period, relation, QuestionName.BORROWING_LIMIT);
-        BorrowingLimitEntireStatistic statistic = (BorrowingLimitEntireStatistic) populationStatistic.getStatistic();
-        long entireAverage = statistic.getBorrowingMoneyLimitEntireAverage();
-
-        return new MoneyDashboardComponent(statistics.getStatisticsByDashboardType(DashboardType.MONEY), entireAverage);
+        return dashboard.get().convertDashboardDto(populationStatistic);
     }
 
     private void validateFilterCategory(Period period, Relation relation) {
@@ -100,15 +72,7 @@ public class DashboardService {
 
     private void updateDashboardByCategory(User owner, Period period, Relation relation, List<Answer> answers) {
         Dashboard dashboard = dashboardRepository.findByUserAndPeriodAndRelation(owner, period, relation)
-                .orElseGet(() -> {
-                    Dashboard newDashboard = Dashboard.builder()
-                            .user(owner)
-                            .period(period)
-                            .relation(relation)
-                            .statistics(Statistics.from(answers.stream().map(Answer::getQuestion).toList()))
-                            .build();
-                    return dashboardRepository.save(newDashboard);
-                });
+                .orElseGet(() -> dashboardRepository.save(Dashboard.createNew(owner, period, relation, answers)));
         dashboard.updateStatistics(answers);
         dashboardRepository.save(dashboard);
     }
