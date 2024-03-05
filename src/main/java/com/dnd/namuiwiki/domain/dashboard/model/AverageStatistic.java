@@ -48,7 +48,7 @@ public class AverageStatistic extends Statistic {
         average = ArithmeticUtils.calculateAverage(totalCount, average, newNumber);
     }
 
-    public static AverageStatistic create(Question question) {
+    protected static AverageStatistic create(Question question) {
         return new AverageStatistic(
                 question.getId(),
                 question.getName(),

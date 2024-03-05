@@ -35,7 +35,7 @@ public class RatioStatistic extends Statistic {
         return legends.values().stream().toList();
     }
 
-    public static RatioStatistic create(Question question) {
+    protected static RatioStatistic create(Question question) {
         Map<String, Legend> legends = new HashMap<>();
         question.getOptions().forEach((key, value) -> legends.put(key, new Legend(key, value.getText(), value.getValue(), 0L)));
         return new RatioStatistic(
