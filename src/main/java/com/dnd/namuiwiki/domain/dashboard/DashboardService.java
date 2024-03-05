@@ -8,16 +8,16 @@ import com.dnd.namuiwiki.domain.dashboard.model.DashboardComponent;
 import com.dnd.namuiwiki.domain.dashboard.model.HappyDashboardComponent;
 import com.dnd.namuiwiki.domain.dashboard.model.MoneyDashboardComponent;
 import com.dnd.namuiwiki.domain.dashboard.model.SadDashboardComponent;
+import com.dnd.namuiwiki.domain.dashboard.model.Statistics;
 import com.dnd.namuiwiki.domain.dashboard.model.dto.DashboardDto;
 import com.dnd.namuiwiki.domain.dashboard.model.entity.Dashboard;
+import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
-import com.dnd.namuiwiki.domain.question.QuestionRepository;
-import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.statistic.StatisticsService;
 import com.dnd.namuiwiki.domain.statistic.model.BorrowingLimitEntireStatistic;
-import com.dnd.namuiwiki.domain.dashboard.model.Statistics;
 import com.dnd.namuiwiki.domain.statistic.model.entity.PopulationStatistic;
+import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
@@ -35,7 +35,6 @@ public class DashboardService {
     private final UserRepository userRepository;
     private final DashboardRepository dashboardRepository;
     private final StatisticsService statisticsService;
-    private final QuestionRepository questionRepository;
 
     public DashboardDto getDashboard(TokenUserInfoDto tokenUserInfoDto, Period period, Relation relation) {
         validateFilterCategory(period, relation);
@@ -46,31 +45,27 @@ public class DashboardService {
             return null;
         }
 
-        List<Question> questions = questionRepository.findAll();
-
         Statistics statistics = dashboard.get().getStatistics();
+        return createDashboardDto(period, relation, statistics);
+    }
+
+    private DashboardDto createDashboardDto(Period period, Relation relation, Statistics statistics) {
         List<DashboardComponent> dashboardComponents = List.of(
-                new BestWorthDashboardComponent(statistics, getQuestionIdByQuestionNAme(questions, QuestionName.CORE_VALUE)),
-                new HappyDashboardComponent(statistics, getQuestionIdByQuestionNAme(questions, QuestionName.HAPPY_BEHAVIOR)),
-                new SadDashboardComponent(statistics, getQuestionIdByQuestionNAme(questions, QuestionName.SAD_ANGRY_BEHAVIOR)),
-                new CharacterDashboardComponent(statistics),
-                getMoneyDashboardComponent(statistics, period, relation, getQuestionIdByQuestionNAme(questions, QuestionName.BORROWING_LIMIT))
+                new BestWorthDashboardComponent(statistics.getStatisticsByDashboardType(DashboardType.BEST_WORTH)),
+                new HappyDashboardComponent(statistics.getStatisticsByDashboardType(DashboardType.HAPPY)),
+                new SadDashboardComponent(statistics.getStatisticsByDashboardType(DashboardType.SAD)),
+                new CharacterDashboardComponent(statistics.getStatisticsByDashboardType(DashboardType.CHARACTER)),
+                getMoneyDashboardComponent(statistics, period, relation)
         );
         return new DashboardDto(dashboardComponents);
     }
 
-    private String getQuestionIdByQuestionNAme(List<Question> questions, QuestionName questionName) {
-        return questions.stream().filter(q -> q.getName() == questionName)
-                .findFirst().orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_ID))
-                .getId();
-    }
-
-    private MoneyDashboardComponent getMoneyDashboardComponent(Statistics statistics, Period period, Relation relation, String questionId) {
+    private MoneyDashboardComponent getMoneyDashboardComponent(Statistics statistics, Period period, Relation relation) {
         PopulationStatistic populationStatistic = statisticsService.getPopulationStatistic(period, relation, QuestionName.BORROWING_LIMIT);
         BorrowingLimitEntireStatistic statistic = (BorrowingLimitEntireStatistic) populationStatistic.getStatistic();
         long entireAverage = statistic.getBorrowingMoneyLimitEntireAverage();
 
-        return new MoneyDashboardComponent(statistics, entireAverage, questionId);
+        return new MoneyDashboardComponent(statistics.getStatisticsByDashboardType(DashboardType.MONEY), entireAverage);
     }
 
     private void validateFilterCategory(Period period, Relation relation) {
@@ -97,20 +92,20 @@ public class DashboardService {
         updateDashboards(owner, period, relation, statisticalAnswers);
     }
 
-    private void updateDashboards(User owner, Period period, Relation relation, List<Survey.Answer> statisticalAnswers) {
+    private void updateDashboards(User owner, Period period, Relation relation, List<Answer> statisticalAnswers) {
         updateDashboardByCategory(owner, null, null, statisticalAnswers);
         updateDashboardByCategory(owner, period, null, statisticalAnswers);
         updateDashboardByCategory(owner, null, relation, statisticalAnswers);
     }
 
-    private void updateDashboardByCategory(User owner, Period period, Relation relation, List<Survey.Answer> answers) {
+    private void updateDashboardByCategory(User owner, Period period, Relation relation, List<Answer> answers) {
         Dashboard dashboard = dashboardRepository.findByUserAndPeriodAndRelation(owner, period, relation)
                 .orElseGet(() -> {
                     Dashboard newDashboard = Dashboard.builder()
                             .user(owner)
                             .period(period)
                             .relation(relation)
-                            .statistics(Statistics.from(answers.stream().map(Survey.Answer::getQuestion).toList()))
+                            .statistics(Statistics.from(answers.stream().map(Answer::getQuestion).toList()))
                             .build();
                     return dashboardRepository.save(newDashboard);
                 });

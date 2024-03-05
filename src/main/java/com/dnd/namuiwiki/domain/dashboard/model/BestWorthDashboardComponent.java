@@ -11,16 +11,16 @@ public class BestWorthDashboardComponent extends DashboardComponent {
     private final String questionId;
     private List<RatioDto> rank;
 
-    public BestWorthDashboardComponent(Statistics statistics, String questionId) {
+    public BestWorthDashboardComponent(List<Statistic> statistics) {
         super(DashboardType.BEST_WORTH);
-        this.questionId = questionId;
+        this.questionId = statistics.get(0).getQuestionId();
 
         calculate(statistics);
     }
 
     @Override
-    public void calculate(Statistics statistics) {
-        RatioStatistic bestWorth = (RatioStatistic) statistics.getStatisticsByDashboardType(this.dashboardType).get(0);
+    public void calculate(List<Statistic> statistics) {
+        RatioStatistic bestWorth = (RatioStatistic) statistics.get(0);
         Long totalCount = bestWorth.getTotalCount();
 
         this.rank = bestWorth.getLegends().stream()
