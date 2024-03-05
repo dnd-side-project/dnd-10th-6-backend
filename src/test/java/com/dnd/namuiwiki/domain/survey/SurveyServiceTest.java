@@ -1,6 +1,7 @@
 package com.dnd.namuiwiki.domain.survey;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
+import com.dnd.namuiwiki.domain.dashboard.DashboardService;
 import com.dnd.namuiwiki.domain.jwt.JwtProvider;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.option.OptionRepository;
@@ -47,12 +48,14 @@ class SurveyServiceTest {
     private JwtProvider jwtProvider;
     @Mock
     private StatisticsService statisticsService;
+    @Mock
+    private DashboardService dashboardService;
 
     private SurveyService surveyService;
 
     @BeforeEach
     void beforeEach() {
-        surveyService = new SurveyService(userRepository, surveyRepository, questionRepository, optionRepository, jwtProvider, statisticsService);
+        surveyService = new SurveyService(userRepository, surveyRepository, questionRepository, optionRepository, jwtProvider, statisticsService, dashboardService);
     }
 
     @Test
