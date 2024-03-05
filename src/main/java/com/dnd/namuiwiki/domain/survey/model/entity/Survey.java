@@ -1,8 +1,6 @@
 package com.dnd.namuiwiki.domain.survey.model.entity;
 
 import com.dnd.namuiwiki.common.model.BaseTimeEntity;
-import com.dnd.namuiwiki.domain.question.entity.Question;
-import com.dnd.namuiwiki.domain.survey.type.AnswerType;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.entity.User;
@@ -38,16 +36,12 @@ public class Survey extends BaseTimeEntity {
 
     private List<Answer> answers;
 
-    @Getter
-    @Builder
-    public static class Answer {
+    public Answer getAnswer(int index) {
+        return answers.get(index);
+    }
 
-        @DocumentReference(collection = "questions", lazy = true)
-        private Question question;
-        private AnswerType type;
-        private Object answer;
-        private String reason;
-
+    public int size() {
+        return answers.size();
     }
 
     @Override

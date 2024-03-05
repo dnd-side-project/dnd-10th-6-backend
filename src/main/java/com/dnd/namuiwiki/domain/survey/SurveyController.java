@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/surveys")
 public class SurveyController {
     private final SurveyService surveyService;
-    private final SurveyAnswerService surveyAnswerService;
 
     @Operation(summary = "설문 생성", responses = {
             @ApiResponse(responseCode = "201", description = "설문 생성 성공", content = @Content(schema = @Schema(implementation = CreateSurveyResponse.class)))
@@ -38,8 +37,7 @@ public class SurveyController {
             @Validated @RequestBody CreateSurveyRequest request,
             @RequestHeader(required = false, value = "X-NAMUIWIKI-TOKEN") String accessToken
     ) {
-        var surveyAnswers = surveyAnswerService.getSurveyAnswers(request.getAnswers());
-        var response = surveyService.createSurvey(request, surveyAnswers, accessToken);
+        var response = surveyService.createSurvey(request, accessToken);
         return ResponseDto.created(response);
     }
 

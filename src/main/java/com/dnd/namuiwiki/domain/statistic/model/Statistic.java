@@ -6,7 +6,7 @@ import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.statistic.type.StatisticsType;
-import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
+import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -33,6 +33,6 @@ public abstract class Statistic {
         }
     }
 
-    public abstract void updateStatistic(Survey.Answer answer);
+    public abstract void updateStatistic(Answer answer);
 
 }

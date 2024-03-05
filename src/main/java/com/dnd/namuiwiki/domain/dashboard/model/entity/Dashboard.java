@@ -2,7 +2,7 @@ package com.dnd.namuiwiki.domain.dashboard.model.entity;
 
 import com.dnd.namuiwiki.common.model.BaseTimeEntity;
 import com.dnd.namuiwiki.domain.statistic.model.Statistics;
-import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
+import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.entity.User;
@@ -31,7 +31,7 @@ public class Dashboard extends BaseTimeEntity {
 
     private Statistics statistics;
 
-    public void updateStatistics(List<Survey.Answer> answer) {
+    public void updateStatistics(List<Answer> answer) {
         statistics.updateStatistics(answer);
     }
 

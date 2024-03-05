@@ -52,7 +52,7 @@ public class DashboardService {
                 new BestWorthDashboardComponent(statistics, getQuestionIdByQuestionNAme(questions, QuestionName.CORE_VALUE)),
                 new HappyDashboardComponent(statistics, getQuestionIdByQuestionNAme(questions, QuestionName.HAPPY_BEHAVIOR)),
                 new SadDashboardComponent(statistics, getQuestionIdByQuestionNAme(questions, QuestionName.SAD_ANGRY_BEHAVIOR)),
-                new CharacterDashboardComponent(statistics, getQuestionIdByQuestionNAme(questions, QuestionName.CHARACTER_CELEBRITY_ASSOCIATION)),
+                new CharacterDashboardComponent(statistics),
                 getMoneyDashboardComponent(statistics, period, relation, getQuestionIdByQuestionNAme(questions, QuestionName.BORROWING_LIMIT))
         );
         return new DashboardDto(dashboardComponents);

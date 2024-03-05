@@ -7,7 +7,7 @@ import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
-import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
+import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import lombok.Getter;
 
 @Getter
@@ -26,7 +26,7 @@ public class AverageStatistic extends Statistic {
     }
 
     @Override
-    public void updateStatistic(Survey.Answer answer) {
+    public void updateStatistic(Answer answer) {
         long value;
         Question question = answer.getQuestion();
         switch (answer.getType()) {
@@ -57,13 +57,13 @@ public class AverageStatistic extends Statistic {
                 0L);
     }
 
-    private long getValueFromManualAnswer(Survey.Answer answer) {
+    private long getValueFromManualAnswer(Answer answer) {
         long value;
         value = Long.parseLong(answer.getAnswer().toString());
         return value;
     }
 
-    private long getValueFromOption(Survey.Answer answer, Question question) {
+    private long getValueFromOption(Answer answer, Question question) {
         long value;
         String optionId = answer.getAnswer().toString();
         Option option = question.getOption(optionId)
