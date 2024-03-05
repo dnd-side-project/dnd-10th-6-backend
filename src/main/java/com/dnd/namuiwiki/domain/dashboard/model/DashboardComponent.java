@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.List;
+
 @Schema(description = "대시보드 타입", oneOf = {
         BestWorthDashboardComponent.class,
         CharacterDashboardComponent.class,
@@ -17,6 +19,6 @@ public abstract class DashboardComponent {
 
     protected final DashboardType dashboardType;
 
-    public abstract void calculate(Statistics statistics);
+    public abstract void calculate(List<Statistic> statistics);
 
 }

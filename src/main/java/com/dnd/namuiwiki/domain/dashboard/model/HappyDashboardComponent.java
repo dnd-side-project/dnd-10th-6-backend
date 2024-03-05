@@ -11,16 +11,16 @@ public class HappyDashboardComponent extends DashboardComponent {
     private List<RatioDto> rank;
     private final String questionId;
 
-    public HappyDashboardComponent(Statistics statistics, String questionId) {
+    public HappyDashboardComponent(List<Statistic> statistics) {
         super(DashboardType.HAPPY);
-        this.questionId = questionId;
+        this.questionId = statistics.get(0).getQuestionId();
 
         calculate(statistics);
     }
 
     @Override
-    public void calculate(Statistics statistics) {
-        RatioStatistic happy = (RatioStatistic) statistics.getStatisticsByDashboardType(this.dashboardType).get(0);
+    public void calculate(List<Statistic> statistics) {
+        RatioStatistic happy = (RatioStatistic) statistics.get(0);
         Long totalCount = happy.getTotalCount();
         this.rank = happy.getLegends().stream()
                 .map(legend -> {

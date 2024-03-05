@@ -11,16 +11,16 @@ public class SadDashboardComponent extends DashboardComponent {
     private final String questionId;
     private List<RatioDto> rank;
 
-    public SadDashboardComponent(Statistics statistics, String questionId) {
+    public SadDashboardComponent(List<Statistic> statistics) {
         super(DashboardType.SAD);
-        this.questionId = questionId;
+        this.questionId = statistics.get(0).getQuestionId();
 
         calculate(statistics);
     }
 
     @Override
-    public void calculate(Statistics statistics) {
-        RatioStatistic sad = (RatioStatistic) statistics.getStatisticsByDashboardType(this.dashboardType).get(0);
+    public void calculate(List<Statistic> statistics) {
+        RatioStatistic sad = (RatioStatistic) statistics.get(0);
         Long totalCount = sad.getTotalCount();
         this.rank = sad.getLegends().stream()
                 .map(legend -> {

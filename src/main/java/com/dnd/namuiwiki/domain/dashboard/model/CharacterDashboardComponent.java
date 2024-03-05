@@ -14,15 +14,14 @@ import java.util.List;
 public class CharacterDashboardComponent extends DashboardComponent {
     private List<Character> characters;
 
-    public CharacterDashboardComponent(Statistics statistics) {
+    public CharacterDashboardComponent(List<Statistic> statistics) {
         super(DashboardType.CHARACTER);
         this.characters = new ArrayList<>();
         calculate(statistics);
     }
 
     @Override
-    public void calculate(Statistics statistics) {
-        List<Statistic> character = statistics.getStatisticsByDashboardType(this.dashboardType);
+    public void calculate(List<Statistic> character) {
         this.characters = character.stream().map(Character::from).toList();
     }
 
