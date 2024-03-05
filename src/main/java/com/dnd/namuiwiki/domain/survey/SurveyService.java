@@ -77,7 +77,7 @@ public class SurveyService {
     }
 
     private void validateNotFromMe(User owner, User sender) {
-        if (owner.equals(sender)) {
+        if (owner.isMe(sender)) {
             throw new ApplicationErrorException(ApplicationErrorType.CANNOT_SEND_SURVEY_TO_MYSELF);
         }
     }
