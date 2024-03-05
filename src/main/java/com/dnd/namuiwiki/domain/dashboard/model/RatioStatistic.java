@@ -1,4 +1,4 @@
-package com.dnd.namuiwiki.domain.statistic.model;
+package com.dnd.namuiwiki.domain.dashboard.model;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;

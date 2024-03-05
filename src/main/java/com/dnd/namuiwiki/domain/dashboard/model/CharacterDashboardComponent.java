@@ -4,10 +4,6 @@ import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
-import com.dnd.namuiwiki.domain.statistic.model.Legend;
-import com.dnd.namuiwiki.domain.statistic.model.RatioStatistic;
-import com.dnd.namuiwiki.domain.statistic.model.Statistic;
-import com.dnd.namuiwiki.domain.statistic.model.Statistics;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

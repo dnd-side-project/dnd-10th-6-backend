@@ -16,7 +16,7 @@ import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.statistic.StatisticsService;
 import com.dnd.namuiwiki.domain.statistic.model.BorrowingLimitEntireStatistic;
-import com.dnd.namuiwiki.domain.statistic.model.Statistics;
+import com.dnd.namuiwiki.domain.dashboard.model.Statistics;
 import com.dnd.namuiwiki.domain.statistic.model.entity.PopulationStatistic;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;

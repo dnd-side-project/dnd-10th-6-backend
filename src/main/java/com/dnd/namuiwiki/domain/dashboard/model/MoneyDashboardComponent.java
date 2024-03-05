@@ -1,8 +1,6 @@
 package com.dnd.namuiwiki.domain.dashboard.model;
 
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
-import com.dnd.namuiwiki.domain.statistic.model.AverageStatistic;
-import com.dnd.namuiwiki.domain.statistic.model.Statistics;
 import lombok.Getter;
 
 @Getter

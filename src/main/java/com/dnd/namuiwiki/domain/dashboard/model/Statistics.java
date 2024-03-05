@@ -1,4 +1,4 @@
-package com.dnd.namuiwiki.domain.statistic.model;
+package com.dnd.namuiwiki.domain.dashboard.model;
 
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.question.entity.Question;
