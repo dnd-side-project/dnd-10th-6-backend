@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AverageEntireStatistic implements EntireStatistic {
+public class AverageEntireStatistic extends EntireStatistic {
 
     private long entireAverage;
     private long peopleCount;
