@@ -1,7 +1,7 @@
 package com.dnd.namuiwiki.domain.dashboard.type;
 
 public enum AnalysisType {
-    USER, POPULATION;
+    USER, POPULATION, NONE;
 
     public boolean isUser() {
         return this == USER;

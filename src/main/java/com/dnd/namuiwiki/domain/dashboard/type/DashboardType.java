@@ -8,7 +8,8 @@ public enum DashboardType {
     CHARACTER(StatisticsCalculationType.RATIO, DashboardStatisticType.BINARY, AnalysisType.USER),
     MONEY(StatisticsCalculationType.AVERAGE, DashboardStatisticType.AVERAGE, AnalysisType.POPULATION),
     HAPPY(StatisticsCalculationType.RATIO, DashboardStatisticType.RATIO, AnalysisType.USER),
-    SAD(StatisticsCalculationType.RATIO, DashboardStatisticType.RATIO, AnalysisType.USER);
+    SAD(StatisticsCalculationType.RATIO, DashboardStatisticType.RATIO, AnalysisType.USER),
+    NONE(StatisticsCalculationType.NONE, DashboardStatisticType.NONE, AnalysisType.NONE);
 
     private DashboardType(
             StatisticsCalculationType statisticsCalculationType,
