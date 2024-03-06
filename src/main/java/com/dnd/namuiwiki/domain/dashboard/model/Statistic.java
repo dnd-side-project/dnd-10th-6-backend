@@ -5,7 +5,7 @@ import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
-import com.dnd.namuiwiki.domain.statistic.type.StatisticsType;
+import com.dnd.namuiwiki.domain.statistic.type.StatisticsCalculationType;
 import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,8 +22,8 @@ public abstract class Statistic {
         return ++totalCount;
     }
 
-    public static Statistic create(Question question, StatisticsType statisticsType) {
-        switch (statisticsType) {
+    public static Statistic create(Question question, StatisticsCalculationType statisticsCalculationType) {
+        switch (statisticsCalculationType) {
             case RATIO:
                 return RatioStatistic.create(question);
             case AVERAGE:

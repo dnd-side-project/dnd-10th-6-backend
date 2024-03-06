@@ -25,7 +25,7 @@ public class StatisticsService {
         Relation relation = survey.getRelation();
 
         var statisticalAnswers = survey.getAnswers().stream()
-                .filter(answer -> answer.getQuestion().getDashboardType().getStatisticsType().isNotNone())
+                .filter(answer -> answer.getQuestion().getDashboardType().getStatisticsCalculationType().isNotNone())
                 .toList();
 
         updateBorrowingLimitStatistic(period, relation, statisticalAnswers);
