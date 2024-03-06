@@ -37,12 +37,6 @@ public class Statistics {
         });
     }
 
-    public List<Statistic> getStatisticsByDashboardType(DashboardType dashboardType) {
-        return statistics.values().stream()
-                .filter(statistic -> statistic.getDashboardType().equals(dashboardType))
-                .toList();
-    }
-
     public Map<DashboardType, List<Statistic>> mapStatisticsByDashboardType() {
         Map<DashboardType, List<Statistic>> statistics = new HashMap<>();
         this.statistics.values().forEach(statistic -> {
