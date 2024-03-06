@@ -1,12 +1,10 @@
 package com.dnd.namuiwiki.domain.dashboard.model.entity;
 
 import com.dnd.namuiwiki.common.model.BaseTimeEntity;
-import com.dnd.namuiwiki.domain.dashboard.model.BestWorthDashboardComponent;
-import com.dnd.namuiwiki.domain.dashboard.model.CharacterDashboardComponent;
+import com.dnd.namuiwiki.domain.dashboard.model.AverageDashboardComponent;
+import com.dnd.namuiwiki.domain.dashboard.model.BinaryDashboardComponent;
 import com.dnd.namuiwiki.domain.dashboard.model.DashboardComponent;
-import com.dnd.namuiwiki.domain.dashboard.model.HappyDashboardComponent;
-import com.dnd.namuiwiki.domain.dashboard.model.MoneyDashboardComponent;
-import com.dnd.namuiwiki.domain.dashboard.model.SadDashboardComponent;
+import com.dnd.namuiwiki.domain.dashboard.model.RatioDashboardComponent;
 import com.dnd.namuiwiki.domain.dashboard.model.Statistics;
 import com.dnd.namuiwiki.domain.dashboard.model.dto.DashboardDto;
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
@@ -50,11 +48,11 @@ public class Dashboard extends BaseTimeEntity {
         long entireAverage = statistic.getBorrowingMoneyLimitEntireAverage();
 
         List<DashboardComponent> dashboardComponents = List.of(
-                new BestWorthDashboardComponent(statistics.getStatisticsByDashboardType(DashboardType.BEST_WORTH)),
-                new HappyDashboardComponent(statistics.getStatisticsByDashboardType(DashboardType.HAPPY)),
-                new SadDashboardComponent(statistics.getStatisticsByDashboardType(DashboardType.SAD)),
-                new CharacterDashboardComponent(statistics.getStatisticsByDashboardType(DashboardType.CHARACTER)),
-                new MoneyDashboardComponent(statistics.getStatisticsByDashboardType(DashboardType.MONEY), entireAverage)
+                new RatioDashboardComponent(DashboardType.BEST_WORTH, statistics.getStatisticsByDashboardType(DashboardType.BEST_WORTH)),
+                new RatioDashboardComponent(DashboardType.HAPPY, statistics.getStatisticsByDashboardType(DashboardType.BEST_WORTH)),
+                new RatioDashboardComponent(DashboardType.SAD, statistics.getStatisticsByDashboardType(DashboardType.BEST_WORTH)),
+                new BinaryDashboardComponent(DashboardType.CHARACTER, statistics.getStatisticsByDashboardType(DashboardType.CHARACTER)),
+                new AverageDashboardComponent(DashboardType.MONEY, statistics.getStatisticsByDashboardType(DashboardType.MONEY), entireAverage)
         );
         return new DashboardDto(dashboardComponents);
     }
