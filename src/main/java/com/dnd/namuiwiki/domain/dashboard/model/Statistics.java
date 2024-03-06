@@ -43,6 +43,17 @@ public class Statistics {
                 .toList();
     }
 
+    public Map<DashboardType, List<Statistic>> mapStatisticsByDashboardType() {
+        Map<DashboardType, List<Statistic>> statistics = new HashMap<>();
+        this.statistics.values().forEach(statistic -> {
+            DashboardType dashboardType = statistic.getDashboardType();
+            statistics.putIfAbsent(dashboardType, List.of());
+            statistics.put(dashboardType, List.of(statistic));
+        });
+
+        return statistics;
+    }
+
     public static Statistics from(List<Question> questions) {
         Statistics statistics = new Statistics(new HashMap<>());
         questions.stream()
