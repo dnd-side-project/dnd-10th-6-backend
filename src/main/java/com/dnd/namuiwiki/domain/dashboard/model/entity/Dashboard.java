@@ -1,14 +1,11 @@
 package com.dnd.namuiwiki.domain.dashboard.model.entity;
 
 import com.dnd.namuiwiki.common.model.BaseTimeEntity;
-import com.dnd.namuiwiki.domain.dashboard.model.AverageDashboardComponent;
-import com.dnd.namuiwiki.domain.dashboard.model.BinaryDashboardComponent;
 import com.dnd.namuiwiki.domain.dashboard.model.DashboardComponent;
-import com.dnd.namuiwiki.domain.dashboard.model.RatioDashboardComponent;
+import com.dnd.namuiwiki.domain.dashboard.model.DashboardFactory;
 import com.dnd.namuiwiki.domain.dashboard.model.Statistics;
 import com.dnd.namuiwiki.domain.dashboard.model.dto.DashboardDto;
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
-import com.dnd.namuiwiki.domain.statistic.model.BorrowingLimitEntireStatistic;
 import com.dnd.namuiwiki.domain.statistic.model.entity.PopulationStatistic;
 import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import com.dnd.namuiwiki.domain.survey.type.Period;
@@ -44,15 +41,14 @@ public class Dashboard extends BaseTimeEntity {
     }
 
     public DashboardDto convertDashboardDto(PopulationStatistic populationStatistic) {
-        BorrowingLimitEntireStatistic statistic = (BorrowingLimitEntireStatistic) populationStatistic.getStatistic();
-        long entireAverage = statistic.getBorrowingMoneyLimitEntireAverage();
+        var dashboardTypeListMap = statistics.mapStatisticsByDashboardType();
 
         List<DashboardComponent> dashboardComponents = List.of(
-                new RatioDashboardComponent(DashboardType.BEST_WORTH, statistics.getStatisticsByDashboardType(DashboardType.BEST_WORTH)),
-                new RatioDashboardComponent(DashboardType.HAPPY, statistics.getStatisticsByDashboardType(DashboardType.BEST_WORTH)),
-                new RatioDashboardComponent(DashboardType.SAD, statistics.getStatisticsByDashboardType(DashboardType.BEST_WORTH)),
-                new BinaryDashboardComponent(DashboardType.CHARACTER, statistics.getStatisticsByDashboardType(DashboardType.CHARACTER)),
-                new AverageDashboardComponent(DashboardType.MONEY, statistics.getStatisticsByDashboardType(DashboardType.MONEY), entireAverage)
+                DashboardFactory.create(DashboardType.BEST_WORTH, dashboardTypeListMap.get(DashboardType.BEST_WORTH)),
+                DashboardFactory.create(DashboardType.SAD, dashboardTypeListMap.get(DashboardType.SAD)),
+                DashboardFactory.create(DashboardType.HAPPY, dashboardTypeListMap.get(DashboardType.HAPPY)),
+                DashboardFactory.create(DashboardType.CHARACTER, dashboardTypeListMap.get(DashboardType.CHARACTER)),
+                DashboardFactory.create(DashboardType.MONEY, dashboardTypeListMap.get(DashboardType.MONEY), populationStatistic)
         );
         return new DashboardDto(dashboardComponents);
     }
