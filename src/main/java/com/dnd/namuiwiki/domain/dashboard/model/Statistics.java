@@ -7,6 +7,7 @@ import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,8 +48,8 @@ public class Statistics {
         Map<DashboardType, List<Statistic>> statistics = new HashMap<>();
         this.statistics.values().forEach(statistic -> {
             DashboardType dashboardType = statistic.getDashboardType();
-            statistics.putIfAbsent(dashboardType, List.of());
-            statistics.put(dashboardType, List.of(statistic));
+            statistics.putIfAbsent(dashboardType, new ArrayList<>());
+            statistics.get(dashboardType).add(statistic);
         });
 
         return statistics;
