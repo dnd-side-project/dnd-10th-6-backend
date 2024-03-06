@@ -1,6 +1,6 @@
 package com.dnd.namuiwiki.domain.statistic.type;
 
-public enum StatisticsType {
+public enum StatisticsCalculationType {
 
     RATIO,
     AVERAGE,

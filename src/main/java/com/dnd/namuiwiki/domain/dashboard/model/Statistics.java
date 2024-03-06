@@ -2,7 +2,7 @@ package com.dnd.namuiwiki.domain.dashboard.model;
 
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.question.entity.Question;
-import com.dnd.namuiwiki.domain.statistic.type.StatisticsType;
+import com.dnd.namuiwiki.domain.statistic.type.StatisticsCalculationType;
 import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -18,8 +18,8 @@ public class Statistics {
     private Map<String, Statistic> statistics;
 
     public Statistic createAndPut(Question question) {
-        StatisticsType statisticsType = question.getDashboardType().getStatisticsType();
-        Statistic statistic = Statistic.create(question, statisticsType);
+        StatisticsCalculationType statisticsCalculationType = question.getDashboardType().getStatisticsCalculationType();
+        Statistic statistic = Statistic.create(question, statisticsCalculationType);
         statistics.put(question.getId(), statistic);
         return statistic;
     }
@@ -51,7 +51,7 @@ public class Statistics {
     public static Statistics from(List<Question> questions) {
         Statistics statistics = new Statistics(new HashMap<>());
         questions.stream()
-                .filter(question -> question.getDashboardType().getStatisticsType().isNotNone())
+                .filter(question -> question.getDashboardType().getStatisticsCalculationType().isNotNone())
                 .forEach(statistics::createAndPut);
         return statistics;
     }

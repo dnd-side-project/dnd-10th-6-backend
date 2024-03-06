@@ -1,25 +1,25 @@
 package com.dnd.namuiwiki.domain.dashboard.type;
 
-import com.dnd.namuiwiki.domain.statistic.type.StatisticsType;
+import com.dnd.namuiwiki.domain.statistic.type.StatisticsCalculationType;
 
 public enum DashboardType {
 
-    BEST_WORTH(StatisticsType.RATIO, DashboardStatisticType.RATIO),
-    CHARACTER(StatisticsType.RATIO, DashboardStatisticType.BINARY),
-    MONEY(StatisticsType.AVERAGE, DashboardStatisticType.AVERAGE),
-    HAPPY(StatisticsType.RATIO, DashboardStatisticType.RATIO),
-    SAD(StatisticsType.RATIO, DashboardStatisticType.RATIO);
+    BEST_WORTH(StatisticsCalculationType.RATIO, DashboardStatisticType.RATIO),
+    CHARACTER(StatisticsCalculationType.RATIO, DashboardStatisticType.BINARY),
+    MONEY(StatisticsCalculationType.AVERAGE, DashboardStatisticType.AVERAGE),
+    HAPPY(StatisticsCalculationType.RATIO, DashboardStatisticType.RATIO),
+    SAD(StatisticsCalculationType.RATIO, DashboardStatisticType.RATIO);
 
-    private DashboardType(StatisticsType statisticsType, DashboardStatisticType dashboardStatisticType) {
-        this.statisticsType = statisticsType;
+    private DashboardType(StatisticsCalculationType statisticsCalculationType, DashboardStatisticType dashboardStatisticType) {
+        this.statisticsCalculationType = statisticsCalculationType;
         this.dashboardStatisticType = dashboardStatisticType;
     }
 
-    private final StatisticsType statisticsType;
+    private final StatisticsCalculationType statisticsCalculationType;
     private final DashboardStatisticType dashboardStatisticType;
 
-    public StatisticsType getStatisticsType() {
-        return statisticsType;
+    public StatisticsCalculationType getStatisticsCalculationType() {
+        return statisticsCalculationType;
     }
 
     public DashboardStatisticType getDashboardStatisticType() {
