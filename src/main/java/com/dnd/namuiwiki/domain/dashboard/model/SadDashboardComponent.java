@@ -30,6 +30,7 @@ public class SadDashboardComponent extends DashboardComponent {
                     int percentage = (int) (legend.getCount() * 100 / totalCount);
                     return new RatioDto(legend.getText(), percentage);
                 })
+                .sorted((a, b) -> b.getPercentage() - a.getPercentage())
                 .toList();
     }
 
