@@ -10,4 +10,12 @@ public enum StatisticsCalculationType {
         return this != NONE;
     }
 
+    public boolean isRatio() {
+        return this == RATIO;
+    }
+
+    public boolean isAverage() {
+        return this == AVERAGE;
+    }
+
 }
