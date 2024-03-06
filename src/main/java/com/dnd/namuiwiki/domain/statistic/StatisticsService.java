@@ -4,7 +4,7 @@ import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
-import com.dnd.namuiwiki.domain.statistic.model.BorrowingLimitEntireStatistic;
+import com.dnd.namuiwiki.domain.statistic.model.AverageEntireStatistic;
 import com.dnd.namuiwiki.domain.statistic.model.entity.PopulationStatistic;
 import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
@@ -35,7 +35,7 @@ public class StatisticsService {
         return statisticsRepository
                 .findByPeriodAndRelationAndQuestionName(period, relation, questionName)
                 .orElseGet(() -> PopulationStatistic.builder()
-                        .statistic(new BorrowingLimitEntireStatistic(0L, 0L))
+                        .statistic(new AverageEntireStatistic(0L, 0L))
                         .period(period)
                         .questionName(questionName)
                         .relation(relation)
@@ -64,7 +64,7 @@ public class StatisticsService {
     private void updateBorrowingLimitStatisticByCategory(Period period, Relation relation, long borrowingLimit) {
         PopulationStatistic populationStatistic = getPopulationStatistic(period, relation, QuestionName.BORROWING_LIMIT);
 
-        BorrowingLimitEntireStatistic statistic = (BorrowingLimitEntireStatistic) populationStatistic.getStatistic();
+        AverageEntireStatistic statistic = (AverageEntireStatistic) populationStatistic.getStatistic();
         statistic.updateStatistic(String.valueOf(borrowingLimit));
 
         populationStatistic.setStatistic(statistic);
