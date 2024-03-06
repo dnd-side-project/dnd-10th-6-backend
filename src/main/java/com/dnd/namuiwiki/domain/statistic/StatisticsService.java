@@ -2,7 +2,6 @@ package com.dnd.namuiwiki.domain.statistic;
 
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.statistic.model.entity.PopulationStatistic;
-import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
@@ -26,14 +25,12 @@ public class StatisticsService {
                     Question question = answer.getQuestion();
                     var calculationType = question.getDashboardType().getStatisticsCalculationType();
                     if (calculationType.isAverage()) {
-                        updateAverageStatistic(question, period, relation, answer);
+                        updateAverageStatistic(question, period, relation, answer.getAnswer(Long.class));
                     }
                 });
     }
 
-    private void updateAverageStatistic(Question question, Period period, Relation relation, Answer answer) {
-        long newValue = answer.getAnswer(Long.class);
-
+    private void updateAverageStatistic(Question question, Period period, Relation relation, long newValue) {
         updateAverageStatisticByCategory(question, null, null, newValue);
         updateAverageStatisticByCategory(question, period, null, newValue);
         updateAverageStatisticByCategory(question, null, relation, newValue);
