@@ -3,8 +3,8 @@ package com.dnd.namuiwiki.domain.dashboard.model.entity;
 import com.dnd.namuiwiki.common.model.BaseTimeEntity;
 import com.dnd.namuiwiki.domain.dashboard.model.DashboardComponent;
 import com.dnd.namuiwiki.domain.dashboard.model.DashboardFactory;
+import com.dnd.namuiwiki.domain.dashboard.model.Statistic;
 import com.dnd.namuiwiki.domain.dashboard.model.Statistics;
-import com.dnd.namuiwiki.domain.dashboard.model.dto.DashboardDto;
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.statistic.model.entity.PopulationStatistic;
 import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
@@ -40,17 +40,19 @@ public class Dashboard extends BaseTimeEntity {
         statistics.updateStatistics(answer);
     }
 
-    public DashboardDto convertDashboardDto(PopulationStatistic populationStatistic) {
+    public List<DashboardComponent> getUserDashboards() {
         var dashboardTypeListMap = statistics.mapStatisticsByDashboardType();
 
-        List<DashboardComponent> dashboardComponents = List.of(
-                DashboardFactory.create(DashboardType.BEST_WORTH, dashboardTypeListMap.get(DashboardType.BEST_WORTH)),
-                DashboardFactory.create(DashboardType.SAD, dashboardTypeListMap.get(DashboardType.SAD)),
-                DashboardFactory.create(DashboardType.HAPPY, dashboardTypeListMap.get(DashboardType.HAPPY)),
-                DashboardFactory.create(DashboardType.CHARACTER, dashboardTypeListMap.get(DashboardType.CHARACTER)),
-                DashboardFactory.create(DashboardType.MONEY, dashboardTypeListMap.get(DashboardType.MONEY), populationStatistic)
-        );
-        return new DashboardDto(dashboardComponents);
+        return dashboardTypeListMap.entrySet().stream()
+                .filter(entry -> entry.getKey().getAnalysisType().isUser())
+                .map(entry -> DashboardFactory.create(entry.getKey(), entry.getValue()))
+                .toList();
+    }
+
+    public DashboardComponent getPopulationDashboard(PopulationStatistic populationStatistic, DashboardType dashboardType) {
+        List<Statistic> statisticsByDashboardType = statistics.getStatisticsByDashboardType(dashboardType);
+
+        return DashboardFactory.create(dashboardType, statisticsByDashboardType, populationStatistic);
     }
 
     public static Dashboard createNew(User owner, Period period, Relation relation, List<Answer> answers) {

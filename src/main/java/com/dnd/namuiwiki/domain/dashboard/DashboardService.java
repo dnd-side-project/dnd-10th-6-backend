@@ -2,8 +2,10 @@ package com.dnd.namuiwiki.domain.dashboard;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
+import com.dnd.namuiwiki.domain.dashboard.model.DashboardComponent;
 import com.dnd.namuiwiki.domain.dashboard.model.dto.DashboardDto;
 import com.dnd.namuiwiki.domain.dashboard.model.entity.Dashboard;
+import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.statistic.StatisticsService;
@@ -17,6 +19,7 @@ import com.dnd.namuiwiki.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,13 +34,20 @@ public class DashboardService {
         validateFilterCategory(period, relation);
 
         User user = findByWikiId(tokenUserInfoDto.getWikiId());
-        Optional<Dashboard> dashboard = dashboardRepository.findByUserAndPeriodAndRelation(user, period, relation);
-        if (dashboard.isEmpty()) {
+        Optional<Dashboard> optionalDashboard = dashboardRepository.findByUserAndPeriodAndRelation(user, period, relation);
+        if (optionalDashboard.isEmpty()) {
             return null;
         }
+        Dashboard dashboard = optionalDashboard.get();
 
+        List<DashboardComponent> userDashboards = dashboard.getUserDashboards();
         PopulationStatistic populationStatistic = statisticsService.getPopulationStatistic(period, relation, QuestionName.BORROWING_LIMIT);
-        return dashboard.get().convertDashboardDto(populationStatistic);
+        DashboardComponent populationDashboard = dashboard.getPopulationDashboard(populationStatistic, DashboardType.MONEY);
+
+        List<DashboardComponent> components = new ArrayList<>(userDashboards);
+        components.add(populationDashboard);
+
+        return new DashboardDto(components);
     }
 
     private void validateFilterCategory(Period period, Relation relation) {
