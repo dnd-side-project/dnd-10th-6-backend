@@ -2,12 +2,12 @@ package com.dnd.namuiwiki.domain.dashboard.model;
 
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
+import com.dnd.namuiwiki.domain.statistic.model.AverageEntireStatistic;
+import com.dnd.namuiwiki.domain.statistic.model.entity.PopulationStatistic;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,8 +28,12 @@ class AverageDashboardComponentTest {
                 totalCount,
                 average);
 
+        PopulationStatistic populationStatistic = PopulationStatistic.builder()
+                .statistic(new AverageEntireStatistic(entireAverage, totalCount))
+                .build();
+
         // when
-        AverageDashboardComponent averageDashboardComponent = new AverageDashboardComponent(DashboardType.MONEY, List.of(statistic), entireAverage);
+        AverageDashboardComponent averageDashboardComponent = new AverageDashboardComponent(DashboardType.MONEY, statistic, populationStatistic);
 
         // then
         long expectedAverage = 1000;
