@@ -17,11 +17,10 @@ public class BinaryDashboardComponent extends DashboardComponent {
     public BinaryDashboardComponent(DashboardType dashboardType, List<Statistic> statistics) {
         super(dashboardType);
         this.characters = new ArrayList<>();
-        calculate(statistics);
+        initiate(statistics);
     }
 
-    @Override
-    public void calculate(List<Statistic> character) {
+    public void initiate(List<Statistic> character) {
         this.characters = character.stream().map(BinaryMetric::from).toList();
     }
 

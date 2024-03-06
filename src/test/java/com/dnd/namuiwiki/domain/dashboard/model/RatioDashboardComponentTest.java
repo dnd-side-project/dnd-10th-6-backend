@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,7 +30,7 @@ class RatioDashboardComponentTest {
                         "op2", new Legend("op2", "legend2", "legend2", opt2Count)));
 
         // when
-        RatioDashboardComponent ratioDashboardComponent = new RatioDashboardComponent(DashboardType.BEST_WORTH, List.of(statistic));
+        RatioDashboardComponent ratioDashboardComponent = new RatioDashboardComponent(DashboardType.BEST_WORTH, statistic);
 
         // then
         int expectedOpt1Percentage = 60;

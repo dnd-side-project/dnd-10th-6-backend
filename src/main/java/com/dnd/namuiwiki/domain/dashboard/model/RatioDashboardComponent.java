@@ -11,19 +11,18 @@ public class RatioDashboardComponent extends DashboardComponent {
     private final String questionId;
     private List<RatioDto> rank;
 
-    public RatioDashboardComponent(DashboardType dashboardType, List<Statistic> statistics) {
+    public RatioDashboardComponent(DashboardType dashboardType, Statistic statistic) {
         super(dashboardType);
-        this.questionId = statistics.get(0).getQuestionId();
+        RatioStatistic ratioStatistic = (RatioStatistic) statistic;
 
-        calculate(statistics);
+        this.questionId = ratioStatistic.getQuestionId();
+        initiate(ratioStatistic);
     }
 
-    @Override
-    public void calculate(List<Statistic> statistics) {
-        RatioStatistic bestWorth = (RatioStatistic) statistics.get(0);
-        Long totalCount = bestWorth.getTotalCount();
+    public void initiate(RatioStatistic statistic) {
+        Long totalCount = statistic.getTotalCount();
 
-        this.rank = bestWorth.getLegends().stream()
+        this.rank = statistic.getLegends().stream()
                 .map(legend -> {
                     if (totalCount == 0) {
                         return new RatioDto(legend.getText(), 0);

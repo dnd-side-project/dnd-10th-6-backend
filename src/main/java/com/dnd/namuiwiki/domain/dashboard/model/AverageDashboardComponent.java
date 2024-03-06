@@ -1,30 +1,26 @@
 package com.dnd.namuiwiki.domain.dashboard.model;
 
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
+import com.dnd.namuiwiki.domain.statistic.model.AverageEntireStatistic;
+import com.dnd.namuiwiki.domain.statistic.model.entity.PopulationStatistic;
 import lombok.Getter;
-
-import java.util.List;
 
 @Getter
 public class AverageDashboardComponent extends DashboardComponent {
     private final String questionId;
-    private long peopleCount;
-    private long average;
-    private long entireAverage;
+    private final long peopleCount;
+    private final long average;
+    private final long entireAverage;
 
-    public AverageDashboardComponent(DashboardType dashboardType, List<Statistic> statistics, long entireAverage) {
+    public AverageDashboardComponent(DashboardType dashboardType, Statistic statistic, PopulationStatistic populationStatistic) {
         super(dashboardType);
-        this.entireAverage = entireAverage;
-        this.questionId = statistics.get(0).getQuestionId();
+        AverageEntireStatistic entireStatistic = (AverageEntireStatistic) populationStatistic.getStatistic();
+        AverageStatistic averageStatistic = (AverageStatistic) statistic;
 
-        calculate(statistics);
-    }
-
-    @Override
-    public void calculate(List<Statistic> statistics) {
-        AverageStatistic money = (AverageStatistic) statistics.get(0);
-        this.peopleCount = money.getTotalCount();
-        this.average = money.getAverage();
+        this.entireAverage = entireStatistic.getEntireAverage();
+        this.questionId = statistic.getQuestionId();
+        this.peopleCount = averageStatistic.getTotalCount();
+        this.average = averageStatistic.getAverage();
     }
 
 }
