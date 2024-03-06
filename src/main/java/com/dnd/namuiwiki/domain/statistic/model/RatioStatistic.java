@@ -48,9 +48,6 @@ public class RatioStatistic extends Statistic {
 
     @Override
     public void updateStatistic(Answer answer) {
-        if (answer.getType().isManual()) {
-            return;
-        }
         increaseTotalCount();
 
         Question question = answer.getQuestion();
