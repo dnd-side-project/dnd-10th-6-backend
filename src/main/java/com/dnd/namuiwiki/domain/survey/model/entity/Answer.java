@@ -2,6 +2,7 @@ package com.dnd.namuiwiki.domain.survey.model.entity;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
+import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionType;
 import com.dnd.namuiwiki.domain.survey.type.AnswerType;
@@ -40,6 +41,35 @@ public class Answer {
         this.question = question;
         this.type = type;
         this.reason = reason;
+    }
+
+    public <T> T getAnswer(Class<T> returnType) {
+        Object value;
+
+        if (type.isOption()) {
+            Option option = question.getOptions().get(answer.toString());
+            value = option.getValue();
+        } else {
+            value = answer;
+        }
+
+        if (value == null) {
+            throw new ApplicationErrorException(ApplicationErrorType.INTERNAL_ERROR);
+        }
+
+        if (returnType == Long.class) {
+            if (isNumericAnswerNeeded()) {
+                return (T) value;
+            } else {
+                throw new ApplicationErrorException(ApplicationErrorType.NOT_INTEGER_ANSWER);
+            }
+        }
+
+        return returnType.cast(value);
+    }
+
+    private boolean isNumericAnswerNeeded() {
+        return question.getType().isNumericType() && type.isManual();
     }
 
     private void validateBorrowingLimit(long longAnswer) {

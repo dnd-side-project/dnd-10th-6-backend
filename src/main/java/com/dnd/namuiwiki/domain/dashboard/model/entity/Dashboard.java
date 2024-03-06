@@ -49,10 +49,14 @@ public class Dashboard extends BaseTimeEntity {
                 .toList();
     }
 
-    public DashboardComponent getPopulationDashboard(PopulationStatistic populationStatistic, DashboardType dashboardType) {
-        List<Statistic> statisticsByDashboardType = statistics.getStatisticsByDashboardType(dashboardType);
-
-        return DashboardFactory.create(dashboardType, statisticsByDashboardType, populationStatistic);
+    public List<DashboardComponent> getPopulationDashboards(List<PopulationStatistic> populationStatistics) {
+        return populationStatistics.stream()
+                .map(populationStatistic -> {
+                    DashboardType dashboardType = populationStatistic.getDashboardType();
+                    List<Statistic> statisticsByDashboardType = statistics.getStatisticsByDashboardType(dashboardType);
+                    return DashboardFactory.create(dashboardType, statisticsByDashboardType, populationStatistic);
+                })
+                .toList();
     }
 
     public static Dashboard createNew(User owner, Period period, Relation relation, List<Answer> answers) {

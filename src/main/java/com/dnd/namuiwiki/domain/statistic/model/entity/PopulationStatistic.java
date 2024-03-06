@@ -1,5 +1,6 @@
 package com.dnd.namuiwiki.domain.statistic.model.entity;
 
+import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.statistic.model.EntireStatistic;
 import com.dnd.namuiwiki.domain.survey.type.Period;
@@ -25,6 +26,12 @@ public class PopulationStatistic {
 
     private QuestionName questionName;
 
+    private DashboardType dashboardType;
+
     private EntireStatistic statistic;
+
+    public void updateStatistic(String... args) {
+        statistic.updateStatistic(args);
+    }
 
 }
