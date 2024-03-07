@@ -3,6 +3,7 @@ package com.dnd.namuiwiki.domain.survey.model.dto;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
+import com.dnd.namuiwiki.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -22,7 +23,7 @@ public class SentSurveyDto {
                 survey.getId(),
                 survey.getRelation(),
                 survey.getPeriod(),
-                survey.getSenderName(),
+                survey.getOwner().getNickname(),
                 survey.getWrittenAt()
         );
     }

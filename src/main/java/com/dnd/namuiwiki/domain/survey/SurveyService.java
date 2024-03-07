@@ -103,11 +103,12 @@ public class SurveyService {
     }
 
     public PageableDto<SentSurveyDto> getSentSurveys(TokenUserInfoDto tokenUserInfoDto, Period period, Relation relation, int pageNo, int pageSize) {
-        User user = getUserByWikiId(tokenUserInfoDto.getWikiId());
+        validateFilter(period, relation);
+        User sender = getUserByWikiId(tokenUserInfoDto.getWikiId());
 
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        Page<SentSurveyDto> surveys = surveyRepository.findBySender(user, pageable)
+        Page<SentSurveyDto> surveys = getSentSurveysByFilter(period, relation, sender, pageable)
                 .map(SentSurveyDto::from);
         return PageableDto.create(surveys);
     }
@@ -130,7 +131,7 @@ public class SurveyService {
 
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        Page<Survey> surveys = getSurveysByFilter(period, relation, owner, pageable);
+        Page<Survey> surveys = getReceivedSurveysByFilter(period, relation, owner, pageable);
         var answers = surveys.map(survey -> {
             var answerOfQuestion = survey.getAnswers().stream()
                     .filter(answer -> answer.getQuestion().getId().equals(questionId))
@@ -155,7 +156,17 @@ public class SurveyService {
         }
     }
 
-    private Page<Survey> getSurveysByFilter(Period period, Relation relation, User owner, Pageable pageable) {
+    private Page<Survey> getSentSurveysByFilter(Period period, Relation relation, User sender, Pageable pageable) {
+        if (!period.isTotal()) {
+            return surveyRepository.findBySenderAndPeriod(sender, period, pageable);
+        }
+        if (!relation.isTotal()) {
+            return surveyRepository.findBySenderAndRelation(sender, relation, pageable);
+        }
+        return surveyRepository.findBySender(sender, pageable);
+    }
+
+    private Page<Survey> getReceivedSurveysByFilter(Period period, Relation relation, User owner, Pageable pageable) {
         if (!period.isTotal()) {
             return surveyRepository.findByOwnerAndPeriod(owner, period, pageable);
         }
