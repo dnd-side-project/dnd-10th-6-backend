@@ -14,4 +14,6 @@ public interface SurveyRepository extends MongoRepository<Survey, String> {
     Page<Survey> findBySender(User sender, Pageable pageable);
     Page<Survey> findByOwnerAndPeriod(User owner, Period period, Pageable pageable);
     Page<Survey> findByOwnerAndRelation(User owner, Relation relation, Pageable pageable);
+    Page<Survey> findBySenderAndPeriod(User sender, Period period, Pageable pageable);
+    Page<Survey> findBySenderAndRelation(User sender, Relation relation, Pageable pageable);
 }
