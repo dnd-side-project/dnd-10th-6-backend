@@ -28,7 +28,7 @@ public class Question extends BaseTimeEntity {
     private Long surveyOrder;
     private boolean reasonRequired;
 
-    @DocumentReference(collection = "options", lazy = true)
+    @DocumentReference(collection = "options")
     private Map<String, Option> options;
 
     public Optional<Option> getOption(String optionId) {
