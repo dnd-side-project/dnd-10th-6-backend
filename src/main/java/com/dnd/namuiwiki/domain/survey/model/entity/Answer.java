@@ -18,6 +18,7 @@ public class Answer {
 
     @DocumentReference(collection = "questions", lazy = true)
     private Question question;
+    private String questionId;
     private AnswerType type;
     private Object answer;
     private String reason;
@@ -39,6 +40,7 @@ public class Answer {
         }
 
         this.question = question;
+        this.questionId = question.getId();
         this.type = type;
         this.reason = reason;
     }

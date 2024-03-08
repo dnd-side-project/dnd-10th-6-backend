@@ -132,7 +132,7 @@ public class SurveyService {
         Page<Survey> surveys = getReceivedSurveysByFilter(period, relation, owner, pageable);
         var answers = surveys.map(survey -> {
             var answerOfQuestion = survey.getAnswers().stream()
-                    .filter(answer -> answer.getQuestion().getId().equals(questionId))
+                    .filter(answer -> answer.getQuestionId().equals(questionId))
                     .findAny()
                     .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_ID));
             return SingleAnswerWithSurveyDetailDto.builder()
@@ -175,7 +175,7 @@ public class SurveyService {
     }
 
     private String convertAnswerToText(Question question, Answer answer) {
-        if (answer.getType().equals(AnswerType.MANUAL)) {
+        if (answer.getType().isManual()) {
             return answer.getAnswer().toString();
         }
         Option option = question.getOption(answer.getAnswer().toString())

@@ -56,7 +56,7 @@ public class GetSurveyResponse {
 
         var answers = survey.getAnswers();
         List<SingleQuestionAndAnswer> questionAndAnswerList = new ArrayList<>();
-        answers.forEach(answer -> questionAndAnswerList.add(SingleQuestionAndAnswer.from(questionMap.get(answer.getQuestion().getId()), answer)));
+        answers.forEach(answer -> questionAndAnswerList.add(SingleQuestionAndAnswer.from(questionMap.get(answer.getQuestionId()), answer)));
         return questionAndAnswerList;
     }
 
