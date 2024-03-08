@@ -26,6 +26,7 @@ import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.UserRepository;
 import com.dnd.namuiwiki.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +44,9 @@ public class SurveyService {
     private final JwtProvider jwtProvider;
     private final StatisticsService statisticsService;
     private final DashboardService dashboardService;
+
+    @Value("${setting.password}")
+    private String SETTING_PASSWORD;
 
     public CreateSurveyResponse createSurvey(CreateSurveyRequest request, String accessToken) {
         User owner = getUserByWikiId(request.getOwner());
@@ -202,4 +206,17 @@ public class SurveyService {
         return userRepository.findByWikiId(tokenUserInfoDto.getWikiId())
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
     }
+
+    public void setQuestionIdForSurveyAnswers(String pwd) {
+        if (!SETTING_PASSWORD.equals(pwd)) {
+            throw new ApplicationErrorException(ApplicationErrorType.NO_PERMISSION);
+        }
+
+        List<Survey> surveys = surveyRepository.findAll();
+        surveys.forEach(survey -> {
+            survey.setQuestionIdForAnswers();
+            surveyRepository.save(survey);
+        });
+    }
+
 }

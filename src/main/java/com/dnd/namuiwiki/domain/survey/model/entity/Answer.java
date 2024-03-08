@@ -96,4 +96,8 @@ public class Answer {
         }
     }
 
+    protected void setQuestionId(String id) {
+        this.questionId = id;
+    }
+
 }

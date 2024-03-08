@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,4 +41,12 @@ public class AnswerController {
         var answersByQuestion = surveyService.getAnswersByQuestion(tokenUserInfoDto.getWikiId(), questionId, period, relation, pageNo, pageSize);
         return ResponseDto.ok(answersByQuestion);
     }
+
+    @Operation(hidden = true)
+    @PutMapping("/set-question-id")
+    public ResponseEntity<?> setQuestionIdForSurveyAnswers(@RequestParam String pwd) {
+        surveyService.setQuestionIdForSurveyAnswers(pwd);
+        return ResponseDto.noContent();
+    }
+
 }

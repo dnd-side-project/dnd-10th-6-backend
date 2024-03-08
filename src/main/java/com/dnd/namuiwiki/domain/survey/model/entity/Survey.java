@@ -60,4 +60,9 @@ public class Survey extends BaseTimeEntity {
     public LocalDateTime getWrittenAt() {
         return this.createdAt;
     }
+
+    public void setQuestionIdForAnswers() {
+        answers.forEach(answer -> answer.setQuestionId(answer.getQuestion().getId()));
+    }
+
 }
