@@ -7,13 +7,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class QuestionCacheManager {
+public class QuestionCache {
 
     private final QuestionRepository questionRepository;
 
     private Map<String, Question> cachedQuestions;
 
-    public QuestionCacheManager(QuestionRepository questionRepository) {
+    public QuestionCache(QuestionRepository questionRepository) {
         this.questionRepository = questionRepository;
     }
 

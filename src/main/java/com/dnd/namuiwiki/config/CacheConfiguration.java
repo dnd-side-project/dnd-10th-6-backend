@@ -1,6 +1,6 @@
 package com.dnd.namuiwiki.config;
 
-import com.dnd.namuiwiki.domain.question.QuestionCacheManager;
+import com.dnd.namuiwiki.domain.question.QuestionCache;
 import com.dnd.namuiwiki.domain.question.QuestionRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration;
 public class CacheConfiguration {
 
     @Bean
-    public QuestionCacheManager questionCache(QuestionRepository questionRepository) {
-        return new QuestionCacheManager(questionRepository);
+    public QuestionCache questionCache(QuestionRepository questionRepository) {
+        return new QuestionCache(questionRepository);
     }
 
 }

@@ -6,9 +6,8 @@ import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.dashboard.DashboardService;
 import com.dnd.namuiwiki.domain.jwt.JwtProvider;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
-import com.dnd.namuiwiki.domain.option.OptionRepository;
 import com.dnd.namuiwiki.domain.option.entity.Option;
-import com.dnd.namuiwiki.domain.question.QuestionRepository;
+import com.dnd.namuiwiki.domain.question.QuestionCache;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.statistic.StatisticsService;
 import com.dnd.namuiwiki.domain.survey.model.dto.AnswerDto;
@@ -40,8 +39,7 @@ import java.util.List;
 public class SurveyService {
     private final UserRepository userRepository;
     private final SurveyRepository surveyRepository;
-    private final QuestionRepository questionRepository;
-    private final OptionRepository optionRepository;
+    private final QuestionCache questionCache;
     private final JwtProvider jwtProvider;
     private final StatisticsService statisticsService;
     private final DashboardService dashboardService;
@@ -87,11 +85,8 @@ public class SurveyService {
     }
 
     private void validateOptionExists(String optionId, Question question) {
-        if (!optionRepository.existsById(optionId)) {
-            throw new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID);
-        }
         if (!question.getOptions().containsKey(optionId)) {
-            throw new ApplicationErrorException(ApplicationErrorType.CONFLICT_OPTION_QUESTION);
+            throw new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID);
         }
     }
 
@@ -117,7 +112,7 @@ public class SurveyService {
     }
 
     public GetSurveyResponse getSurvey(String surveyId) {
-        List<Question> questions = questionRepository.findAll();
+        List<Question> questions = questionCache.findAll().values().stream().toList();
         Survey survey = surveyRepository.findById(surveyId)
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_SURVEY));
         return GetSurveyResponse.from(survey, questions);
@@ -126,7 +121,7 @@ public class SurveyService {
     public GetAnswersByQuestionResponse getAnswersByQuestion(String wikiId, String questionId, Period period, Relation relation, int pageNo, int pageSize) {
         validateFilter(period, relation);
 
-        Question question = questionRepository.findById(questionId)
+        Question question = questionCache.findById(questionId)
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_ID));
 
         User owner = userRepository.findByWikiId(wikiId)
@@ -189,7 +184,7 @@ public class SurveyService {
     }
 
     private Question getQuestionById(String questionId) {
-        return questionRepository.findById(questionId)
+        return questionCache.findById(questionId)
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_ID));
     }
 
