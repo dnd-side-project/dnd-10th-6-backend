@@ -50,6 +50,12 @@ public class RatioStatistic extends Statistic {
     public void updateStatistic(Answer answer) {
         increaseTotalCount();
 
+        if (answer.getType().isOption()) {
+            increaseOptionCount(answer);
+        }
+    }
+
+    private void increaseOptionCount(Answer answer) {
         Question question = answer.getQuestion();
         String optionId = answer.getAnswer().toString();
         Legend legend = getLegend(optionId)
