@@ -5,7 +5,7 @@ import com.dnd.namuiwiki.domain.dashboard.DashboardService;
 import com.dnd.namuiwiki.domain.jwt.JwtProvider;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.option.entity.Option;
-import com.dnd.namuiwiki.domain.question.QuestionCache;
+import com.dnd.namuiwiki.domain.question.QuestionRepository;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.question.type.QuestionType;
@@ -40,7 +40,7 @@ class SurveyServiceTest {
     @Mock
     private SurveyRepository surveyRepository;
     @Mock
-    private QuestionCache questionCache;
+    private QuestionRepository questionRepository;
     @Mock
     private JwtProvider jwtProvider;
     @Mock
@@ -52,7 +52,7 @@ class SurveyServiceTest {
 
     @BeforeEach
     void beforeEach() {
-        surveyService = new SurveyService(userRepository, surveyRepository, questionCache, jwtProvider, statisticsService, dashboardService);
+        surveyService = new SurveyService(userRepository, surveyRepository, questionRepository, jwtProvider, statisticsService, dashboardService);
     }
 
     @Test
@@ -93,7 +93,7 @@ class SurveyServiceTest {
             Option option = Option.builder().id("optionId").build();
             Question question = Question.builder().id("questionId").type(questionType).options(Map.of(option.getId(), option)).build();
 
-            given(questionCache.findById(any(String.class))).willReturn(Optional.of(question));
+            given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
 
             // when
             Answer surveyAnswer = surveyService.convertAnswer(answerOfOptionType);
@@ -109,7 +109,7 @@ class SurveyServiceTest {
             QuestionType questionType = QuestionType.OX;
             Question question = Question.builder().id("questionId").type(questionType).options(Map.of()).build();
 
-            given(questionCache.findById(any(String.class))).willReturn(Optional.of(question));
+            given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
 
             // then
             assertThatThrownBy(() -> surveyService.convertAnswer(answerOfOptionType))
@@ -121,7 +121,7 @@ class SurveyServiceTest {
         @DisplayName("questionId에 해당하는 Question이 없을 경우 에러 발생")
         void throwExceptionIfQuestionDocuementNotExists() {
             // given
-            given(questionCache.findById(any(String.class))).willReturn(Optional.empty());
+            given(questionRepository.findById(any(String.class))).willReturn(Optional.empty());
 
             // then
             assertThatThrownBy(() -> surveyService.convertAnswer(answerOfOptionType))
@@ -134,12 +134,10 @@ class SurveyServiceTest {
         void throwExceptionIfQuestionDoesntHaveOption() {
             // given
             QuestionType questionType = QuestionType.OX;
-            Option option = Option.builder().id("notOptionId").build();
             Option realOption = Option.builder().id("realOptionId").build();
             Question question = Question.builder().id("questionId").type(questionType).options(Map.of(realOption.getId(), realOption)).build();
-            var answers = List.of(answerOfOptionType);
 
-            given(questionCache.findById(any(String.class))).willReturn(Optional.of(question));
+            given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
 
             // then
             assertThatThrownBy(() -> surveyService.convertAnswer(answerOfOptionType))
@@ -164,9 +162,8 @@ class SurveyServiceTest {
             // given
             QuestionType questionType = QuestionType.SHORT_ANSWER;
             Question question = Question.builder().id("questionId").type(questionType).options(Map.of()).build();
-            var answers = List.of(answerOfManualType);
 
-            given(questionCache.findById(any(String.class))).willReturn(Optional.of(question));
+            given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
 
             // when
             Answer answer = surveyService.convertAnswer(answerOfManualType);
@@ -182,9 +179,8 @@ class SurveyServiceTest {
             // given
             QuestionType questionType = QuestionType.SHORT_ANSWER;
             Question question = Question.builder().id("questionId").type(questionType).options(Map.of()).build();
-            var answers = List.of(answerOfManualType);
 
-            given(questionCache.findById(any(String.class))).willReturn(Optional.of(question));
+            given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
 
             // when
             Answer answer = surveyService.convertAnswer(answerOfManualType);
@@ -208,7 +204,7 @@ class SurveyServiceTest {
             Question question = Question.builder().id("questionId").type(questionType).options(Map.of()).name(QuestionName.BORROWING_LIMIT).build();
             int intAnswer = 100000;
 
-            given(questionCache.findById(any(String.class))).willReturn(Optional.of(question));
+            given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
 
             // when
             Answer answer = surveyService.convertAnswer(AnswerDto.builder()
@@ -234,7 +230,7 @@ class SurveyServiceTest {
                     .answer(stringAnswer)
                     .build();
 
-            given(questionCache.findById(any(String.class))).willReturn(Optional.of(question));
+            given(questionRepository.findById(any(String.class))).willReturn(Optional.of(question));
 
             // then
             assertThatThrownBy(() -> surveyService.convertAnswer(answer))

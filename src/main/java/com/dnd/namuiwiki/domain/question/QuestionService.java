@@ -31,13 +31,11 @@ public class QuestionService {
     private final OptionRepository optionRepository;
     private final QuestionRepository questionRepository;
 
-    private final QuestionCache questionCache;
-
     @Value("${setting.password}")
     private String SETTING_PASSWORD;
 
     public List<QuestionDto> getQuestions(QuestionType questionType) {
-        return questionCache.findAll().values().stream()
+        return questionRepository.findAll().stream()
                 .filter(q -> questionType == null || q.getType().equals(questionType))
                 .sorted(Comparator.comparing(Question::getSurveyOrder))
                 .map(QuestionDto::from)
