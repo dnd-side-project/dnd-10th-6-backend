@@ -6,13 +6,13 @@ import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionType;
 import com.dnd.namuiwiki.domain.survey.type.AnswerType;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
+@Slf4j
 @Getter
-@Builder
 @NoArgsConstructor
 public class Answer {
 
@@ -57,15 +57,13 @@ public class Answer {
             throw new ApplicationErrorException(ApplicationErrorType.INTERNAL_ERROR);
         }
 
-        if (returnType == Long.class) {
-            if (isNumericAnswerNeeded()) {
-                return (T) value;
-            } else {
-                throw new ApplicationErrorException(ApplicationErrorType.NOT_INTEGER_ANSWER);
-            }
+        try {
+            return returnType.cast(value);
+        } catch (ClassCastException e) {
+            log.error("Answer.getAnswer value: {}, valueType: {}, returnType: {}", value, value.getClass(), returnType, e);
+            throw new ApplicationErrorException(ApplicationErrorType.INVALID_TYPE_CAST);
         }
 
-        return returnType.cast(value);
     }
 
     private boolean isNumericAnswerNeeded() {
