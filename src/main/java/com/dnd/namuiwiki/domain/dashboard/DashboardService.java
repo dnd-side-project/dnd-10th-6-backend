@@ -15,12 +15,15 @@ import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.UserRepository;
 import com.dnd.namuiwiki.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DashboardService {
@@ -60,6 +63,7 @@ public class DashboardService {
     }
 
 
+    @Async
     public void updateStatistics(Survey survey) {
         User owner = survey.getOwner();
         Period period = survey.getPeriod();
@@ -70,6 +74,8 @@ public class DashboardService {
                 .toList();
 
         updateDashboards(owner, period, relation, statisticalAnswers);
+
+        log.info("DashboardService.updateStatistics done: owner={}, period={}, relation={}, answerSize={}", owner, period, relation, statisticalAnswers.size());
     }
 
     private void updateDashboards(User owner, Period period, Relation relation, List<Answer> statisticalAnswers) {

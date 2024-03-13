@@ -1,7 +1,6 @@
 package com.dnd.namuiwiki.domain.survey;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
-import com.dnd.namuiwiki.domain.dashboard.DashboardService;
 import com.dnd.namuiwiki.domain.jwt.JwtProvider;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.option.entity.Option;
@@ -9,7 +8,6 @@ import com.dnd.namuiwiki.domain.question.QuestionRepository;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.question.type.QuestionType;
-import com.dnd.namuiwiki.domain.statistic.StatisticsService;
 import com.dnd.namuiwiki.domain.survey.model.dto.AnswerDto;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyRequest;
 import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
@@ -22,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.List;
 import java.util.Map;
@@ -44,15 +43,13 @@ class SurveyServiceTest {
     @Mock
     private JwtProvider jwtProvider;
     @Mock
-    private StatisticsService statisticsService;
-    @Mock
-    private DashboardService dashboardService;
+    private ApplicationEventPublisher applicationEventPublisher;
 
     private SurveyService surveyService;
 
     @BeforeEach
     void beforeEach() {
-        surveyService = new SurveyService(userRepository, surveyRepository, questionRepository, jwtProvider, statisticsService, dashboardService);
+        surveyService = new SurveyService(userRepository, surveyRepository, questionRepository, jwtProvider, applicationEventPublisher);
     }
 
     @Test
