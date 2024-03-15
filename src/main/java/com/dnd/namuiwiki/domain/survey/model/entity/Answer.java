@@ -2,16 +2,17 @@ package com.dnd.namuiwiki.domain.survey.model.entity;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
+import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionType;
 import com.dnd.namuiwiki.domain.survey.type.AnswerType;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
+@Slf4j
 @Getter
-@Builder
 @NoArgsConstructor
 public class Answer {
 
@@ -40,6 +41,33 @@ public class Answer {
         this.question = question;
         this.type = type;
         this.reason = reason;
+    }
+
+    public <T> T getAnswer(Class<T> returnType) {
+        Object value;
+
+        if (type.isOption()) {
+            Option option = question.getOptions().get(answer.toString());
+            value = option.getValue();
+        } else {
+            value = answer;
+        }
+
+        if (value == null) {
+            throw new ApplicationErrorException(ApplicationErrorType.INTERNAL_ERROR);
+        }
+
+        try {
+            return returnType.cast(value);
+        } catch (ClassCastException e) {
+            log.error("Answer.getAnswer value: {}, valueType: {}, returnType: {}", value, value.getClass(), returnType, e);
+            throw new ApplicationErrorException(ApplicationErrorType.INVALID_TYPE_CAST);
+        }
+
+    }
+
+    private boolean isNumericAnswerNeeded() {
+        return question.getType().isNumericType() && type.isManual();
     }
 
     private void validateBorrowingLimit(long longAnswer) {

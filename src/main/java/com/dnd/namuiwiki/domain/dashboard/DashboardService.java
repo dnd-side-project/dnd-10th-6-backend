@@ -5,9 +5,7 @@ import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.dashboard.model.DashboardComponent;
 import com.dnd.namuiwiki.domain.dashboard.model.dto.DashboardDto;
 import com.dnd.namuiwiki.domain.dashboard.model.entity.Dashboard;
-import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
-import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.statistic.StatisticsService;
 import com.dnd.namuiwiki.domain.statistic.model.entity.PopulationStatistic;
 import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
@@ -40,12 +38,12 @@ public class DashboardService {
         }
         Dashboard dashboard = optionalDashboard.get();
 
+        List<PopulationStatistic> populationStatistics = statisticsService.getPopulationStatistics(period, relation);
+        List<DashboardComponent> populationDashboards = dashboard.getPopulationDashboards(populationStatistics);
         List<DashboardComponent> userDashboards = dashboard.getUserDashboards();
-        PopulationStatistic populationStatistic = statisticsService.getPopulationStatistic(period, relation, QuestionName.BORROWING_LIMIT);
-        DashboardComponent populationDashboard = dashboard.getPopulationDashboard(populationStatistic, DashboardType.MONEY);
 
         List<DashboardComponent> components = new ArrayList<>(userDashboards);
-        components.add(populationDashboard);
+        components.addAll(populationDashboards);
 
         return new DashboardDto(components);
     }
