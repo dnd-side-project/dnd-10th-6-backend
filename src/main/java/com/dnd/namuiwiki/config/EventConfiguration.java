@@ -2,6 +2,7 @@ package com.dnd.namuiwiki.config;
 
 import com.dnd.namuiwiki.domain.dashboard.DashboardRepository;
 import com.dnd.namuiwiki.domain.dashboard.DashboardService;
+import com.dnd.namuiwiki.domain.statistic.StatisticsRepository;
 import com.dnd.namuiwiki.domain.statistic.StatisticsService;
 import com.dnd.namuiwiki.domain.survey.SurveyEventHandler;
 import com.dnd.namuiwiki.domain.survey.SurveyRepository;
@@ -17,10 +18,12 @@ public class EventConfiguration {
 
     private final SurveyRepository surveyRepository;
     private final DashboardRepository dashboardRepository;
+    private final StatisticsRepository statisticsRepository;
 
     @Bean
     public SurveyEventHandler surveyEventHandler() {
-        return new SurveyEventHandler(statisticsService, dashboardService, surveyRepository, dashboardRepository);
+        return new SurveyEventHandler(statisticsService, dashboardService,
+                surveyRepository, dashboardRepository, statisticsRepository);
     }
 
 }

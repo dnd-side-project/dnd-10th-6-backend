@@ -16,6 +16,7 @@ import com.dnd.namuiwiki.domain.survey.model.dto.GetAnswersByQuestionResponse;
 import com.dnd.namuiwiki.domain.survey.model.dto.GetSurveyResponse;
 import com.dnd.namuiwiki.domain.survey.model.dto.ReceivedSurveyDto;
 import com.dnd.namuiwiki.domain.survey.model.dto.ResetDashboardEvent;
+import com.dnd.namuiwiki.domain.survey.model.dto.ResetStatisticsEvent;
 import com.dnd.namuiwiki.domain.survey.model.dto.SentSurveyDto;
 import com.dnd.namuiwiki.domain.survey.model.dto.SingleAnswerWithSurveyDetailDto;
 import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
@@ -228,6 +229,14 @@ public class SurveyService {
         }
 
         applicationEventPublisher.publishEvent(new ResetDashboardEvent());
+    }
+
+    public void resetStatistics(String pwd) {
+        if (!SETTING_PASSWORD.equals(pwd)) {
+            throw new ApplicationErrorException(ApplicationErrorType.NO_PERMISSION);
+        }
+
+        applicationEventPublisher.publishEvent(new ResetStatisticsEvent());
     }
 
 }

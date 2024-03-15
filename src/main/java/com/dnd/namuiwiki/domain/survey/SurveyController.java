@@ -64,4 +64,12 @@ public class SurveyController {
         return ResponseDto.noContent();
     }
 
+
+    @Operation(hidden = true)
+    @PostMapping("/reset/statistics")
+    public ResponseEntity<?> resetStatistics(@RequestParam String pwd) {
+        surveyService.resetStatistics(pwd);
+        return ResponseDto.noContent();
+    }
+
 }
