@@ -57,4 +57,11 @@ public class SurveyController {
         return ResponseDto.ok(response);
     }
 
+    @Operation(hidden = true)
+    @PostMapping("/reset/dashboard")
+    public ResponseEntity<?> resetDashboard(@RequestParam String pwd) {
+        surveyService.resetDashboard(pwd);
+        return ResponseDto.noContent();
+    }
+
 }

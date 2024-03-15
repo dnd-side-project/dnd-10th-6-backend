@@ -1,8 +1,10 @@
 package com.dnd.namuiwiki.config;
 
+import com.dnd.namuiwiki.domain.dashboard.DashboardRepository;
 import com.dnd.namuiwiki.domain.dashboard.DashboardService;
 import com.dnd.namuiwiki.domain.statistic.StatisticsService;
 import com.dnd.namuiwiki.domain.survey.SurveyEventHandler;
+import com.dnd.namuiwiki.domain.survey.SurveyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,9 +15,12 @@ public class EventConfiguration {
     private final StatisticsService statisticsService;
     private final DashboardService dashboardService;
 
+    private final SurveyRepository surveyRepository;
+    private final DashboardRepository dashboardRepository;
+
     @Bean
     public SurveyEventHandler surveyEventHandler() {
-        return new SurveyEventHandler(statisticsService, dashboardService);
+        return new SurveyEventHandler(statisticsService, dashboardService, surveyRepository, dashboardRepository);
     }
 
 }

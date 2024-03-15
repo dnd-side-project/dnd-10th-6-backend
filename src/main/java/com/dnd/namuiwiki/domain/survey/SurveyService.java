@@ -11,12 +11,13 @@ import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.survey.model.dto.AnswerDto;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyRequest;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyResponse;
+import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveySuccessEvent;
 import com.dnd.namuiwiki.domain.survey.model.dto.GetAnswersByQuestionResponse;
 import com.dnd.namuiwiki.domain.survey.model.dto.GetSurveyResponse;
 import com.dnd.namuiwiki.domain.survey.model.dto.ReceivedSurveyDto;
+import com.dnd.namuiwiki.domain.survey.model.dto.ResetDashboardEvent;
 import com.dnd.namuiwiki.domain.survey.model.dto.SentSurveyDto;
 import com.dnd.namuiwiki.domain.survey.model.dto.SingleAnswerWithSurveyDetailDto;
-import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveySuccessEvent;
 import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.AnswerType;
@@ -219,6 +220,14 @@ public class SurveyService {
             survey.setQuestionIdForAnswers();
             surveyRepository.save(survey);
         });
+    }
+
+    public void resetDashboard(String pwd) {
+        if (!SETTING_PASSWORD.equals(pwd)) {
+            throw new ApplicationErrorException(ApplicationErrorType.NO_PERMISSION);
+        }
+
+        applicationEventPublisher.publishEvent(new ResetDashboardEvent());
     }
 
 }
