@@ -19,7 +19,6 @@ import java.util.List;
 public class StatisticsService {
     private final StatisticsRepository statisticsRepository;
 
-    @Async
     public void updateStatistics(Survey survey) {
         Period period = survey.getPeriod();
         Relation relation = survey.getRelation();

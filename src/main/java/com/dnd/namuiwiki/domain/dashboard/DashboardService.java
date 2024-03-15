@@ -63,7 +63,6 @@ public class DashboardService {
     }
 
 
-    @Async
     public void updateStatistics(Survey survey) {
         User owner = survey.getOwner();
         Period period = survey.getPeriod();
