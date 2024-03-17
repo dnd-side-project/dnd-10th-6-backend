@@ -4,6 +4,7 @@ import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.entity.Question;
+import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.AnswerType;
@@ -34,14 +35,27 @@ public class GetSurveyResponse {
         private String text;
         private Object value;
         private String reason;
+        private QuestionName questionName;
 
         static SingleQuestionAndAnswer from(Question question, Answer surveyAnswer) {
             if (surveyAnswer.getType().equals(AnswerType.MANUAL)) {
-                return new SingleQuestionAndAnswer(question.getTitle(), surveyAnswer.getAnswer().toString(), surveyAnswer.getAnswer(), surveyAnswer.getReason());
+                return new SingleQuestionAndAnswer(
+                        question.getTitle(),
+                        surveyAnswer.getAnswer().toString(),
+                        surveyAnswer.getAnswer(),
+                        surveyAnswer.getReason(),
+                        question.getName()
+                );
             }
             Option option = question.getOption(surveyAnswer.getAnswer().toString())
                     .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID));
-            return new SingleQuestionAndAnswer(question.getTitle(), option.getText(), option.getValue(), surveyAnswer.getReason());
+            return new SingleQuestionAndAnswer(
+                    question.getTitle(),
+                    option.getText(),
+                    option.getValue(),
+                    surveyAnswer.getReason(),
+                    question.getName()
+            );
         }
     }
 
