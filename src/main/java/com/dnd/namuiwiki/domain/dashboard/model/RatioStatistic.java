@@ -1,4 +1,4 @@
-package com.dnd.namuiwiki.domain.statistic.model;
+package com.dnd.namuiwiki.domain.dashboard.model;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
@@ -35,9 +35,9 @@ public class RatioStatistic extends Statistic {
         return legends.values().stream().toList();
     }
 
-    public static RatioStatistic create(Question question) {
+    protected static RatioStatistic create(Question question) {
         Map<String, Legend> legends = new HashMap<>();
-        question.getOptions().forEach((key, value) -> legends.put(key, new Legend(key, value.getText(), value.getValue(), 0L)));
+        question.getOptions().forEach((key, value) -> legends.put(key, Legend.from(value)));
         return new RatioStatistic(
                 question.getId(),
                 question.getName(),
@@ -62,7 +62,7 @@ public class RatioStatistic extends Statistic {
                 .orElseGet(() -> {
                     Option option = question.getOption(optionId)
                             .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID));
-                    return new Legend(option.getId(), option.getText(), option.getValue(), 0L);
+                    return Legend.from(option);
                 });
         legend.increaseCount();
     }

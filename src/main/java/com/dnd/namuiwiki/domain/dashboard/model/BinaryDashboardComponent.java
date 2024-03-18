@@ -4,10 +4,6 @@ import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
-import com.dnd.namuiwiki.domain.statistic.model.Legend;
-import com.dnd.namuiwiki.domain.statistic.model.RatioStatistic;
-import com.dnd.namuiwiki.domain.statistic.model.Statistic;
-import com.dnd.namuiwiki.domain.statistic.model.Statistics;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -15,34 +11,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class CharacterDashboardComponent extends DashboardComponent {
-    private List<Character> characters;
+public class BinaryDashboardComponent extends DashboardComponent {
+    private List<BinaryMetric> characters;
 
-    public CharacterDashboardComponent(Statistics statistics) {
-        super(DashboardType.CHARACTER);
+    public BinaryDashboardComponent(DashboardType dashboardType, List<Statistic> statistics) {
+        super(dashboardType);
         this.characters = new ArrayList<>();
-        calculate(statistics);
+        initiate(statistics);
     }
 
-    @Override
-    public void calculate(Statistics statistics) {
-        List<Statistic> character = statistics.getStatisticsByDashboardType(this.dashboardType);
-        this.characters = character.stream().map(Character::from).toList();
+    public void initiate(List<Statistic> character) {
+        this.characters = character.stream().map(BinaryMetric::from).toList();
     }
 
     @RequiredArgsConstructor
     @Getter
-    static class Character {
+    static class BinaryMetric {
         private final String name;
         private final boolean value;
         private final String questionId;
 
-        private static Character from(Statistic statistic) {
+        private static BinaryMetric from(Statistic statistic) {
             RatioStatistic ratioStatistic = (RatioStatistic) statistic;
             List<Legend> legends = ratioStatistic.getLegends();
             QuestionName questionName = ratioStatistic.getQuestionName();
 
-            return new Character(
+            return new BinaryMetric(
                     questionName.name(),
                     getCharacterRatioResult(legends),
                     statistic.getQuestionId()

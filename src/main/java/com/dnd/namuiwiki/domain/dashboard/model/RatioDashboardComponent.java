@@ -2,29 +2,27 @@ package com.dnd.namuiwiki.domain.dashboard.model;
 
 import com.dnd.namuiwiki.domain.dashboard.model.dto.RatioDto;
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
-import com.dnd.namuiwiki.domain.statistic.model.RatioStatistic;
-import com.dnd.namuiwiki.domain.statistic.model.Statistics;
 import lombok.Getter;
 
 import java.util.List;
 
 @Getter
-public class SadDashboardComponent extends DashboardComponent {
+public class RatioDashboardComponent extends DashboardComponent {
     private final String questionId;
     private List<RatioDto> rank;
 
-    public SadDashboardComponent(Statistics statistics, String questionId) {
-        super(DashboardType.SAD);
-        this.questionId = questionId;
+    public RatioDashboardComponent(DashboardType dashboardType, Statistic statistic) {
+        super(dashboardType);
+        RatioStatistic ratioStatistic = (RatioStatistic) statistic;
 
-        calculate(statistics);
+        this.questionId = ratioStatistic.getQuestionId();
+        initiate(ratioStatistic);
     }
 
-    @Override
-    public void calculate(Statistics statistics) {
-        RatioStatistic sad = (RatioStatistic) statistics.getStatisticsByDashboardType(this.dashboardType).get(0);
-        Long totalCount = sad.getTotalCount();
-        this.rank = sad.getLegends().stream()
+    public void initiate(RatioStatistic statistic) {
+        Long totalCount = statistic.getTotalCount();
+
+        this.rank = statistic.getLegends().stream()
                 .map(legend -> {
                     if (totalCount == 0) {
                         return new RatioDto(legend.getText(), 0);
@@ -32,6 +30,7 @@ public class SadDashboardComponent extends DashboardComponent {
                     int percentage = (int) (legend.getCount() * 100 / totalCount);
                     return new RatioDto(legend.getText(), percentage);
                 })
+                .sorted((a, b) -> b.getPercentage() - a.getPercentage())
                 .toList();
     }
 

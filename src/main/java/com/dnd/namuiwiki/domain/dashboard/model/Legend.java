@@ -1,5 +1,6 @@
-package com.dnd.namuiwiki.domain.statistic.model;
+package com.dnd.namuiwiki.domain.dashboard.model;
 
+import com.dnd.namuiwiki.domain.option.entity.Option;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -13,5 +14,9 @@ public class Legend {
 
     public Long increaseCount() {
         return ++count;
+    }
+
+    public static Legend from(Option option) {
+        return new Legend(option.getId(), option.getText(), option.getValue(), 0L);
     }
 }

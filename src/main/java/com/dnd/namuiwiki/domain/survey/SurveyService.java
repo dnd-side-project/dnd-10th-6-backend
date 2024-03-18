@@ -3,6 +3,7 @@ package com.dnd.namuiwiki.domain.survey;
 import com.dnd.namuiwiki.common.dto.PageableDto;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
+import com.dnd.namuiwiki.domain.dashboard.DashboardService;
 import com.dnd.namuiwiki.domain.jwt.JwtProvider;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.option.OptionRepository;
@@ -43,6 +44,7 @@ public class SurveyService {
     private final OptionRepository optionRepository;
     private final JwtProvider jwtProvider;
     private final StatisticsService statisticsService;
+    private final DashboardService dashboardService;
 
     public CreateSurveyResponse createSurvey(CreateSurveyRequest request, String accessToken) {
         User owner = getUserByWikiId(request.getOwner());
@@ -59,6 +61,7 @@ public class SurveyService {
                 .answers(surveyAnswer)
                 .build());
 
+        dashboardService.updateStatistics(survey);
         statisticsService.updateStatistics(survey);
 
         return new CreateSurveyResponse(survey.getId());
