@@ -7,5 +7,9 @@ import lombok.Getter;
 @Getter
 public class RatioDto {
     private final String legend;
-    private final int percentage;
+    private int percentage;
+
+    public void setPercentage(int percentage) {
+        this.percentage = percentage;
+    }
 }
