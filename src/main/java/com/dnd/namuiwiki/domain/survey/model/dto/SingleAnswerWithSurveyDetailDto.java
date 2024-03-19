@@ -18,7 +18,7 @@ public class SingleAnswerWithSurveyDetailDto {
     private Period period;
     private Relation relation;
     private LocalDateTime createdAt;
-    private String answer;
+    private Object answer;
     private String reason;
     private String optionName;
 
