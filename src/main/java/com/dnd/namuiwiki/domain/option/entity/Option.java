@@ -17,6 +17,7 @@ public class Option extends BaseTimeEntity {
     private String id;
     private Object value;
     private String text;
+    private String name;
     private int order;
 
     @Override
