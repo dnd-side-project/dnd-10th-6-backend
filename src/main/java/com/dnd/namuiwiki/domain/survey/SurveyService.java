@@ -147,7 +147,7 @@ public class SurveyService {
                     .build();
         });
 
-        return new GetAnswersByQuestionResponse(question.getTitle(), PageableDto.create(answers));
+        return new GetAnswersByQuestionResponse(question.getTitle(), question.getName(), PageableDto.create(answers));
     }
 
     private void validateFilter(Period period, Relation relation) {
