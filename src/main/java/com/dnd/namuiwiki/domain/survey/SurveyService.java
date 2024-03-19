@@ -142,7 +142,7 @@ public class SurveyService {
                     .period(survey.getPeriod())
                     .relation(survey.getRelation())
                     .createdAt(survey.getWrittenAt())
-                    .answer(convertAnswerToText(question, answerOfQuestion))
+                    .answer(convertAnswer(question, answerOfQuestion))
                     .reason(answerOfQuestion.getReason())
                     .optionName(question, answerOfQuestion)
                     .build();
@@ -177,12 +177,16 @@ public class SurveyService {
         return surveyRepository.findByOwner(owner, pageable);
     }
 
-    private String convertAnswerToText(Question question, Answer answer) {
+    private Object convertAnswer(Question question, Answer answer) {
         if (answer.getType().equals(AnswerType.MANUAL)) {
-            return answer.getAnswer().toString();
+            return answer.getAnswer();
         }
+
         Option option = question.getOption(answer.getAnswer().toString())
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID));
+        if (question.getType().isNumericType()) {
+            return option.getValue();
+        }
         return option.getText();
     }
 
