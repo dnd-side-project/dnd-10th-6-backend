@@ -36,6 +36,7 @@ public class BestWorthDashboardComponent extends DashboardComponent {
         for (Legend legend : legends) {
             if (totalCount == 0) {
                 rank.add(new RatioDto(legend.getText(), 0));
+                continue;
             }
             int percentage = (int) (legend.getCount() * 100 / totalCount);
             optionPercentage += percentage;
