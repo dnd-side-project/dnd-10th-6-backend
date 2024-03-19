@@ -7,7 +7,6 @@ import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
-import com.dnd.namuiwiki.domain.survey.type.AnswerType;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import lombok.AllArgsConstructor;
@@ -36,15 +35,19 @@ public class GetSurveyResponse {
         private Object value;
         private String reason;
         private QuestionName questionName;
+        private String optionName;
 
         static SingleQuestionAndAnswer from(Question question, Answer surveyAnswer) {
-            if (surveyAnswer.getType().equals(AnswerType.MANUAL)) {
+            String optionName = getOptionName(question, surveyAnswer);
+
+            if (surveyAnswer.getType().isManual()) {
                 return new SingleQuestionAndAnswer(
                         question.getTitle(),
                         surveyAnswer.getAnswer().toString(),
                         surveyAnswer.getAnswer(),
                         surveyAnswer.getReason(),
-                        question.getName()
+                        question.getName(),
+                        optionName
                 );
             }
             Option option = question.getOption(surveyAnswer.getAnswer().toString())
@@ -54,8 +57,28 @@ public class GetSurveyResponse {
                     option.getText(),
                     option.getValue(),
                     surveyAnswer.getReason(),
-                    question.getName()
+                    question.getName(),
+                    optionName
             );
+        }
+
+        private static String getOptionName(Question question, Answer surveyAnswer) {
+            String optionName = null;
+
+            if (question.getType().isChoiceType()) {
+                if (surveyAnswer.getType().isOption()) {
+                    optionName = question.getOption(surveyAnswer.getAnswer().toString())
+                            .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID))
+                            .getName();
+                } else {
+                    optionName = question.getOptions().values().stream()
+                            .filter(option -> option.getName().contains("MANUAL"))
+                            .findFirst()
+                            .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID))
+                            .getName();
+                }
+            }
+            return optionName;
         }
     }
 

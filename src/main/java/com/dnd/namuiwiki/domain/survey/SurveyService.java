@@ -144,6 +144,7 @@ public class SurveyService {
                     .createdAt(survey.getWrittenAt())
                     .answer(convertAnswerToText(question, answerOfQuestion))
                     .reason(answerOfQuestion.getReason())
+                    .optionName(question, answerOfQuestion)
                     .build();
         });
 
