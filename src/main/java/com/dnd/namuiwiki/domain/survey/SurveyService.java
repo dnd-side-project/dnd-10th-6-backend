@@ -9,7 +9,6 @@ import com.dnd.namuiwiki.domain.option.OptionRepository;
 import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.QuestionRepository;
 import com.dnd.namuiwiki.domain.question.entity.Question;
-import com.dnd.namuiwiki.domain.statistic.StatisticsService;
 import com.dnd.namuiwiki.domain.survey.model.dto.AnswerDto;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyRequest;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyResponse;
@@ -18,6 +17,7 @@ import com.dnd.namuiwiki.domain.survey.model.dto.GetSurveyResponse;
 import com.dnd.namuiwiki.domain.survey.model.dto.ReceivedSurveyDto;
 import com.dnd.namuiwiki.domain.survey.model.dto.SentSurveyDto;
 import com.dnd.namuiwiki.domain.survey.model.dto.SingleAnswerWithSurveyDetailDto;
+import com.dnd.namuiwiki.domain.survey.model.dto.SurveyCreatedEvent;
 import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.AnswerType;
@@ -26,6 +26,8 @@ import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.UserRepository;
 import com.dnd.namuiwiki.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +36,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SurveyService {
@@ -42,7 +45,7 @@ public class SurveyService {
     private final QuestionRepository questionRepository;
     private final OptionRepository optionRepository;
     private final JwtProvider jwtProvider;
-    private final StatisticsService statisticsService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public CreateSurveyResponse createSurvey(CreateSurveyRequest request, String accessToken) {
         User owner = getUserByWikiId(request.getOwner());
@@ -59,7 +62,9 @@ public class SurveyService {
                 .answers(surveyAnswer)
                 .build());
 
-        statisticsService.updateStatistics(survey);
+        log.info("SurveyService.createSurvey: surveyId={} done", survey.getId());
+
+        applicationEventPublisher.publishEvent(new SurveyCreatedEvent(survey));
 
         return new CreateSurveyResponse(survey.getId());
     }
