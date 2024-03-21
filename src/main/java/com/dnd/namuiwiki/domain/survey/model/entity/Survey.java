@@ -22,10 +22,10 @@ public class Survey extends BaseTimeEntity {
     @Id
     private String id;
 
-    @DocumentReference
+    @DocumentReference(collection = "users", lazy = true)
     private User owner;
 
-    @DocumentReference
+    @DocumentReference(collection = "users", lazy = true)
     private User sender;
 
     private String senderName;
