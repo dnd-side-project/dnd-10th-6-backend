@@ -45,6 +45,9 @@ public class SadDashboardComponent extends DashboardComponent {
 
         // 직접입력인 legend 인거 찾아서 새로 업데이트
         updateManualLegendPercentage(optionPercentage);
+
+        // 마지막 정렬
+        this.rank.sort((o1, o2) -> o2.getPercentage() - o1.getPercentage());
     }
 
     private void updateManualLegendPercentage(int optionPercentage) {
