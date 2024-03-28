@@ -118,21 +118,28 @@ public class SurveyService {
         return PageableDto.create(surveys);
     }
 
-    public GetSurveyResponse getSurvey(String surveyId) {
-        List<Question> questions = questionRepository.findAll();
+    public GetSurveyResponse getSurvey(String surveyId, TokenUserInfoDto tokenUserInfoDto) {
         Survey survey = surveyRepository.findById(surveyId)
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_SURVEY));
+
+        User user = getUserByWikiId(tokenUserInfoDto.getWikiId());
+        validateSurveyOwner(survey, user);
+
+        List<Question> questions = questionRepository.findAll();
         return GetSurveyResponse.from(survey, questions);
+    }
+
+    private void validateSurveyOwner(Survey survey, User user) {
+        if (!survey.getOwner().isMe(user)) {
+            throw new ApplicationErrorException(ApplicationErrorType.INVALID_SURVEY_OWNER);
+        }
     }
 
     public GetAnswersByQuestionResponse getAnswersByQuestion(String wikiId, String questionId, Period period, Relation relation, int pageNo, int pageSize) {
         validateFilter(period, relation);
 
-        Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_ID));
-
-        User owner = userRepository.findByWikiId(wikiId)
-                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
+        Question question = getQuestionById(questionId);
+        User owner = getUserByWikiId(wikiId);
 
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
