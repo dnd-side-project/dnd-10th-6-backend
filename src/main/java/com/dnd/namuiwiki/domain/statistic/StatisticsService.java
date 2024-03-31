@@ -35,8 +35,7 @@ public class StatisticsService {
                 .toList();
 
         updateDashboards(owner, period, relation, answers);
-//        updateBorrowingLimitStatistic(period, relation, statisticalAnswers);
-
+        updateBorrowingLimitStatistic(period, relation, answers);
     }
 
     public PopulationStatistic getPopulationStatistic(Period period, Relation relation, QuestionName questionName) {
