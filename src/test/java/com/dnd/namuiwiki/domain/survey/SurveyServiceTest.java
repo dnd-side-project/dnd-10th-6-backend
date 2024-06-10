@@ -9,7 +9,6 @@ import com.dnd.namuiwiki.domain.question.QuestionRepository;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.question.type.QuestionType;
-import com.dnd.namuiwiki.domain.statistic.StatisticsService;
 import com.dnd.namuiwiki.domain.survey.model.dto.AnswerDto;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyRequest;
 import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
@@ -22,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.List;
 import java.util.Map;
@@ -46,13 +46,13 @@ class SurveyServiceTest {
     @Mock
     private JwtProvider jwtProvider;
     @Mock
-    private StatisticsService statisticsService;
+    private ApplicationEventPublisher applicationEventPublisher;
 
     private SurveyService surveyService;
 
     @BeforeEach
     void beforeEach() {
-        surveyService = new SurveyService(userRepository, surveyRepository, questionRepository, optionRepository, jwtProvider, statisticsService);
+        surveyService = new SurveyService(userRepository, surveyRepository, questionRepository, optionRepository, jwtProvider, applicationEventPublisher);
     }
 
     @Test

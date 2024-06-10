@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
 
-public interface DashboardRepository extends MongoRepository<Dashboard, String> {
+public interface DashboardRepository extends MongoRepository<Dashboard, String>, DashboardCustomRepository {
     Optional<Dashboard> findByUserAndPeriodAndRelation(User user, Period period, Relation relation);
+    boolean existsByUserAndPeriodAndRelation(User user, Period period, Relation relation);
 }

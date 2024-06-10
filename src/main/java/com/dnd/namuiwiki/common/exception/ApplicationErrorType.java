@@ -61,8 +61,8 @@ public enum ApplicationErrorType {
      */
     NOT_FOUND_SURVEY(HttpStatus.NOT_FOUND, "존재하지 않는 설문입니다."),
     QUESTION_ANSWER_COUNT_NOT_EQUAL(HttpStatus.INTERNAL_SERVER_ERROR, "문항과 답변의 개수가 일치하지 않습니다."),
-
     INVALID_BORROWING_LIMIT(HttpStatus.BAD_REQUEST, "빌릴 수 있는 돈은 0 이상 10억 이하입니다."),
+    INVALID_SURVEY_OWNER(HttpStatus.CONFLICT, "설문 소유자가 아닙니다."),
 
     /**
      * Filter Error Type
@@ -71,10 +71,10 @@ public enum ApplicationErrorType {
 
 
     @Getter
-    private HttpStatus httpStatus;
+    private final HttpStatus httpStatus;
 
     @Getter
-    private String message;
+    private final String message;
 
     public int getStatusCode() {
         return httpStatus.value();

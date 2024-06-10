@@ -52,8 +52,11 @@ public class SurveyController {
     }
 
     @GetMapping("/{surveyId}")
-    public ResponseEntity<?> getSurvey(@PathVariable("surveyId") String surveyId) {
-        var response = surveyService.getSurvey(surveyId);
+    public ResponseEntity<?> getSurvey(
+            @JwtAuthorization TokenUserInfoDto tokenUserInfoDto,
+            @PathVariable("surveyId") String surveyId
+    ) {
+        var response = surveyService.getSurvey(surveyId, tokenUserInfoDto);
         return ResponseDto.ok(response);
     }
 
