@@ -30,13 +30,12 @@ public class StatisticsService {
         Period period = survey.getPeriod();
         Relation relation = survey.getRelation();
 
-        var statisticalAnswers = survey.getAnswers().stream()
+        var answers = survey.getAnswers().stream()
                 .filter(answer -> answer.getQuestion().getDashboardType().getStatisticsType().isNotNone())
                 .toList();
 
-        updateDashboards(owner, period, relation, statisticalAnswers);
-        updateBorrowingLimitStatistic(period, relation, statisticalAnswers);
-
+        updateDashboards(owner, period, relation, answers);
+        updateBorrowingLimitStatistic(period, relation, answers);
     }
 
     public PopulationStatistic getPopulationStatistic(Period period, Relation relation, QuestionName questionName) {
@@ -50,25 +49,26 @@ public class StatisticsService {
                         .build());
     }
 
-    private void updateDashboards(User owner, Period period, Relation relation, List<Answer> statisticalAnswers) {
-        updateDashboardByCategory(owner, null, null, statisticalAnswers);
-        updateDashboardByCategory(owner, period, null, statisticalAnswers);
-        updateDashboardByCategory(owner, null, relation, statisticalAnswers);
+    private void updateDashboards(User owner, Period period, Relation relation, List<Answer> answers) {
+        updateDashboard(owner, null, null, answers);
+        updateDashboard(owner, period, null, answers);
+        updateDashboard(owner, null, relation, answers);
     }
 
-    private void updateDashboardByCategory(User owner, Period period, Relation relation, List<Answer> answers) {
-        Dashboard dashboard = dashboardRepository.findByUserAndPeriodAndRelation(owner, period, relation)
-                .orElseGet(() -> {
-                    Dashboard newDashboard = Dashboard.builder()
-                            .user(owner)
-                            .period(period)
-                            .relation(relation)
-                            .statistics(Statistics.from(answers.stream().map(Answer::getQuestion).toList()))
-                            .build();
-                    return dashboardRepository.save(newDashboard);
-                });
-        dashboard.updateStatistics(answers);
-        dashboardRepository.save(dashboard);
+    private void updateDashboard(User owner, Period period, Relation relation, List<Answer> answers) {
+        insertDashboardIfNotExist(owner, period, relation, answers);
+        dashboardRepository.updateDashboard(owner, period, relation, answers);
+    }
+
+    private void insertDashboardIfNotExist(User owner, Period period, Relation relation, List<Answer> answers) {
+        if (!dashboardRepository.existsByUserAndPeriodAndRelation(owner, period, relation)) {
+            dashboardRepository.save(Dashboard.builder()
+                    .user(owner)
+                    .period(period)
+                    .relation(relation)
+                    .statistics(Statistics.from(answers.stream().map(Answer::getQuestion).toList()))
+                    .build());
+        }
     }
 
     private void updateBorrowingLimitStatistic(Period period, Relation relation, List<Answer> answers) {
