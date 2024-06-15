@@ -4,6 +4,7 @@ import com.dnd.namuiwiki.common.model.BaseTimeEntity;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.entity.User;
+import com.dnd.namuiwiki.domain.wiki.WikiType;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
@@ -35,6 +36,8 @@ public class Survey extends BaseTimeEntity {
     private Relation relation;
 
     private List<Answer> answers;
+
+    private WikiType wikiType;
 
     public Answer getAnswer(int index) {
         return answers.get(index);
