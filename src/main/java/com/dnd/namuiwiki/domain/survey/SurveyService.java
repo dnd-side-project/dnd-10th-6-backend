@@ -4,6 +4,7 @@ import com.dnd.namuiwiki.common.dto.PageableDto;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.jwt.JwtProvider;
+import com.dnd.namuiwiki.domain.jwt.JwtService;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.option.OptionRepository;
 import com.dnd.namuiwiki.domain.option.entity.Option;
@@ -44,12 +45,12 @@ public class SurveyService {
     private final SurveyRepository surveyRepository;
     private final QuestionRepository questionRepository;
     private final OptionRepository optionRepository;
-    private final JwtProvider jwtProvider;
+    private final JwtService jwtService;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     public CreateSurveyResponse createSurvey(CreateSurveyRequest request, String accessToken) {
         User owner = getUserByWikiId(request.getOwner());
-        User sender = getUserByAccessToken(accessToken);
+        User sender = jwtService.getUserByAccessToken(accessToken);
         validateNotFromMe(owner, sender);
 
         List<Answer> surveyAnswer = request.getAnswers().stream().map(this::convertAnswer).toList();
@@ -209,16 +210,6 @@ public class SurveyService {
 
     private User getUserByWikiId(String wikiId) {
         return userRepository.findByWikiId(wikiId)
-                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
-    }
-
-    private User getUserByAccessToken(String accessToken) {
-        if (accessToken == null || accessToken.isEmpty()) {
-            return null;
-        }
-
-        TokenUserInfoDto tokenUserInfoDto = jwtProvider.parseToken(accessToken);
-        return userRepository.findByWikiId(tokenUserInfoDto.getWikiId())
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
     }
 }
