@@ -8,7 +8,9 @@ public enum QuestionType {
     OX(List.of(AnswerType.OPTION)),
     MULTIPLE_CHOICE(List.of(AnswerType.MANUAL, AnswerType.OPTION)),
     SHORT_ANSWER(List.of(AnswerType.MANUAL)),
-    NUMERIC_CHOICE(List.of(AnswerType.MANUAL, AnswerType.OPTION));
+    NUMERIC_CHOICE(List.of(AnswerType.MANUAL, AnswerType.OPTION)),
+    RANK(List.of(AnswerType.OPTION))
+    ;
 
     QuestionType(List<AnswerType> answerTypes) {
         this.answerTypes = answerTypes;
