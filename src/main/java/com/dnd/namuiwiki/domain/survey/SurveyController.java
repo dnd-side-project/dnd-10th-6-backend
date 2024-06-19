@@ -5,6 +5,7 @@ import com.dnd.namuiwiki.domain.jwt.JwtAuthorization;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyRequest;
 import com.dnd.namuiwiki.domain.survey.model.dto.CreateSurveyResponse;
+import com.dnd.namuiwiki.domain.wiki.WikiType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -44,10 +45,11 @@ public class SurveyController {
     @GetMapping
     public ResponseEntity<?> getReceivedSurveys(
             @JwtAuthorization TokenUserInfoDto tokenUserInfoDto,
+            @RequestParam(name = "wikiType") WikiType wikiType,
             @RequestParam(name = "pageNo", required = false, defaultValue = "0") int pageNo,
             @RequestParam(name = "pageSize", required = false, defaultValue = "20") int pageSize
     ) {
-        var response = surveyService.getReceivedSurveys(tokenUserInfoDto, pageNo, pageSize);
+        var response = surveyService.getReceivedSurveys(tokenUserInfoDto, wikiType, pageNo, pageSize);
         return ResponseDto.ok(response);
     }
 
