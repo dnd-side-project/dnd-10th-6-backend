@@ -62,7 +62,7 @@ public class QuestionService {
             JSONArray questions = (JSONArray) json.get("questions");
 
             setDefaultOptions(options);
-            setDefaultQuestions(options, questions);
+            setDefaultQuestions(options, questions, wikiType);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -79,7 +79,7 @@ public class QuestionService {
         }
     }
 
-    private void setDefaultQuestions(JSONArray options, JSONArray questions) {
+    private void setDefaultQuestions(JSONArray options, JSONArray questions, WikiType wikiType) {
         var allQuestions = questions.stream().map(q -> {
             JSONObject qq = (JSONObject) q;
             QuestionType type = QuestionType.valueOf(qq.get("type").toString());
@@ -90,7 +90,8 @@ public class QuestionService {
                     .dashboardType(DashboardType.valueOf(qq.get("dashboardType").toString()))
                     .name(name)
                     .reasonRequired((boolean) qq.get("reasonRequired"))
-                    .type(type);
+                    .type(type)
+                    .wikiType(wikiType);
 
             if (type.isChoiceType()) {
                 JSONArray keys = (JSONArray) qq.get("key");
