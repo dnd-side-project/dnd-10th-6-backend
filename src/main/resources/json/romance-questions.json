@@ -1,0 +1,279 @@
+{
+  "questions": [
+    {
+      "title": "{{userName}}님에게<br/><b>나의 가장 친한 지인을 소개해 줄 수 있다</b>",
+      "surveyOrder": 1,
+      "type": "OX",
+      "dashboardType": "BINARY",
+      "name": "INTRODUCE_BEST_FRIEND",
+      "reasonRequired": true,
+      "key": [
+        0,
+        1
+      ]
+    },
+    {
+      "title": "{{userName}}님의<br/><b>연애 타입은?</b>",
+      "surveyOrder": 2,
+      "type": "MULTIPLE_CHOICE",
+      "dashboardType": "BAR_CHART",
+      "name": "DATING_TYPE",
+      "reasonRequired": true,
+      "key": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "title": "{{userName}}님의<br/><b>이상형은?</b>",
+      "surveyOrder": 3,
+      "type": "SHORT_ANSWER",
+      "dashboardType": "NONE",
+      "name": "IDEAL_TYPE",
+      "reasonRequired": false
+    },
+    {
+      "title": "{{userName}}님이<br/><b>애인과 싸웠을 때 할 것 같은 행동은?</b>",
+      "surveyOrder": 4,
+      "type": "MULTIPLE_CHOICE",
+      "dashboardType": "BAR_CHART",
+      "name": "ARGUMENT_BEHAVIOR",
+      "reasonRequired": true,
+      "key": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "title": "{{userName}}님이<br/><b>연애 상대로 가장 중요하게 볼 것 같은 요소</b>",
+      "surveyOrder": 5,
+      "type": "RANK",
+      "dashboardType": "BUBBLE_CHART",
+      "name": "IMPORTANT_ELEMENT",
+      "reasonRequired": true,
+      "key": [
+        12,
+        13,
+        14,
+        15,
+        16
+      ]
+    },
+    {
+      "title": "{{userName}}님이<br/><b>이성에게 하는 플러팅 방법은?</b>",
+      "surveyOrder": 7,
+      "type": "SHORT_ANSWER",
+      "dashboardType": "NONE",
+      "name": "FLIRTING_METHOD",
+      "reasonRequired": false
+    },
+    {
+      "title": "{{userName}}님이<br/><b>애인과 가장 많이 다툴 것 같은 이유는?</b>",
+      "surveyOrder": 8,
+      "type": "MULTIPLE_CHOICE",
+      "dashboardType": "BAR_CHART",
+      "name": "ARGUMENT_REASON",
+      "reasonRequired": true,
+      "key": [
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ]
+    },
+    {
+      "title": "{{userName}}님이<br/><b>결혼을 한다면?</b>",
+      "surveyOrder": 9,
+      "type": "MULTIPLE_CHOICE",
+      "dashboardType": "BAR_CHART",
+      "name": "ABOUT_MARRIAGE",
+      "reasonRequired": true,
+      "key": [
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30
+      ]
+    }
+  ],
+  "options": [
+    {
+      "text": "네",
+      "value": true,
+      "order": 1
+    },
+    {
+      "text": "아니요",
+      "value": false,
+      "order": 2
+    },
+    {
+      "text": "츤데레 타입",
+      "value": "츤데레 타입",
+      "description": "오다 주웠다고 말하며 선물 주는 스타일",
+      "order": 1
+    },
+    {
+      "text": "적극적인 타입",
+      "value": "적극적인 타입",
+      "description": "애인 한정 애교 많은 스타일",
+      "order": 2
+    },
+    {
+      "text": "현실적인 타입",
+      "value": "현실적인 타입",
+      "description": "데이트 비용을 정확히 반반 내자고 제안하는 스타일",
+      "order": 3
+    },
+    {
+      "text": "사회생활 존중 타입",
+      "value": "사회생활 존중 타입",
+      "description": "질투, 집착 없이 서로의 사회생활을 존중하는 스타일",
+      "order": 4
+    },
+    {
+      "text": "사랑꾼 타입",
+      "value": "사랑꾼 타입",
+      "description": "365일 매일 만나는 사랑꾼 스타일",
+      "order": 5
+    },
+    {
+      "text": "해결형 타입",
+      "value": "해결형 타입",
+      "description": "바로 화해하고자 대화를 시도하는 스타일",
+      "order": 1
+    },
+    {
+      "text": "시간이 필요한 타입",
+      "value": "시간이 필요한 타입",
+      "description": "감정이 가라앉을 때까지 시간을 필요로 하는 타입",
+      "order": 2
+    },
+    {
+      "text": "조언을 구하는 타입",
+      "value": "조언을 구하는 타입",
+      "description": "친구들에게 조언을 구하며 외부의 의견을 듣는 타입",
+      "order": 3
+    },
+    {
+      "text": "분석형 타입",
+      "value": "분석형 타입",
+      "description": "문제의 원인을 분석하고 해결책을 찾으려는 타입",
+      "order": 4
+    },
+    {
+      "text": "회피형 타입",
+      "value": "회피형 타입",
+      "description": "동굴에 들어가서 문제 상황을 일단 회피하는 타입",
+      "order": 5
+    },
+    {
+      "text": "돈",
+      "value": "돈",
+      "order": 1
+    },
+    {
+      "text": "직업",
+      "value": "직업",
+      "order": 2
+    },
+    {
+      "text": "성격",
+      "value": "성격",
+      "order": 3
+    },
+    {
+      "text": "얼굴",
+      "value": "얼굴",
+      "order": 4
+    },
+    {
+      "text": "외형(키, 체형 등)",
+      "value": "외형(키, 체형 등)",
+      "order": 5
+    },
+    {
+      "text": "남사친/여사친",
+      "value": "남사친/여사친",
+      "order": 1
+    },
+    {
+      "text": "친구들과의 잦은 약숙",
+      "value": "친구들과의 잦은 약숙",
+      "order": 2
+    },
+    {
+      "text": "술/담배 등 기호 식품",
+      "value": "술/담배 등 기호 식품",
+      "order": 3
+    },
+    {
+      "text": "게임",
+      "value": "게임",
+      "order": 4
+    },
+    {
+      "text": "연락 빈도",
+      "value": "연락 빈도",
+      "order": 5
+    },
+    {
+      "text": "애정 표현",
+      "value": "애정 표현",
+      "order": 6
+    },
+    {
+      "text": "데이트 비용",
+      "value": "데이트 비용",
+      "order": 7
+    },
+    {
+      "text": "1-2년 정도 만나다가 결혼",
+      "value": "1-2년 정도 만나다가 결혼",
+      "order": 1
+    },
+    {
+      "text": "오랫동안 장기 연애 하다 결혼",
+      "value": "오랫동안 장기 연애 하다 결혼",
+      "order": 2
+    },
+    {
+      "text": "속도위반",
+      "value": "속도위반",
+      "order": 3
+    },
+    {
+      "text": "운명 같은 상대와 하루아침에",
+      "value": "운명 같은 상대와 하루아침에",
+      "order": 4
+    },
+    {
+      "text": "결혼하지 않을 것 같다",
+      "value": "결혼하지 않을 것 같다",
+      "order": 5
+    },
+    {
+      "text": "결혼하지 못할 것 같다",
+      "value": "결혼하지 못할 것 같다",
+      "order": 6
+    },
+    {
+      "text": "이미 결혼했다",
+      "value": "이미 결혼했다",
+      "order": 7
+    }
+  ]
+}
+
