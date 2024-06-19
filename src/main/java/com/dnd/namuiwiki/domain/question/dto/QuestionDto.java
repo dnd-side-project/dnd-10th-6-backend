@@ -39,6 +39,7 @@ public class QuestionDto {
                 .title(question.getTitle())
                 .name(question.getName())
                 .type(question.getType())
+                .wikiType(question.getWikiType())
                 .reasonRequired(question.isReasonRequired())
                 .dashboardType(question.getDashboardType())
                 .surveyOrder(question.getSurveyOrder());
