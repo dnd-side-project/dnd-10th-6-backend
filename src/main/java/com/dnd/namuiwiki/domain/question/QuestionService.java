@@ -119,6 +119,7 @@ public class QuestionService {
             var optionBuilder = Option.builder()
                     .order(Integer.parseInt(option.get("order").toString()))
                     .value(option.get("value"))
+                    .name(option.get("name").toString())
                     .text(option.get("text").toString());
 
             if (option.get("description") != null) {

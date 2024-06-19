@@ -112,167 +112,198 @@
     {
       "text": "네",
       "value": true,
-      "order": 1
+      "order": 1,
+      "name": "YES"
     },
     {
       "text": "아니요",
       "value": false,
-      "order": 2
+      "order": 2,
+      "name": "NO"
     },
     {
       "text": "츤데레 타입",
       "value": "츤데레 타입",
       "description": "오다 주웠다고 말하며 선물 주는 스타일",
-      "order": 1
+      "order": 1,
+      "name": "TSUNDERE_TYPE"
     },
     {
       "text": "적극적인 타입",
       "value": "적극적인 타입",
       "description": "애인 한정 애교 많은 스타일",
-      "order": 2
+      "order": 2,
+      "name": "AGGRESSIVE_TYPE"
     },
     {
       "text": "현실적인 타입",
       "value": "현실적인 타입",
       "description": "데이트 비용을 정확히 반반 내자고 제안하는 스타일",
-      "order": 3
+      "order": 3,
+      "name": "REALISTIC_TYPE"
     },
     {
       "text": "사회생활 존중 타입",
       "value": "사회생활 존중 타입",
       "description": "질투, 집착 없이 서로의 사회생활을 존중하는 스타일",
-      "order": 4
+      "order": 4,
+      "name": "RESPECTFUL_TYPE"
     },
     {
       "text": "사랑꾼 타입",
       "value": "사랑꾼 타입",
       "description": "365일 매일 만나는 사랑꾼 스타일",
-      "order": 5
+      "order": 5,
+      "name": "ROMANTIC_TYPE"
     },
     {
       "text": "해결형 타입",
       "value": "해결형 타입",
       "description": "바로 화해하고자 대화를 시도하는 스타일",
-      "order": 1
+      "order": 1,
+      "name": "PROBLEM_SOLVER_TYPE"
     },
     {
       "text": "시간이 필요한 타입",
       "value": "시간이 필요한 타입",
       "description": "감정이 가라앉을 때까지 시간을 필요로 하는 타입",
-      "order": 2
+      "order": 2,
+      "name": "NEEDS_TIME_TYPE"
     },
     {
       "text": "조언을 구하는 타입",
       "value": "조언을 구하는 타입",
       "description": "친구들에게 조언을 구하며 외부의 의견을 듣는 타입",
-      "order": 3
+      "order": 3,
+      "name": "ADVICE_SEEKER_TYPE"
     },
     {
       "text": "분석형 타입",
       "value": "분석형 타입",
       "description": "문제의 원인을 분석하고 해결책을 찾으려는 타입",
-      "order": 4
+      "order": 4,
+      "name": "ANALYTICAL_TYPE"
     },
     {
       "text": "회피형 타입",
       "value": "회피형 타입",
       "description": "동굴에 들어가서 문제 상황을 일단 회피하는 타입",
-      "order": 5
+      "order": 5,
+      "name": "AVOIDANT_TYPE"
     },
     {
       "text": "돈",
       "value": "돈",
-      "order": 1
+      "order": 1,
+      "name": "MONEY"
     },
     {
       "text": "직업",
       "value": "직업",
-      "order": 2
+      "order": 2,
+      "name": "JOB"
     },
     {
       "text": "성격",
       "value": "성격",
-      "order": 3
+      "order": 3,
+      "name": "PERSONALITY"
     },
     {
       "text": "얼굴",
       "value": "얼굴",
-      "order": 4
+      "order": 4,
+      "name": "FACE"
     },
     {
       "text": "외형(키, 체형 등)",
       "value": "외형(키, 체형 등)",
-      "order": 5
+      "order": 5,
+      "name": "APPEARANCE"
     },
     {
       "text": "남사친/여사친",
       "value": "남사친/여사친",
-      "order": 1
+      "order": 1,
+      "name": "OPPOSITE_GENDER_FRIENDS"
     },
     {
       "text": "친구들과의 잦은 약숙",
       "value": "친구들과의 잦은 약숙",
-      "order": 2
+      "order": 2,
+      "name": "FREQUENT_APPOINTMENTS_WITH_FRIENDS"
     },
     {
       "text": "술/담배 등 기호 식품",
       "value": "술/담배 등 기호 식품",
-      "order": 3
+      "order": 3,
+      "name": "ALCOHOL_AND_SMOKING"
     },
     {
       "text": "게임",
       "value": "게임",
-      "order": 4
+      "order": 4,
+      "name": "GAMES"
     },
     {
       "text": "연락 빈도",
       "value": "연락 빈도",
-      "order": 5
+      "order": 5,
+      "name": "FREQUENCY_OF_CONTACT"
     },
     {
       "text": "애정 표현",
       "value": "애정 표현",
-      "order": 6
+      "order": 6,
+      "name": "AFFECTION"
     },
     {
       "text": "데이트 비용",
       "value": "데이트 비용",
-      "order": 7
+      "order": 7,
+      "name": "DATE_COST"
     },
     {
       "text": "1-2년 정도 만나다가 결혼",
       "value": "1-2년 정도 만나다가 결혼",
-      "order": 1
+      "order": 1,
+      "name": "SHORT_TERM_MARRIAGE"
     },
     {
       "text": "오랫동안 장기 연애 하다 결혼",
       "value": "오랫동안 장기 연애 하다 결혼",
-      "order": 2
+      "order": 2,
+      "name": "LONG_TERM_MARRIAGE"
     },
     {
       "text": "속도위반",
       "value": "속도위반",
-      "order": 3
+      "order": 3,
+      "name": "PREMARITAL_PREGNANCY"
     },
     {
       "text": "운명 같은 상대와 하루아침에",
       "value": "운명 같은 상대와 하루아침에",
-      "order": 4
+      "order": 4,
+      "name": "INSTANT_LOVE"
     },
     {
       "text": "결혼하지 않을 것 같다",
       "value": "결혼하지 않을 것 같다",
-      "order": 5
+      "order": 5,
+      "name": "NOT_LIKELY_TO_MARRY"
     },
     {
       "text": "결혼하지 못할 것 같다",
       "value": "결혼하지 못할 것 같다",
-      "order": 6
+      "order": 6,
+      "name": "UNABLE_TO_MARRY"
     },
     {
       "text": "이미 결혼했다",
       "value": "이미 결혼했다",
-      "order": 7
+      "order": 7,
+      "name": "ALREADY_MARRIED"
     }
   ]
 }
