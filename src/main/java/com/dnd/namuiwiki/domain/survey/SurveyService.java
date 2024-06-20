@@ -54,6 +54,8 @@ public class SurveyService {
         validateNotFromMe(owner, sender);
 
         List<Answer> surveyAnswer = request.getAnswers().stream().map(this::convertAnswer).toList();
+        validateQuestionWikiType(surveyAnswer, request.getWikiType());
+
         Survey survey = surveyRepository.save(Survey.builder()
                 .owner(owner)
                 .wikiType(WikiType.valueOf(request.getWikiType()))
@@ -69,6 +71,19 @@ public class SurveyService {
         applicationEventPublisher.publishEvent(new SurveyCreatedEvent(survey));
 
         return new CreateSurveyResponse(survey.getId());
+    }
+
+    private void validateQuestionWikiType(List<Answer> surveyAnswer, String wikiType) {
+        List<Question> questions = questionRepository.findAll();
+        surveyAnswer.forEach(answer -> {
+            Question question = questions.stream()
+                    .filter(q -> q.getId().equals(answer.getQuestion().getId()))
+                    .findAny()
+                    .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_ID));
+            if (!question.getWikiType().equals(WikiType.valueOf(wikiType))) {
+                throw new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_WIKI_TYPE);
+            }
+        });
     }
 
     public Answer convertAnswer(AnswerDto answer) {
