@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
+import java.lang.reflect.Array;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -33,7 +35,11 @@ public class Answer {
             }
             this.answer = longAnswer;
         } else {
-            validateAnswerObjectType(answer, String.class);
+            if (type.isOptionList()) {
+                validateAnswerObjectType(answer, Array.class);
+            } else {
+                validateAnswerObjectType(answer, String.class);
+            }
             this.answer = answer;
         }
 

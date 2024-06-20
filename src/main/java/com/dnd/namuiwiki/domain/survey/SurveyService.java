@@ -56,6 +56,7 @@ public class SurveyService {
         List<Answer> surveyAnswer = request.getAnswers().stream().map(this::convertAnswer).toList();
         Survey survey = surveyRepository.save(Survey.builder()
                 .owner(owner)
+                .wikiType(WikiType.valueOf(request.getWikiType()))
                 .sender(sender)
                 .senderName(request.getSenderName())
                 .period(Period.valueOf(request.getPeriod()))
@@ -74,6 +75,11 @@ public class SurveyService {
         Question question = getQuestionById(answer.getQuestionId());
         AnswerType answerType = AnswerType.valueOf(answer.getType());
         var surveyAnswer = new Answer(question, answerType, answer.getAnswer(), answer.getReason());
+
+        if (answerType.isOptionList()) {
+            List<String> optionIds = (List<String>) answer.getAnswer();
+            optionIds.forEach(optionId -> validateOptionExists(optionId, question));
+        }
 
         if (answerType.isOption()) {
             String optionId = answer.getAnswer().toString();
