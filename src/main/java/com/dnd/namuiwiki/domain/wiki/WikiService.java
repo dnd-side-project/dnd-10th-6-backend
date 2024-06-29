@@ -9,8 +9,9 @@ import com.dnd.namuiwiki.domain.wiki.dto.WikiDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,32 +21,24 @@ public class WikiService {
     private final SurveyRepository surveyRepository;
 
     public GetWikisResponse getWikis(String accessToken) {
-        Long namuiWikiQuestionCount = questionRepository.countByWikiType(WikiType.NAMUI);
-        Long romanceWikiQuestionCount = questionRepository.countByWikiType(WikiType.RAMANCE);
+        List<WikiDto> wikiList = Arrays.stream(WikiType.values()).map(wikiType -> {
+            Long wikiQuestionCount = questionRepository.countByWikiType(wikiType);
+            return WikiDto.builder()
+                    .wikiType(wikiType)
+                    .name(wikiType.getTitle())
+                    .description(wikiType.getDescription())
+                    .questionCount(wikiQuestionCount)
+                    .build();
+        }).collect(Collectors.toList());
 
-        WikiDto namuiWiki = WikiDto.builder()
-                .wikiType(WikiType.NAMUI)
-                .name(WikiType.NAMUI.getTitle())
-                .description(WikiType.NAMUI.getDescription())
-                .questionCount(namuiWikiQuestionCount)
-                .build();
-        WikiDto romanceWiki = WikiDto.builder()
-                .wikiType(WikiType.RAMANCE)
-                .name(WikiType.RAMANCE.getTitle())
-                .description(WikiType.RAMANCE.getDescription())
-                .questionCount(romanceWikiQuestionCount)
-                .build();
-
-        List<WikiDto> wikiList = new ArrayList<>();
         if (accessToken != null) {
             User user = jwtService.getUserByAccessToken(accessToken);
-            Long namuiWikiAnswerCount = surveyRepository.countByOwnerAndWikiType(user, WikiType.NAMUI);
-            Long romanceWikiAnswerCount = surveyRepository.countByOwnerAndWikiType(user, WikiType.RAMANCE);
-            namuiWiki.setAnswerCount(namuiWikiAnswerCount);
-            romanceWiki.setAnswerCount(romanceWikiAnswerCount);
+            wikiList.forEach(wikiDto -> {
+                WikiType wikiType = wikiDto.getWikiType();
+                Long answerCount = surveyRepository.countByOwnerAndWikiType(user, wikiType);
+                wikiDto.setAnswerCount(answerCount);
+            });
         }
-        wikiList.add(namuiWiki);
-        wikiList.add(romanceWiki);
 
         return new GetWikisResponse(wikiList);
     }

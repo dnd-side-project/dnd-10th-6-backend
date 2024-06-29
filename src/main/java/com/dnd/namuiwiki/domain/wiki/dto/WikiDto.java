@@ -2,9 +2,9 @@ package com.dnd.namuiwiki.domain.wiki.dto;
 
 import com.dnd.namuiwiki.domain.wiki.WikiType;
 import lombok.Builder;
-import lombok.Setter;
+import lombok.Data;
 
-@Setter
+@Data
 @Builder
 public class WikiDto {
     private WikiType wikiType;
