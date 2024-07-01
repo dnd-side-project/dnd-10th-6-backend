@@ -25,6 +25,7 @@ import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.UserRepository;
 import com.dnd.namuiwiki.domain.user.entity.User;
+import com.dnd.namuiwiki.domain.wiki.WikiType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -97,17 +98,23 @@ public class SurveyService {
         }
     }
 
-    public PageableDto<ReceivedSurveyDto> getReceivedSurveys(TokenUserInfoDto tokenUserInfoDto, int pageNo, int pageSize) {
+    public PageableDto<ReceivedSurveyDto> getReceivedSurveys(
+            TokenUserInfoDto tokenUserInfoDto, WikiType wikiType,
+            int pageNo, int pageSize
+    ) {
         User user = getUserByWikiId(tokenUserInfoDto.getWikiId());
 
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        Page<ReceivedSurveyDto> surveys = surveyRepository.findByOwner(user, pageable)
+        Page<ReceivedSurveyDto> surveys = surveyRepository.findByOwnerAndWikiType(user, wikiType, pageable)
                 .map(ReceivedSurveyDto::from);
         return PageableDto.create(surveys);
     }
 
-    public PageableDto<SentSurveyDto> getSentSurveys(TokenUserInfoDto tokenUserInfoDto, Period period, Relation relation, int pageNo, int pageSize) {
+    public PageableDto<SentSurveyDto> getSentSurveys(
+            TokenUserInfoDto tokenUserInfoDto, Period period, Relation relation,
+            int pageNo, int pageSize
+    ) {
         validateFilter(period, relation);
         User sender = getUserByWikiId(tokenUserInfoDto.getWikiId());
 
