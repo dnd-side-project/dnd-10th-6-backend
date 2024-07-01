@@ -2,6 +2,7 @@ package com.dnd.namuiwiki.domain.survey;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.domain.jwt.JwtProvider;
+import com.dnd.namuiwiki.domain.jwt.JwtService;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.option.OptionRepository;
 import com.dnd.namuiwiki.domain.option.entity.Option;
@@ -46,13 +47,15 @@ class SurveyServiceTest {
     @Mock
     private JwtProvider jwtProvider;
     @Mock
+    private JwtService jwtService;
+    @Mock
     private ApplicationEventPublisher applicationEventPublisher;
 
     private SurveyService surveyService;
 
     @BeforeEach
     void beforeEach() {
-        surveyService = new SurveyService(userRepository, surveyRepository, questionRepository, optionRepository, jwtProvider, applicationEventPublisher);
+        surveyService = new SurveyService(userRepository, surveyRepository, questionRepository, optionRepository, jwtService, applicationEventPublisher);
     }
 
     @Test
@@ -60,13 +63,11 @@ class SurveyServiceTest {
     void throwExceptionIfSurveyIsFromMe() {
         // given
         String ownerWikiId = "ownerWikiId";
-        String senderWikiId = "senderWikiId";
         String accessToken = "accessToken";
         CreateSurveyRequest request = CreateSurveyRequest.builder().answers(List.of()).owner(ownerWikiId).build();
         User user = User.builder().wikiId(ownerWikiId).build();
 
-        given(jwtProvider.parseToken(eq(accessToken))).willReturn(new TokenUserInfoDto(senderWikiId));
-        given(userRepository.findByWikiId(eq(senderWikiId))).willReturn(Optional.ofNullable(user));
+        given(jwtService.getUserByAccessToken(eq(accessToken))).willReturn(user);
         given(userRepository.findByWikiId(eq(ownerWikiId))).willReturn(Optional.ofNullable(user));
 
         // when, then
@@ -242,7 +243,7 @@ class SurveyServiceTest {
             // then
             assertThatThrownBy(() -> surveyService.convertAnswer(answer))
                     .isInstanceOf(ApplicationErrorException.class)
-                    .hasMessageMatching("정수형 답변이 아닙니다.");
+                    .hasMessageMatching("답변 타입이 다릅니다.");
         }
 
     }
