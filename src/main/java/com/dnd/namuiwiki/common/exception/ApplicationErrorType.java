@@ -60,6 +60,7 @@ public enum ApplicationErrorType {
     NOT_STRING_ANSWER(HttpStatus.NOT_FOUND, "문자형 답변이 아닙니다."),
     CANNOT_SEND_SURVEY_TO_MYSELF(HttpStatus.BAD_REQUEST, "자신에게 설문을 보낼 수 없습니다."),
     ANSWER_REASON_REQUIRED(HttpStatus.CONFLICT, "reason 필드가 필요한 질문입니다."),
+    INVALID_ANSWER_TYPE(HttpStatus.BAD_REQUEST, "답변 타입이 다릅니다."),
 
     /**
      * Survey Error Type
@@ -72,7 +73,9 @@ public enum ApplicationErrorType {
     /**
      * Filter Error Type
      */
-    INVALID_FILTER(HttpStatus.BAD_REQUEST, "동시에 두가지 필터를 사용할 수 없습니다.");
+    INVALID_FILTER(HttpStatus.BAD_REQUEST, "동시에 두가지 필터를 사용할 수 없습니다."),
+    INVALID_QUESTION_WIKI_TYPE(HttpStatus.BAD_REQUEST, "질문의 위키 타입이 다릅니다."),
+    ;
 
 
     @Getter
