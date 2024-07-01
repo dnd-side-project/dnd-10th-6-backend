@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
+import java.util.List;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -33,7 +35,11 @@ public class Answer {
             }
             this.answer = longAnswer;
         } else {
-            validateAnswerObjectType(answer, String.class);
+            if (type.isOptionList()) {
+                validateAnswerObjectType(answer, List.class);
+            } else {
+                validateAnswerObjectType(answer, String.class);
+            }
             this.answer = answer;
         }
 
@@ -50,7 +56,8 @@ public class Answer {
 
     private void validateAnswerObjectType(Object answer, Class<?> clazz) {
         if (!clazz.isInstance(answer)) {
-            throw new ApplicationErrorException(ApplicationErrorType.NOT_INTEGER_ANSWER);
+            throw new ApplicationErrorException(ApplicationErrorType.INVALID_ANSWER_TYPE,
+                    "예상 타입: " + clazz.getName() + ", 실제 타입: " + answer.getClass().getName());
         }
     }
 
