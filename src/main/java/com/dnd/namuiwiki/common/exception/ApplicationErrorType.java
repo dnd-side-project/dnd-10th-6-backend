@@ -37,6 +37,11 @@ public enum ApplicationErrorType {
     EXISTING_USER(HttpStatus.CONFLICT, "이미 존재하는 유저입니다."),
 
     /**
+     * Wiki Error Type
+     */
+    NOT_FOUND_WIKI(HttpStatus.NOT_FOUND, "존재하지 않는 위키입니다."),
+
+    /**
      * Question Error Type
      */
     INVALID_QUESTION_ID(HttpStatus.NOT_FOUND, "문항을 찾을 수 없습니다."),

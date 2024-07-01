@@ -4,6 +4,7 @@ import com.dnd.namuiwiki.common.annotation.DisableSwaggerSecurity;
 import com.dnd.namuiwiki.common.dto.ResponseDto;
 import com.dnd.namuiwiki.domain.question.dto.QuestionDto;
 import com.dnd.namuiwiki.domain.question.type.QuestionType;
+import com.dnd.namuiwiki.domain.wiki.WikiType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,8 +28,11 @@ public class QuestionController {
 
     @Operation(hidden = true)
     @PostMapping
-    public ResponseEntity<?> setDefaultQuestions(@RequestParam String pwd) {
-        questionService.setDefaultDocuments(pwd);
+    public ResponseEntity<?> setDefaultQuestions(
+            @RequestParam String pwd,
+            @RequestParam WikiType wikiType
+    ) {
+        questionService.setDefaultQuestions(pwd, wikiType);
         return ResponseDto.noContent();
     }
 
