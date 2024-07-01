@@ -9,7 +9,7 @@ public enum QuestionType {
     MULTIPLE_CHOICE(List.of(AnswerType.MANUAL, AnswerType.OPTION)),
     SHORT_ANSWER(List.of(AnswerType.MANUAL)),
     NUMERIC_CHOICE(List.of(AnswerType.MANUAL, AnswerType.OPTION)),
-    RANK(List.of(AnswerType.OPTION_LIST))
+    RANK(List.of(AnswerType.OPTION))
     ;
 
     QuestionType(List<AnswerType> answerTypes) {
@@ -23,15 +23,11 @@ public enum QuestionType {
     }
 
     public boolean isChoiceType() {
-        return this == MULTIPLE_CHOICE || this == OX || this == NUMERIC_CHOICE || this == RANK;
+        return this == MULTIPLE_CHOICE || this == OX || this == NUMERIC_CHOICE;
     }
 
     public boolean isNumericType() {
         return this == NUMERIC_CHOICE;
-    }
-
-    public boolean isListType() {
-        return this == RANK;
     }
 
 }

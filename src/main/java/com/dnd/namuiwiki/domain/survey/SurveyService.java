@@ -54,11 +54,8 @@ public class SurveyService {
         validateNotFromMe(owner, sender);
 
         List<Answer> surveyAnswer = request.getAnswers().stream().map(this::convertAnswer).toList();
-        validateQuestionWikiType(surveyAnswer, request.getWikiType());
-
         Survey survey = surveyRepository.save(Survey.builder()
                 .owner(owner)
-                .wikiType(WikiType.valueOf(request.getWikiType()))
                 .sender(sender)
                 .senderName(request.getSenderName())
                 .period(Period.valueOf(request.getPeriod()))
@@ -73,28 +70,10 @@ public class SurveyService {
         return new CreateSurveyResponse(survey.getId());
     }
 
-    private void validateQuestionWikiType(List<Answer> surveyAnswer, String wikiType) {
-        List<Question> questions = questionRepository.findAll();
-        surveyAnswer.forEach(answer -> {
-            Question question = questions.stream()
-                    .filter(q -> q.getId().equals(answer.getQuestion().getId()))
-                    .findAny()
-                    .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_ID));
-            if (!question.getWikiType().equals(WikiType.valueOf(wikiType))) {
-                throw new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_WIKI_TYPE);
-            }
-        });
-    }
-
     public Answer convertAnswer(AnswerDto answer) {
         Question question = getQuestionById(answer.getQuestionId());
         AnswerType answerType = AnswerType.valueOf(answer.getType());
         var surveyAnswer = new Answer(question, answerType, answer.getAnswer(), answer.getReason());
-
-        if (answerType.isOptionList()) {
-            List<String> optionIds = (List<String>) answer.getAnswer();
-            optionIds.forEach(optionId -> validateOptionExists(optionId, question));
-        }
 
         if (answerType.isOption()) {
             String optionId = answer.getAnswer().toString();
