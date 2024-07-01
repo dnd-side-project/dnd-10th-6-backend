@@ -39,8 +39,11 @@ public class QuestionController {
     @Operation(summary = "설문에 들어갈 문항 조회", responses = {@ApiResponse(responseCode = "200", description = "문항 조회 성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = QuestionDto.class))))})
     @DisableSwaggerSecurity
     @GetMapping
-    public ResponseEntity<?> getQuestions(@RequestParam(required = false, name = "type") QuestionType questionType) {
-        var response = questionService.getQuestions(questionType);
+    public ResponseEntity<?> getQuestions(
+            @RequestParam(required = false, name = "type") QuestionType questionType,
+            @RequestParam(name = "wikiType") WikiType wikiType
+    ) {
+        var response = questionService.getQuestions(questionType, wikiType);
         return ResponseDto.ok(response);
     }
 

@@ -35,9 +35,13 @@ public class QuestionService {
     @Value("${setting.password}")
     private String SETTING_PASSWORD;
 
-    public List<QuestionDto> getQuestions(QuestionType questionType) {
+    public List<QuestionDto> getQuestions(QuestionType questionType, WikiType wikiType) {
         return questionRepository.findAll().stream()
-                .filter(q -> questionType == null || q.getType().equals(questionType))
+                .filter(q -> {
+                    boolean isSameWikiType = wikiType.equals(q.getWikiType());
+                    boolean isAllQuestion = questionType == null;
+                    return (isSameWikiType) && (isAllQuestion || questionType.equals(q.getType()));
+                })
                 .sorted(Comparator.comparing(Question::getSurveyOrder))
                 .map(QuestionDto::from)
                 .toList();
