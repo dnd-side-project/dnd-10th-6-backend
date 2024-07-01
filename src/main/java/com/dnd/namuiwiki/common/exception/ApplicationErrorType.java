@@ -40,6 +40,7 @@ public enum ApplicationErrorType {
      * Wiki Error Type
      */
     NOT_FOUND_WIKI(HttpStatus.NOT_FOUND, "존재하지 않는 위키입니다."),
+    INVALID_WIKI_TYPE(HttpStatus.CONFLICT, "잘못된 위키 타입입니다."),
 
     /**
      * Question Error Type
@@ -69,6 +70,11 @@ public enum ApplicationErrorType {
     QUESTION_ANSWER_COUNT_NOT_EQUAL(HttpStatus.INTERNAL_SERVER_ERROR, "문항과 답변의 개수가 일치하지 않습니다."),
     INVALID_BORROWING_LIMIT(HttpStatus.BAD_REQUEST, "빌릴 수 있는 돈은 0 이상 10억 이하입니다."),
     INVALID_SURVEY_OWNER(HttpStatus.CONFLICT, "설문 소유자가 아닙니다."),
+
+    /**
+     * Dashboard Error Type
+     */
+    INVALID_DASHBOARD_TYPE(HttpStatus.CONFLICT, "잘못된 대시보드 타입입니다."),
 
     /**
      * Filter Error Type
