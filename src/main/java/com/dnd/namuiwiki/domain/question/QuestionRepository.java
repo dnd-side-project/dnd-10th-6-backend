@@ -1,6 +1,7 @@
 package com.dnd.namuiwiki.domain.question;
 
 import com.dnd.namuiwiki.domain.question.entity.Question;
+import com.dnd.namuiwiki.domain.wiki.WikiType;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.lang.NonNull;
@@ -18,4 +19,5 @@ public interface QuestionRepository extends MongoRepository<Question, String> {
     @Cacheable("question")
     Optional<Question> findById(@NonNull String id);
 
+    Long countByWikiType(WikiType wikiType);
 }

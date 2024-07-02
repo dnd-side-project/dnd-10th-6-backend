@@ -25,4 +25,5 @@ public interface SurveyRepository extends MongoRepository<Survey, String> {
     Page<Survey> findBySenderAndPeriod(User sender, Period period, Pageable pageable);
 
     Page<Survey> findBySenderAndRelation(User sender, Relation relation, Pageable pageable);
+    Long countByOwnerAndWikiType(User owner, WikiType wikiType);
 }

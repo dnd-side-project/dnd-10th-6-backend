@@ -42,4 +42,14 @@ public class JwtService {
 
         return new RefreshResponse(jwtProvider.createAccessToken(wikiId));
     }
+
+    public User getUserByAccessToken(String accessToken) {
+        if (accessToken == null || accessToken.isEmpty()) {
+            return null;
+        }
+
+        TokenUserInfoDto tokenUserInfoDto = jwtProvider.parseToken(accessToken);
+        return userRepository.findByWikiId(tokenUserInfoDto.getWikiId())
+                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
+    }
 }
