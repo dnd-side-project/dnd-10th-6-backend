@@ -9,6 +9,7 @@ import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
+import com.dnd.namuiwiki.domain.wiki.WikiType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -22,6 +23,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class GetSurveyResponse {
     private String senderName;
+    private WikiType wikiType;
     private Period period;
     private Relation relation;
     private LocalDateTime createdAt;
@@ -84,7 +86,7 @@ public class GetSurveyResponse {
 
     public static GetSurveyResponse from(Survey survey, List<Question> questions) {
         var singleQuestionAndAnswers = pairQuestionAndAnswer(survey, questions);
-        return new GetSurveyResponse(survey.getSenderName(), survey.getPeriod(), survey.getRelation(), survey.getWrittenAt(), singleQuestionAndAnswers);
+        return new GetSurveyResponse(survey.getSenderName(), survey.getWikiType(), survey.getPeriod(), survey.getRelation(), survey.getWrittenAt(), singleQuestionAndAnswers);
     }
 
     private static List<SingleQuestionAndAnswer> pairQuestionAndAnswer(Survey survey, List<Question> questions) {
