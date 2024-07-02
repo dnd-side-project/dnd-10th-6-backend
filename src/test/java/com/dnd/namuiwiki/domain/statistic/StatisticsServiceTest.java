@@ -14,6 +14,7 @@ import com.dnd.namuiwiki.domain.survey.type.AnswerType;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.entity.User;
+import com.dnd.namuiwiki.domain.wiki.WikiType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,11 +57,13 @@ class StatisticsServiceTest {
         // given
         Period period = Period.INFINITE;
         Relation relation = Relation.ELEMENTARY_SCHOOL;
+        WikiType wikiType = WikiType.NAMUI;
         User owner = User.builder().id("testId").wikiId("wikiId").build();
 
         Survey survey = Survey.builder()
                 .owner(owner)
                 .senderName("김철수")
+                .wikiType(wikiType)
                 .period(period)
                 .relation(relation)
                 .answers(makeAnswerList())
@@ -70,9 +73,9 @@ class StatisticsServiceTest {
         statisticsService.updateStatistics(survey);
 
         // then
-        boolean dashboard1 = dashboardRepository.existsByUserAndPeriodAndRelation(owner, null, null);
-        boolean dashboard2 = dashboardRepository.existsByUserAndPeriodAndRelation(owner, period, null);
-        boolean dashboard3 = dashboardRepository.existsByUserAndPeriodAndRelation(owner, null, relation);
+        boolean dashboard1 = dashboardRepository.existsByUserAndWikiTypeAndPeriodAndRelation(owner, wikiType, null, null);
+        boolean dashboard2 = dashboardRepository.existsByUserAndWikiTypeAndPeriodAndRelation(owner, wikiType, period, null);
+        boolean dashboard3 = dashboardRepository.existsByUserAndWikiTypeAndPeriodAndRelation(owner, wikiType, null, relation);
 
         assertThat(dashboard1).isEqualTo(true);
         assertThat(dashboard2).isEqualTo(true);
@@ -88,11 +91,13 @@ class StatisticsServiceTest {
         // given
         Period period = Period.INFINITE;
         Relation relation = Relation.ELEMENTARY_SCHOOL;
+        WikiType wikiType = WikiType.NAMUI;
         User owner = User.builder().id("testId").wikiId("wikiId").build();
 
         Survey survey = Survey.builder()
                 .owner(owner)
                 .senderName("김철수")
+                .wikiType(wikiType)
                 .period(period)
                 .relation(relation)
                 .answers(makeAnswerList())
@@ -113,7 +118,7 @@ class StatisticsServiceTest {
         assertTrue(finished);
 
         // then
-        Dashboard dashboard = dashboardRepository.findByUserAndPeriodAndRelation(owner, null, null).orElseThrow();
+        Dashboard dashboard = dashboardRepository.findByUserAndWikiTypeAndPeriodAndRelation(owner, wikiType, null, null).orElseThrow();
         Statistic statistic = dashboard.getStatistics().getStatisticsByDashboardType(DashboardType.BEST_WORTH).get(0);
 
         Long totalCount = statistic.getTotalCount();

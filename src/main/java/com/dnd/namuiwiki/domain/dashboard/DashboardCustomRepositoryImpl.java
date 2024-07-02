@@ -5,6 +5,7 @@ import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.entity.User;
+import com.dnd.namuiwiki.domain.wiki.WikiType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -19,8 +20,9 @@ public class DashboardCustomRepositoryImpl implements DashboardCustomRepository 
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public void updateDashboard(User owner, Period period, Relation relation, List<Answer> answers) {
+    public void updateDashboard(User owner, WikiType wikiType, Period period, Relation relation, List<Answer> answers) {
         Query query = Query.query(Criteria.where("user").is(owner)
+                .and("wikiType").is(wikiType)
                 .and("period").is(period)
                 .and("relation").is(relation));
 

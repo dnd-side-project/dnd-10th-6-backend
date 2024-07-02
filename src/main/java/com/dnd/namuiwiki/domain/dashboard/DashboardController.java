@@ -6,6 +6,7 @@ import com.dnd.namuiwiki.domain.jwt.JwtAuthorization;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
+import com.dnd.namuiwiki.domain.wiki.WikiType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,9 +33,10 @@ public class DashboardController {
     public ResponseEntity<?> getDashboard(
             @JwtAuthorization TokenUserInfoDto tokenUserInfoDto,
             @RequestParam(required = false) Period period,
-            @RequestParam(required = false) Relation relation
+            @RequestParam(required = false) Relation relation,
+            @RequestParam WikiType wikiType
     ) {
-        DashboardDto response = dashboardService.getDashboard(tokenUserInfoDto, period, relation);
+        DashboardDto response = dashboardService.getDashboard(tokenUserInfoDto, wikiType, period, relation);
         return ResponseDto.ok(response);
     }
 

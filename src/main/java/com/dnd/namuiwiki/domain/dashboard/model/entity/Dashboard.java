@@ -6,6 +6,7 @@ import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.entity.User;
+import com.dnd.namuiwiki.domain.wiki.WikiType;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
@@ -26,6 +27,8 @@ public class Dashboard extends BaseTimeEntity {
 
     @DocumentReference(collection = "users", lazy = true)
     private User user;
+
+    private WikiType wikiType;
 
     private Period period;
 

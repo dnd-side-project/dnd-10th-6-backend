@@ -2,14 +2,13 @@ package com.dnd.namuiwiki.domain.dashboard;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
-import com.dnd.namuiwiki.domain.dashboard.model.BestWorthDashboardComponent;
-import com.dnd.namuiwiki.domain.dashboard.model.CharacterDashboardComponent;
-import com.dnd.namuiwiki.domain.dashboard.model.DashboardComponent;
-import com.dnd.namuiwiki.domain.dashboard.model.HappyDashboardComponent;
-import com.dnd.namuiwiki.domain.dashboard.model.MoneyDashboardComponent;
-import com.dnd.namuiwiki.domain.dashboard.model.SadDashboardComponent;
+import com.dnd.namuiwiki.domain.dashboard.model.AverageDashboardComponent;
+import com.dnd.namuiwiki.domain.dashboard.model.BinaryDashboardComponent;
+import com.dnd.namuiwiki.domain.dashboard.model.DashboardComponentV2;
+import com.dnd.namuiwiki.domain.dashboard.model.RatioDashboardComponent;
 import com.dnd.namuiwiki.domain.dashboard.model.dto.DashboardDto;
 import com.dnd.namuiwiki.domain.dashboard.model.entity.Dashboard;
+import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.question.QuestionRepository;
 import com.dnd.namuiwiki.domain.question.entity.Question;
@@ -22,11 +21,13 @@ import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.UserRepository;
 import com.dnd.namuiwiki.domain.user.entity.User;
+import com.dnd.namuiwiki.domain.wiki.WikiType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -36,40 +37,66 @@ public class DashboardService {
     private final StatisticsService statisticsService;
     private final QuestionRepository questionRepository;
 
-    public DashboardDto getDashboard(TokenUserInfoDto tokenUserInfoDto, Period period, Relation relation) {
+    public DashboardDto getDashboard(TokenUserInfoDto tokenUserInfoDto, WikiType wikiType, Period period, Relation relation) {
         validateFilterCategory(period, relation);
 
         User user = findByWikiId(tokenUserInfoDto.getWikiId());
-        Optional<Dashboard> dashboard = dashboardRepository.findByUserAndPeriodAndRelation(user, period, relation);
+        Optional<Dashboard> dashboard = dashboardRepository.findByUserAndWikiTypeAndPeriodAndRelation(user, wikiType, period, relation);
         if (dashboard.isEmpty()) {
             return null;
         }
 
+
+        if (wikiType.isNamui()) {
+            Stream<DashboardType> namuiDashboardTypes = Stream.of(
+                    DashboardType.BEST_WORTH,
+                    DashboardType.MONEY,
+                    DashboardType.HAPPY,
+                    DashboardType.SAD,
+                    DashboardType.CHARACTER);
+            return convertToDto(namuiDashboardTypes, dashboard, period, relation);
+        } else if (wikiType.isRomance()) {
+            Stream<DashboardType> romanceDashboardTypes = Stream.of(
+                    DashboardType.BUBBLE_CHART,
+                    DashboardType.BAR_CHART,
+                    DashboardType.BINARY);
+            return convertToDto(romanceDashboardTypes, dashboard, period, relation);
+        } else {
+            throw new ApplicationErrorException(ApplicationErrorType.INVALID_WIKI_TYPE);
+        }
+    }
+
+    private DashboardDto convertToDto(Stream<DashboardType> namuiDashboardTypes, Optional<Dashboard> dashboard, Period period, Relation relation) {
         List<Question> questions = questionRepository.findAll();
 
         Statistics statistics = dashboard.get().getStatistics();
-        List<DashboardComponent> dashboardComponents = List.of(
-                new BestWorthDashboardComponent(statistics, getQuestionIdByQuestionNAme(questions, QuestionName.CORE_VALUE)),
-                new HappyDashboardComponent(statistics, getQuestionIdByQuestionNAme(questions, QuestionName.HAPPY_BEHAVIOR)),
-                new SadDashboardComponent(statistics, getQuestionIdByQuestionNAme(questions, QuestionName.SAD_ANGRY_BEHAVIOR)),
-                new CharacterDashboardComponent(statistics),
-                getMoneyDashboardComponent(statistics, period, relation, getQuestionIdByQuestionNAme(questions, QuestionName.BORROWING_LIMIT))
-        );
+        List<DashboardComponentV2> dashboardComponents = namuiDashboardTypes.flatMap(
+                        dashboardType -> statistics.getStatisticsByDashboardType(dashboardType).stream()
+                                .map(statistic -> {
+                                    Question question = questions.stream()
+                                            .filter(q -> q.getId().equals(statistic.getQuestionId()))
+                                            .findFirst()
+                                            .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_ID));
+                                    if (dashboardType.isBinaryType()) {
+                                        return new BinaryDashboardComponent(statistic, question);
+                                    } else if (dashboardType.isAverageType()) {
+                                        long entireAverage = getEntireAverage(period, relation, question.getName());
+                                        return new AverageDashboardComponent(dashboardType, statistic, entireAverage, question);
+                                    } else if (dashboardType.isRatioType()) {
+                                        return new RatioDashboardComponent(dashboardType, statistic, question);
+                                    } else {
+                                        throw new ApplicationErrorException(ApplicationErrorType.INVALID_DASHBOARD_TYPE);
+                                    }
+                                }))
+                .toList();
+
         return new DashboardDto(dashboardComponents);
     }
 
-    private String getQuestionIdByQuestionNAme(List<Question> questions, QuestionName questionName) {
-        return questions.stream().filter(q -> q.getName() == questionName)
-                .findFirst().orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_ID))
-                .getId();
-    }
-
-    private MoneyDashboardComponent getMoneyDashboardComponent(Statistics statistics, Period period, Relation relation, String questionId) {
-        PopulationStatistic populationStatistic = statisticsService.getPopulationStatistic(period, relation, QuestionName.BORROWING_LIMIT);
+    private long getEntireAverage(Period period, Relation relation, QuestionName questionName) {
+        PopulationStatistic populationStatistic = statisticsService.getPopulationStatistic(period, relation, questionName);
         BorrowingLimitEntireStatistic statistic = (BorrowingLimitEntireStatistic) populationStatistic.getStatistic();
-        long entireAverage = statistic.getBorrowingMoneyLimitEntireAverage();
-
-        return new MoneyDashboardComponent(statistics, entireAverage, questionId);
+        return statistic.getBorrowingMoneyLimitEntireAverage();
     }
 
     private void validateFilterCategory(Period period, Relation relation) {
