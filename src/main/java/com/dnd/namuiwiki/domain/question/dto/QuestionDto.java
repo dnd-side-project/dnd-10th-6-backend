@@ -8,6 +8,7 @@ import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.question.type.QuestionType;
+import com.dnd.namuiwiki.domain.wiki.WikiType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,6 +30,7 @@ public class QuestionDto {
     private boolean reasonRequired;
     private DashboardType dashboardType;
     private Long surveyOrder;
+    private WikiType wikiType;
     private List<OptionDto> options;
 
     public static QuestionDto from(Question question) {
@@ -37,6 +39,7 @@ public class QuestionDto {
                 .title(question.getTitle())
                 .name(question.getName())
                 .type(question.getType())
+                .wikiType(question.getWikiType())
                 .reasonRequired(question.isReasonRequired())
                 .dashboardType(question.getDashboardType())
                 .surveyOrder(question.getSurveyOrder());

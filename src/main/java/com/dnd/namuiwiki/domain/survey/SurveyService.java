@@ -4,6 +4,7 @@ import com.dnd.namuiwiki.common.dto.PageableDto;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.jwt.JwtProvider;
+import com.dnd.namuiwiki.domain.jwt.JwtService;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.option.OptionRepository;
 import com.dnd.namuiwiki.domain.option.entity.Option;
@@ -25,6 +26,7 @@ import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.UserRepository;
 import com.dnd.namuiwiki.domain.user.entity.User;
+import com.dnd.namuiwiki.domain.wiki.WikiType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -44,17 +46,20 @@ public class SurveyService {
     private final SurveyRepository surveyRepository;
     private final QuestionRepository questionRepository;
     private final OptionRepository optionRepository;
-    private final JwtProvider jwtProvider;
+    private final JwtService jwtService;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     public CreateSurveyResponse createSurvey(CreateSurveyRequest request, String accessToken) {
         User owner = getUserByWikiId(request.getOwner());
-        User sender = getUserByAccessToken(accessToken);
+        User sender = jwtService.getUserByAccessToken(accessToken);
         validateNotFromMe(owner, sender);
 
         List<Answer> surveyAnswer = request.getAnswers().stream().map(this::convertAnswer).toList();
+        validateQuestionWikiType(surveyAnswer, request.getWikiType());
+
         Survey survey = surveyRepository.save(Survey.builder()
                 .owner(owner)
+                .wikiType(WikiType.valueOf(request.getWikiType()))
                 .sender(sender)
                 .senderName(request.getSenderName())
                 .period(Period.valueOf(request.getPeriod()))
@@ -69,10 +74,28 @@ public class SurveyService {
         return new CreateSurveyResponse(survey.getId());
     }
 
+    private void validateQuestionWikiType(List<Answer> surveyAnswer, String wikiType) {
+        List<Question> questions = questionRepository.findAll();
+        surveyAnswer.forEach(answer -> {
+            Question question = questions.stream()
+                    .filter(q -> q.getId().equals(answer.getQuestion().getId()))
+                    .findAny()
+                    .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_ID));
+            if (!question.getWikiType().equals(WikiType.valueOf(wikiType))) {
+                throw new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_WIKI_TYPE);
+            }
+        });
+    }
+
     public Answer convertAnswer(AnswerDto answer) {
         Question question = getQuestionById(answer.getQuestionId());
         AnswerType answerType = AnswerType.valueOf(answer.getType());
         var surveyAnswer = new Answer(question, answerType, answer.getAnswer(), answer.getReason());
+
+        if (answerType.isOptionList()) {
+            List<String> optionIds = (List<String>) answer.getAnswer();
+            optionIds.forEach(optionId -> validateOptionExists(optionId, question));
+        }
 
         if (answerType.isOption()) {
             String optionId = answer.getAnswer().toString();
@@ -97,17 +120,23 @@ public class SurveyService {
         }
     }
 
-    public PageableDto<ReceivedSurveyDto> getReceivedSurveys(TokenUserInfoDto tokenUserInfoDto, int pageNo, int pageSize) {
+    public PageableDto<ReceivedSurveyDto> getReceivedSurveys(
+            TokenUserInfoDto tokenUserInfoDto, WikiType wikiType,
+            int pageNo, int pageSize
+    ) {
         User user = getUserByWikiId(tokenUserInfoDto.getWikiId());
 
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        Page<ReceivedSurveyDto> surveys = surveyRepository.findByOwner(user, pageable)
+        Page<ReceivedSurveyDto> surveys = surveyRepository.findByOwnerAndWikiType(user, wikiType, pageable)
                 .map(ReceivedSurveyDto::from);
         return PageableDto.create(surveys);
     }
 
-    public PageableDto<SentSurveyDto> getSentSurveys(TokenUserInfoDto tokenUserInfoDto, Period period, Relation relation, int pageNo, int pageSize) {
+    public PageableDto<SentSurveyDto> getSentSurveys(
+            TokenUserInfoDto tokenUserInfoDto, Period period, Relation relation,
+            int pageNo, int pageSize
+    ) {
         validateFilter(period, relation);
         User sender = getUserByWikiId(tokenUserInfoDto.getWikiId());
 
@@ -209,16 +238,6 @@ public class SurveyService {
 
     private User getUserByWikiId(String wikiId) {
         return userRepository.findByWikiId(wikiId)
-                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
-    }
-
-    private User getUserByAccessToken(String accessToken) {
-        if (accessToken == null || accessToken.isEmpty()) {
-            return null;
-        }
-
-        TokenUserInfoDto tokenUserInfoDto = jwtProvider.parseToken(accessToken);
-        return userRepository.findByWikiId(tokenUserInfoDto.getWikiId())
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.NOT_FOUND_USER));
     }
 }
