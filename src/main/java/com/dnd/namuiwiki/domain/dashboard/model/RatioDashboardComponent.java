@@ -19,6 +19,10 @@ public class RatioDashboardComponent extends DashboardComponentV2 {
     public RatioDashboardComponent(DashboardType dashboardType, Statistic statistic, Question question) {
         super(dashboardType, question.getId(), question.getTitle(), question.getName());
 
+        if (!dashboardType.isRatioType()) {
+            throw new IllegalArgumentException("Required RatioDashboardType");
+        }
+
         calculate((RatioStatistic) statistic);
     }
 

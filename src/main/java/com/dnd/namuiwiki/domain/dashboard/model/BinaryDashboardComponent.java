@@ -16,6 +16,10 @@ public class BinaryDashboardComponent extends DashboardComponentV2 {
     public BinaryDashboardComponent(Statistic statistic, Question question) {
         super(DashboardType.BINARY, question.getId(), question.getTitle(), question.getName());
 
+        if (!dashboardType.isBinaryType()) {
+            throw new IllegalArgumentException("Required BinaryDashboardType");
+        }
+
         RatioStatistic ratioStatistic = (RatioStatistic) statistic;
 
         this.percentage = getPercentage(ratioStatistic);
