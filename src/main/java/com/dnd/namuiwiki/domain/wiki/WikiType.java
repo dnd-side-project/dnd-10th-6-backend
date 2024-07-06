@@ -19,4 +19,13 @@ public enum WikiType {
     public String getDescription() {
         return description;
     }
+
+    public boolean isNamui() {
+        return this == NAMUI;
+    }
+
+    public boolean isRomance() {
+        return this == ROMANCE;
+    }
+
 }

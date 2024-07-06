@@ -14,6 +14,7 @@ import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.entity.User;
+import com.dnd.namuiwiki.domain.wiki.WikiType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ public class StatisticsService {
 
     public void updateStatistics(Survey survey) {
         User owner = survey.getOwner();
+        WikiType wikiType = survey.getWikiType();
         Period period = survey.getPeriod();
         Relation relation = survey.getRelation();
 
@@ -34,8 +36,10 @@ public class StatisticsService {
                 .filter(answer -> answer.getQuestion().getDashboardType().getStatisticsType().isNotNone())
                 .toList();
 
-        updateDashboards(owner, period, relation, answers);
-        updateBorrowingLimitStatistic(period, relation, answers);
+        updateDashboards(owner, wikiType, period, relation, answers);
+        if (wikiType.isNamui()) {
+            updateBorrowingLimitStatistic(period, relation, answers);
+        }
     }
 
     public PopulationStatistic getPopulationStatistic(Period period, Relation relation, QuestionName questionName) {
@@ -49,21 +53,22 @@ public class StatisticsService {
                         .build());
     }
 
-    private void updateDashboards(User owner, Period period, Relation relation, List<Answer> answers) {
-        updateDashboard(owner, null, null, answers);
-        updateDashboard(owner, period, null, answers);
-        updateDashboard(owner, null, relation, answers);
+    private void updateDashboards(User owner, WikiType wikiType, Period period, Relation relation, List<Answer> answers) {
+        updateDashboard(owner, wikiType, null, null, answers);
+        updateDashboard(owner, wikiType, period, null, answers);
+        updateDashboard(owner, wikiType, null, relation, answers);
     }
 
-    private void updateDashboard(User owner, Period period, Relation relation, List<Answer> answers) {
-        insertDashboardIfNotExist(owner, period, relation, answers);
-        dashboardRepository.updateDashboard(owner, period, relation, answers);
+    private void updateDashboard(User owner, WikiType wikiType, Period period, Relation relation, List<Answer> answers) {
+        insertDashboardIfNotExist(owner, wikiType, period, relation, answers);
+        dashboardRepository.updateDashboard(owner, wikiType, period, relation, answers);
     }
 
-    private void insertDashboardIfNotExist(User owner, Period period, Relation relation, List<Answer> answers) {
-        if (!dashboardRepository.existsByUserAndPeriodAndRelation(owner, period, relation)) {
+    private void insertDashboardIfNotExist(User owner, WikiType wikiType, Period period, Relation relation, List<Answer> answers) {
+        if (!dashboardRepository.existsByUserAndWikiTypeAndPeriodAndRelation(owner, wikiType, period, relation)) {
             dashboardRepository.save(Dashboard.builder()
                     .user(owner)
+                    .wikiType(wikiType)
                     .period(period)
                     .relation(relation)
                     .statistics(Statistics.from(answers.stream().map(Answer::getQuestion).toList()))
