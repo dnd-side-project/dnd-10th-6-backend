@@ -3,7 +3,6 @@ package com.dnd.namuiwiki.domain.dashboard.model;
 import com.dnd.namuiwiki.domain.dashboard.model.dto.RatioDto;
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.question.entity.Question;
-import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.statistic.model.Legend;
 import com.dnd.namuiwiki.domain.statistic.model.RatioStatistic;
 import com.dnd.namuiwiki.domain.statistic.model.Statistic;
@@ -16,20 +15,14 @@ import java.util.Optional;
 @Getter
 public class RatioDashboardComponent extends DashboardComponentV2 {
     private List<RatioDto> rank;
-    private final String questionId;
-    private final String questionTitle;
-    private final QuestionName questionName;
 
-    public RatioDashboardComponent(DashboardType dashboardType,Statistic statistic, Question question) {
-        super(dashboardType);
-        this.questionId = question.getId();
-        this.questionTitle = question.getTitle();
-        this.questionName = question.getName();
+    public RatioDashboardComponent(DashboardType dashboardType, Statistic statistic, Question question) {
+        super(dashboardType, question.getId(), question.getTitle(), question.getName());
 
         calculate((RatioStatistic) statistic);
     }
 
-    public void calculate(RatioStatistic statistic) {
+    private void calculate(RatioStatistic statistic) {
         Long totalCount = statistic.getTotalCount();
 
         List<Legend> legends = statistic.getLegends();
