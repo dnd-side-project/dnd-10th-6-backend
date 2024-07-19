@@ -22,12 +22,4 @@ public class OptionDto {
                 .build();
     }
 
-    public Option toEntity() {
-        return Option.builder()
-                .id(id)
-                .value(value)
-                .text(text)
-                .build();
-    }
-
 }
