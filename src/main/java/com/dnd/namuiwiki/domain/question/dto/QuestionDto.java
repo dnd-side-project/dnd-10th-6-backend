@@ -1,7 +1,5 @@
 package com.dnd.namuiwiki.domain.question.dto;
 
-import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
-import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.option.dto.OptionDto;
 import com.dnd.namuiwiki.domain.option.entity.Option;
@@ -14,9 +12,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Schema(description = "질문 응답 body")
 @Getter
@@ -56,20 +52,4 @@ public class QuestionDto {
         return questionDto.build();
     }
 
-    public Question toEntity() {
-        if (id == null) {
-            throw new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_ID);
-        }
-        Map<String, Option> questionOptions = new HashMap<>();
-        options.forEach(option -> questionOptions.put(option.getId(), option.toEntity()));
-        return Question.builder()
-                .id(id)
-                .title(title)
-                .name(name)
-                .type(type)
-                .dashboardType(dashboardType)
-                .surveyOrder(surveyOrder)
-                .options(questionOptions)
-                .build();
-    }
 }
