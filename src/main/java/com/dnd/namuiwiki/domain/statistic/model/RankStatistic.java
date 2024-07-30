@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 
 @Getter
 public class RankStatistic extends Statistic {
-    private final Map<String, RankDto> rankMap;
+    private final Map<String, RankDto> ranks;
 
-    public RankStatistic(String questionId, QuestionName questionName, DashboardType dashboardType, Long totalCount, Map<String, RankDto> rankMap) {
+    public RankStatistic(String questionId, QuestionName questionName, DashboardType dashboardType, Long totalCount, Map<String, RankDto> ranks) {
         super(questionId, questionName, dashboardType, totalCount);
-        this.rankMap = rankMap;
+        this.ranks = ranks;
     }
 
     public static RankStatistic create(Question question) {
@@ -47,12 +47,12 @@ public class RankStatistic extends Statistic {
         for (int i = 0; i < 5; i++) {
             int point = 5 - i;
             String optionId = answerList.get(i);
-            rankMap.get(optionId).addPoint(point);
+            ranks.get(optionId).addPoint(point);
         }
 
         // rankMap percentage update
         long totalPoint = this.totalCount * (5 + 4 + 3 + 2 + 1);
-        rankMap.forEach((key, value) -> {
+        ranks.forEach((key, value) -> {
             int percentage = (int) (value.getPoint() / totalPoint);
             value.updatePercentage(percentage);
         });
