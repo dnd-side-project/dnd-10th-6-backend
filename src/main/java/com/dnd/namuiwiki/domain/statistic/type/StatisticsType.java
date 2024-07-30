@@ -4,6 +4,7 @@ public enum StatisticsType {
 
     RATIO,
     AVERAGE,
+    RANK,
     NONE;
 
     public boolean isNotNone() {
