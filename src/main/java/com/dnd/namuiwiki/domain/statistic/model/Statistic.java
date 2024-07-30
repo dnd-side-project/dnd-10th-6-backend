@@ -28,6 +28,8 @@ public abstract class Statistic {
                 return RatioStatistic.create(question);
             case AVERAGE:
                 return AverageStatistic.create(question);
+            case RANK:
+                return RankStatistic.create(question);
             default:
                 throw new ApplicationErrorException(ApplicationErrorType.INTERNAL_ERROR, "Invalid statistics type");
         }
