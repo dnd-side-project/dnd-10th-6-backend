@@ -17,6 +17,10 @@ import java.util.Optional;
 public class Statistics {
     private Map<String, Statistic> statistics;
 
+    public List<Statistic> get() {
+        return statistics.values().stream().toList();
+    }
+
     public Statistic createAndPut(Question question) {
         StatisticsType statisticsType = question.getDashboardType().getStatisticsType();
         Statistic statistic = Statistic.create(question, statisticsType);
