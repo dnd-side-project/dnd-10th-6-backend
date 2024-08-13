@@ -12,6 +12,7 @@ public enum DashboardType {
     AVERAGE_BAR_CHART(StatisticsType.AVERAGE),
     HAPPY(StatisticsType.RATIO),
     SAD(StatisticsType.RATIO),
+    RANK(StatisticsType.RANK),
     NONE(StatisticsType.NONE),
     ;
 
@@ -35,5 +36,9 @@ public enum DashboardType {
 
     public boolean isAverageType() {
         return this.statisticsType == StatisticsType.AVERAGE || this == MONEY;
+    }
+
+    public boolean isRankType() {
+        return this == RANK;
     }
 }

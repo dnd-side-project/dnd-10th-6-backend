@@ -2,10 +2,7 @@ package com.dnd.namuiwiki.domain.dashboard;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
-import com.dnd.namuiwiki.domain.dashboard.model.AverageDashboardComponent;
-import com.dnd.namuiwiki.domain.dashboard.model.BinaryDashboardComponent;
-import com.dnd.namuiwiki.domain.dashboard.model.DashboardComponentV2;
-import com.dnd.namuiwiki.domain.dashboard.model.RatioDashboardComponent;
+import com.dnd.namuiwiki.domain.dashboard.model.*;
 import com.dnd.namuiwiki.domain.dashboard.model.dto.DashboardDto;
 import com.dnd.namuiwiki.domain.dashboard.model.entity.Dashboard;
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
@@ -59,7 +56,8 @@ public class DashboardService {
             Stream<DashboardType> romanceDashboardTypes = Stream.of(
                     DashboardType.BUBBLE_CHART,
                     DashboardType.BAR_CHART,
-                    DashboardType.BINARY);
+                    DashboardType.BINARY,
+                    DashboardType.RANK);
             return convertToDto(romanceDashboardTypes, dashboard, period, relation);
         } else {
             throw new ApplicationErrorException(ApplicationErrorType.INVALID_WIKI_TYPE);
@@ -84,6 +82,8 @@ public class DashboardService {
                                         return new AverageDashboardComponent(dashboardType, statistic, entireAverage, question);
                                     } else if (dashboardType.isRatioType()) {
                                         return new RatioDashboardComponent(dashboardType, statistic, question);
+                                    } else if (dashboardType.isRankType()) {
+                                        return new RankDashboardComponent(dashboardType, statistic, question);
                                     } else {
                                         throw new ApplicationErrorException(ApplicationErrorType.INVALID_DASHBOARD_TYPE);
                                     }
