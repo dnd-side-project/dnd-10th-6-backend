@@ -35,9 +35,13 @@ public class AnswerController {
             @RequestParam(name = "period", required = false, defaultValue = "TOTAL") Period period,
             @RequestParam(name = "relation", required = false, defaultValue = "TOTAL") Relation relation,
             @RequestParam(name = "pageNo", required = false, defaultValue = "0") int pageNo,
-            @RequestParam(name = "pageSize", required = false, defaultValue = "20") int pageSize) {
-
-        var answersByQuestion = surveyService.getAnswersByQuestion(tokenUserInfoDto.getWikiId(), questionId, period, relation, pageNo, pageSize);
+            @RequestParam(name = "pageSize", required = false, defaultValue = "20") int pageSize
+    ) {
+        var answersByQuestion = surveyService.getAnswersByQuestion(
+                tokenUserInfoDto.getWikiId(), questionId,
+                period, relation,
+                pageNo, pageSize
+        );
         return ResponseDto.ok(answersByQuestion);
     }
 }
