@@ -3,7 +3,6 @@ package com.dnd.namuiwiki.domain.survey;
 import com.dnd.namuiwiki.common.dto.PageableDto;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
-import com.dnd.namuiwiki.domain.jwt.JwtProvider;
 import com.dnd.namuiwiki.domain.jwt.JwtService;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.option.OptionRepository;
@@ -164,7 +163,11 @@ public class SurveyService {
         }
     }
 
-    public GetAnswersByQuestionResponse getAnswersByQuestion(String wikiId, String questionId, Period period, Relation relation, int pageNo, int pageSize) {
+    public GetAnswersByQuestionResponse getAnswersByQuestion(
+            String wikiId, String questionId,
+            Period period, Relation relation,
+            int pageNo, int pageSize
+    ) {
         validateFilter(period, relation);
 
         Question question = getQuestionById(questionId);
@@ -173,21 +176,19 @@ public class SurveyService {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<Survey> surveys = getReceivedSurveysByFilter(period, relation, owner, pageable);
-        var answers = surveys.map(survey -> {
-            var answerOfQuestion = survey.getAnswers().stream()
-                    .filter(answer -> answer.getQuestion().getId().equals(questionId))
-                    .findAny()
-                    .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_QUESTION_ID));
-            return SingleAnswerWithSurveyDetailDto.builder()
-                    .senderName(survey.getSenderName())
-                    .period(survey.getPeriod())
-                    .relation(survey.getRelation())
-                    .createdAt(survey.getWrittenAt())
-                    .answer(convertAnswer(question, answerOfQuestion))
-                    .reason(answerOfQuestion.getReason())
-                    .optionName(question, answerOfQuestion)
-                    .build();
-        });
+        var answers = surveys.map(survey -> survey.getAnswers().stream()
+                .filter(answer -> answer.getQuestion().getId().equals(questionId))
+                .findAny()
+                .map(answer -> SingleAnswerWithSurveyDetailDto.builder()
+                        .senderName(survey.getSenderName())
+                        .period(survey.getPeriod())
+                        .relation(survey.getRelation())
+                        .createdAt(survey.getWrittenAt())
+                        .answer(convertAnswer(question, answer))
+                        .reason(answer.getReason())
+                        .optionName(question, answer)
+                        .wikiType(survey.getWikiType())
+                        .build()).orElse(null));
 
         return new GetAnswersByQuestionResponse(question.getTitle(), question.getName(), PageableDto.create(answers));
     }

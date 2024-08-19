@@ -6,6 +6,7 @@ import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
+import com.dnd.namuiwiki.domain.wiki.WikiType;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -21,6 +22,7 @@ public class SingleAnswerWithSurveyDetailDto {
     private Object answer;
     private String reason;
     private String optionName;
+    private WikiType wikiType;
 
     public static class SingleAnswerWithSurveyDetailDtoBuilder {
         public SingleAnswerWithSurveyDetailDtoBuilder optionName(Question question, Answer surveyAnswer) {

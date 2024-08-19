@@ -19,7 +19,7 @@ import java.util.List;
 @Getter
 @Builder
 @Document("dashboards")
-@CompoundIndex(def = "{ 'user': 1, 'period': 1, 'relation': 1 }", unique = true)
+@CompoundIndex(def = "{ 'user': 1, 'period': 1, 'relation': 1, 'wikiType': 1 }", unique = true)
 public class Dashboard extends BaseTimeEntity {
 
     @Id
