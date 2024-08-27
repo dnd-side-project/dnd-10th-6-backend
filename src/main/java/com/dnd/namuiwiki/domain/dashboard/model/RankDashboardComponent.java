@@ -9,6 +9,7 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter
 public class RankDashboardComponent extends DashboardComponentV2 {
@@ -25,8 +26,20 @@ public class RankDashboardComponent extends DashboardComponentV2 {
     }
 
     private List<RankDto> getRank(RankStatistic rankStatistic) {
-        List<RankDto> rankList = new ArrayList<>(rankStatistic.getRanks().values().stream().toList());
-        rankList.sort((o1, o2) -> Double.compare(o2.getPercentage(), o1.getPercentage()));
-        return rankList;
+        AtomicInteger totalPoint = new AtomicInteger();
+        rankStatistic.getRanks().forEach((optionId, rank) -> {
+            totalPoint.addAndGet(rank.getPoint());
+        });
+
+        List<RankDto> rankDtoList = new ArrayList<>();
+        rankStatistic.getRanks().forEach((optionId, rank) -> {
+            if (totalPoint.get() == 0) {
+                return;
+            }
+            rankDtoList.add(new RankDto(rank.getText(), rank.getPoint(), rank.getPoint() / totalPoint.get()));
+        });
+
+        rankDtoList.sort((o1, o2) -> Integer.compare(o2.getPercentage(), o1.getPercentage()));
+        return rankDtoList;
     }
 }
