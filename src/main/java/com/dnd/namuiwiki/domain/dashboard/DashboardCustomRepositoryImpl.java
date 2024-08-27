@@ -37,6 +37,14 @@ public class DashboardCustomRepositoryImpl implements DashboardCustomRepository 
                 update.inc(String.format("statistics.statistics.%s.legends.%s.count",
                         answer.getQuestion().getId(), answer.getAnswer().toString()));
             }
+
+            if (answer.getType().isOptionList()) {
+                List<String> answerList = (List<String>) answer.getAnswer();
+                for (int i = 0; i < 5; i++) {
+                    update.inc(String.format("statistics.statistics.%s.ranks.%s.point",
+                            answer.getQuestion().getId(), answerList.get(i)), 5 - i);
+                }
+            }
         }
 
         mongoTemplate.findAndModify(query, update, options, Dashboard.class);
