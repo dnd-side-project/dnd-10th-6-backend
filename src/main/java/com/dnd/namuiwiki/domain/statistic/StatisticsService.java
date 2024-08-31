@@ -61,7 +61,20 @@ public class StatisticsService {
 
     private void updateDashboard(User owner, WikiType wikiType, Period period, Relation relation, List<Answer> answers) {
         insertDashboardIfNotExist(owner, wikiType, period, relation, answers);
-        dashboardRepository.updateDashboard(owner, wikiType, period, relation, answers);
+        Dashboard dashboard = dashboardRepository.findByUserAndWikiTypeAndPeriodAndRelation(owner, wikiType, period, relation)
+                .orElseGet(() -> {
+                    Dashboard d = Dashboard.builder()
+                            .user(owner)
+                            .wikiType(wikiType)
+                            .period(period)
+                            .relation(relation)
+                            .statistics(Statistics.from(answers.stream().map(Answer::getQuestion).toList()))
+                            .build();
+                    return dashboardRepository.save(d);
+                });
+
+        dashboard.updateStatistics(answers);
+        dashboardRepository.save(dashboard);
     }
 
     private void insertDashboardIfNotExist(User owner, WikiType wikiType, Period period, Relation relation, List<Answer> answers) {
