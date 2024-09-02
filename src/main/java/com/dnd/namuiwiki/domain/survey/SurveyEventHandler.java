@@ -1,5 +1,6 @@
 package com.dnd.namuiwiki.domain.survey;
 
+import com.dnd.namuiwiki.domain.dashboard.DashboardService;
 import com.dnd.namuiwiki.domain.statistic.StatisticsService;
 import com.dnd.namuiwiki.domain.survey.model.dto.SurveyCreatedEvent;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
@@ -12,6 +13,7 @@ import org.springframework.scheduling.annotation.Async;
 @RequiredArgsConstructor
 public class SurveyEventHandler {
     private final StatisticsService statisticsService;
+    private final DashboardService dashboardService;
 
     @Async
     @EventListener
@@ -20,6 +22,7 @@ public class SurveyEventHandler {
         log.info("SurveyEventHandler.handleSurveySuccessEvent: surveyId={}", survey.getId());
 
         statisticsService.updateStatistics(survey);
+        dashboardService.updateDashboards(survey);
     }
 
 }

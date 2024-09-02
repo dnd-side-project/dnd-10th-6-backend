@@ -18,6 +18,7 @@ import com.dnd.namuiwiki.domain.statistic.StatisticsService;
 import com.dnd.namuiwiki.domain.statistic.model.BorrowingLimitEntireStatistic;
 import com.dnd.namuiwiki.domain.statistic.model.Statistics;
 import com.dnd.namuiwiki.domain.statistic.model.entity.PopulationStatistic;
+import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.UserRepository;
@@ -34,6 +35,7 @@ import java.util.Optional;
 public class DashboardService {
     private final UserRepository userRepository;
     private final DashboardRepository dashboardRepository;
+    private final DashboardInternalProxyService dashboardInternalProxyService;
     private final StatisticsService statisticsService;
     private final QuestionRepository questionRepository;
 
@@ -43,6 +45,21 @@ public class DashboardService {
         User user = findByWikiId(tokenUserInfoDto.getWikiId());
         Optional<Dashboard> dashboard = dashboardRepository.findByUserAndWikiTypeAndPeriodAndRelation(user, wikiType, period, relation);
         return dashboard.map(value -> convertToDto(value.getStatistics(), period, relation)).orElse(null);
+    }
+
+    public void updateDashboards(Survey survey) {
+        User owner = survey.getOwner();
+        WikiType wikiType = survey.getWikiType();
+        Period period = survey.getPeriod();
+        Relation relation = survey.getRelation();
+
+        var answers = survey.getAnswers().stream()
+                .filter(answer -> answer.getQuestion().getDashboardType().getStatisticsType().isNotNone())
+                .toList();
+
+        dashboardInternalProxyService.updateDashboard(owner, wikiType, null, null, answers);
+        dashboardInternalProxyService.updateDashboard(owner, wikiType, period, null, answers);
+        dashboardInternalProxyService.updateDashboard(owner, wikiType, null, relation, answers);
     }
 
     private DashboardDto convertToDto(Statistics statistics, Period period, Relation relation) {
