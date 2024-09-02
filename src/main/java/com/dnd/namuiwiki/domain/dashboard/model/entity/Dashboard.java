@@ -10,6 +10,7 @@ import com.dnd.namuiwiki.domain.wiki.WikiType;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
@@ -21,6 +22,9 @@ import java.util.List;
 @Document("dashboards")
 @CompoundIndex(def = "{ 'user': 1, 'period': 1, 'relation': 1, 'wikiType': 1 }", unique = true)
 public class Dashboard extends BaseTimeEntity {
+
+    @Version
+    private Long version;
 
     @Id
     private String id;
