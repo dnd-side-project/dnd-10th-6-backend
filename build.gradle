@@ -8,11 +8,9 @@ ext {
     set('jwtVersion', '0.12.5')
     set('springdocOpenapiUIVersion', '2.3.0')
     set('mockitoVersion', '5.10.0')
-}
-
-ext {
     set('jwtVersion', '0.12.5')
     set('springdocOpenapiUIVersion', '2.3.0')
+    set('springRetryVersion', '2.0.7')
 }
 
 group = 'com.dnd'
@@ -32,6 +30,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
+    /* spring retry */
+    implementation("org.springframework.retry:spring-retry:${springRetryVersion}")
+    implementation("org.springframework:spring-aspects")
 
     /* micrometer */
     implementation 'io.micrometer:micrometer-registry-prometheus'
