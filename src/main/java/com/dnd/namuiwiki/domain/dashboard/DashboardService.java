@@ -18,6 +18,8 @@ import com.dnd.namuiwiki.domain.statistic.StatisticsService;
 import com.dnd.namuiwiki.domain.statistic.model.BorrowingLimitEntireStatistic;
 import com.dnd.namuiwiki.domain.statistic.model.Statistics;
 import com.dnd.namuiwiki.domain.statistic.model.entity.PopulationStatistic;
+import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
+import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.UserRepository;
@@ -43,6 +45,51 @@ public class DashboardService {
         User user = findByWikiId(tokenUserInfoDto.getWikiId());
         Optional<Dashboard> dashboard = dashboardRepository.findByUserAndWikiTypeAndPeriodAndRelation(user, wikiType, period, relation);
         return dashboard.map(value -> convertToDto(value.getStatistics(), period, relation)).orElse(null);
+    }
+
+    public void updateDashboards(Survey survey) {
+        User owner = survey.getOwner();
+        WikiType wikiType = survey.getWikiType();
+        Period period = survey.getPeriod();
+        Relation relation = survey.getRelation();
+
+        var answers = survey.getAnswers().stream()
+                .filter(answer -> answer.getQuestion().getDashboardType().getStatisticsType().isNotNone())
+                .toList();
+
+        updateDashboard(owner, wikiType, null, null, answers);
+        updateDashboard(owner, wikiType, period, null, answers);
+        updateDashboard(owner, wikiType, null, relation, answers);
+    }
+
+    private void updateDashboard(User owner, WikiType wikiType, Period period, Relation relation, List<Answer> answers) {
+        insertDashboardIfNotExist(owner, wikiType, period, relation, answers);
+        Dashboard dashboard = dashboardRepository.findByUserAndWikiTypeAndPeriodAndRelation(owner, wikiType, period, relation)
+                .orElseGet(() -> {
+                    Dashboard d = Dashboard.builder()
+                            .user(owner)
+                            .wikiType(wikiType)
+                            .period(period)
+                            .relation(relation)
+                            .statistics(Statistics.from(answers.stream().map(Answer::getQuestion).toList()))
+                            .build();
+                    return dashboardRepository.save(d);
+                });
+
+        dashboard.updateStatistics(answers);
+        dashboardRepository.save(dashboard);
+    }
+
+    private void insertDashboardIfNotExist(User owner, WikiType wikiType, Period period, Relation relation, List<Answer> answers) {
+        if (!dashboardRepository.existsByUserAndWikiTypeAndPeriodAndRelation(owner, wikiType, period, relation)) {
+            dashboardRepository.save(Dashboard.builder()
+                    .user(owner)
+                    .wikiType(wikiType)
+                    .period(period)
+                    .relation(relation)
+                    .statistics(Statistics.from(answers.stream().map(Answer::getQuestion).toList()))
+                    .build());
+        }
     }
 
     private DashboardDto convertToDto(Statistics statistics, Period period, Relation relation) {

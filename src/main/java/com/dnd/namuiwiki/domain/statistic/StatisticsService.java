@@ -2,18 +2,14 @@ package com.dnd.namuiwiki.domain.statistic;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
-import com.dnd.namuiwiki.domain.dashboard.DashboardRepository;
-import com.dnd.namuiwiki.domain.dashboard.model.entity.Dashboard;
 import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.statistic.model.BorrowingLimitEntireStatistic;
-import com.dnd.namuiwiki.domain.statistic.model.Statistics;
 import com.dnd.namuiwiki.domain.statistic.model.entity.PopulationStatistic;
 import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
-import com.dnd.namuiwiki.domain.user.entity.User;
 import com.dnd.namuiwiki.domain.wiki.WikiType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,11 +19,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class StatisticsService {
-    private final DashboardRepository dashboardRepository;
     private final StatisticsRepository statisticsRepository;
 
     public void updateStatistics(Survey survey) {
-        User owner = survey.getOwner();
         WikiType wikiType = survey.getWikiType();
         Period period = survey.getPeriod();
         Relation relation = survey.getRelation();
@@ -36,7 +30,6 @@ public class StatisticsService {
                 .filter(answer -> answer.getQuestion().getDashboardType().getStatisticsType().isNotNone())
                 .toList();
 
-        updateDashboards(owner, wikiType, period, relation, answers);
         if (wikiType.isNamui()) {
             updateBorrowingLimitStatistic(period, relation, answers);
         }
@@ -51,42 +44,6 @@ public class StatisticsService {
                         .questionName(questionName)
                         .relation(relation)
                         .build());
-    }
-
-    private void updateDashboards(User owner, WikiType wikiType, Period period, Relation relation, List<Answer> answers) {
-        updateDashboard(owner, wikiType, null, null, answers);
-        updateDashboard(owner, wikiType, period, null, answers);
-        updateDashboard(owner, wikiType, null, relation, answers);
-    }
-
-    private void updateDashboard(User owner, WikiType wikiType, Period period, Relation relation, List<Answer> answers) {
-        insertDashboardIfNotExist(owner, wikiType, period, relation, answers);
-        Dashboard dashboard = dashboardRepository.findByUserAndWikiTypeAndPeriodAndRelation(owner, wikiType, period, relation)
-                .orElseGet(() -> {
-                    Dashboard d = Dashboard.builder()
-                            .user(owner)
-                            .wikiType(wikiType)
-                            .period(period)
-                            .relation(relation)
-                            .statistics(Statistics.from(answers.stream().map(Answer::getQuestion).toList()))
-                            .build();
-                    return dashboardRepository.save(d);
-                });
-
-        dashboard.updateStatistics(answers);
-        dashboardRepository.save(dashboard);
-    }
-
-    private void insertDashboardIfNotExist(User owner, WikiType wikiType, Period period, Relation relation, List<Answer> answers) {
-        if (!dashboardRepository.existsByUserAndWikiTypeAndPeriodAndRelation(owner, wikiType, period, relation)) {
-            dashboardRepository.save(Dashboard.builder()
-                    .user(owner)
-                    .wikiType(wikiType)
-                    .period(period)
-                    .relation(relation)
-                    .statistics(Statistics.from(answers.stream().map(Answer::getQuestion).toList()))
-                    .build());
-        }
     }
 
     private void updateBorrowingLimitStatistic(Period period, Relation relation, List<Answer> answers) {
