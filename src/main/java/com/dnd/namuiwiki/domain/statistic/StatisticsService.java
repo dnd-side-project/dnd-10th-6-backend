@@ -20,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StatisticsService {
     private final StatisticsRepository statisticsRepository;
+    private final StatisticsInternalProxyService statisticsInternalProxyService;
 
     public void updateStatistics(Survey survey) {
         WikiType wikiType = survey.getWikiType();
@@ -47,8 +48,10 @@ public class StatisticsService {
     }
 
     private void updateBorrowingLimitStatistic(Period period, Relation relation, List<Answer> answers) {
+        QuestionName questionName = QuestionName.BORROWING_LIMIT;
+
         Answer borroingLimitAnswer = answers.stream()
-                .filter(answer -> answer.getQuestion().getName() == QuestionName.BORROWING_LIMIT)
+                .filter(answer -> answer.getQuestion().getName() == questionName)
                 .findFirst()
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_DATA_ARGUMENT));
 
@@ -60,20 +63,9 @@ public class StatisticsService {
             borrowingLimit = (long) borroingLimitAnswer.getAnswer();
         }
 
-        updateBorrowingLimitStatisticByCategory(null, null, borrowingLimit);
-        updateBorrowingLimitStatisticByCategory(period, null, borrowingLimit);
-        updateBorrowingLimitStatisticByCategory(null, relation, borrowingLimit);
-    }
-
-    private void updateBorrowingLimitStatisticByCategory(Period period, Relation relation, long borrowingLimit) {
-        PopulationStatistic populationStatistic = getPopulationStatistic(period, relation, QuestionName.BORROWING_LIMIT);
-
-        BorrowingLimitEntireStatistic statistic = (BorrowingLimitEntireStatistic) populationStatistic.getStatistic();
-        statistic.updateStatistic(String.valueOf(borrowingLimit));
-
-        populationStatistic.setStatistic(statistic);
-
-        statisticsRepository.save(populationStatistic);
+        statisticsInternalProxyService.updateBorrowingLimitStatisticByCategory(getPopulationStatistic(null, null, questionName), borrowingLimit);
+        statisticsInternalProxyService.updateBorrowingLimitStatisticByCategory(getPopulationStatistic(period, null, questionName), borrowingLimit);
+        statisticsInternalProxyService.updateBorrowingLimitStatisticByCategory(getPopulationStatistic(null, relation, questionName), borrowingLimit);
     }
 
 }

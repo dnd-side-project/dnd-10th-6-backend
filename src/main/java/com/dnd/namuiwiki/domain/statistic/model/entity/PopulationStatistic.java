@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
@@ -15,6 +16,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @Document("statistics")
 public class PopulationStatistic {
+
+    @Version
+    private Long version;
 
     @Id
     private String id;
