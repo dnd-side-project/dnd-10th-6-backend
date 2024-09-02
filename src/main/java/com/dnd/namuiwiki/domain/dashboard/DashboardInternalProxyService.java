@@ -8,6 +8,7 @@ import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.entity.User;
 import com.dnd.namuiwiki.domain.wiki.WikiType;
+import com.dnd.namuiwiki.external.DiscordClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -23,6 +24,7 @@ import java.util.List;
 @Service
 public class DashboardInternalProxyService {
     private final DashboardRepository dashboardRepository;
+    private final DiscordClient discordClient;
 
     @Retryable(
             retryFor = {OptimisticLockingFailureException.class},
@@ -50,6 +52,7 @@ public class DashboardInternalProxyService {
     @Recover
     private void recoverForUpdateDashboard(Exception e) {
         log.error("Failed to update dashboard", e);
+        discordClient.sendMessage(e.toString());
     }
 
     private void insertDashboardIfNotExist(User owner, WikiType wikiType, Period period, Relation relation, List<Answer> answers) {

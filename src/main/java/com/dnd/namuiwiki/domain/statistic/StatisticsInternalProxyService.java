@@ -3,6 +3,7 @@ package com.dnd.namuiwiki.domain.statistic;
 
 import com.dnd.namuiwiki.domain.statistic.model.BorrowingLimitEntireStatistic;
 import com.dnd.namuiwiki.domain.statistic.model.entity.PopulationStatistic;
+import com.dnd.namuiwiki.external.DiscordClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class StatisticsInternalProxyService {
     private final StatisticsRepository statisticsRepository;
+    private final DiscordClient discordClient;
 
     @Retryable(
             retryFor = {OptimisticLockingFailureException.class},
@@ -37,6 +39,7 @@ public class StatisticsInternalProxyService {
     @Recover
     private void recoverForUpdateStatistics(Exception e) {
         log.error("Failed to update statistics", e);
+        discordClient.sendMessage(e.toString());
     }
 
 }
