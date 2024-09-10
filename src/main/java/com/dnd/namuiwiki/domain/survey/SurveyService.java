@@ -164,6 +164,7 @@ public class SurveyService {
     }
 
     public GetAnswersByQuestionResponse getAnswersByQuestion(
+            WikiType wikiType,
             String wikiId, String questionId,
             Period period, Relation relation,
             int pageNo, int pageSize
@@ -175,7 +176,7 @@ public class SurveyService {
 
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        Page<Survey> surveys = getReceivedSurveysByFilter(period, relation, owner, pageable);
+        Page<Survey> surveys = getReceivedSurveysByFilter(wikiType, period, relation, owner, pageable);
         var answers = surveys.map(survey -> survey.getAnswers().stream()
                 .filter(answer -> answer.getQuestion().getId().equals(questionId))
                 .findAny()
@@ -209,14 +210,14 @@ public class SurveyService {
         return surveyRepository.findBySender(sender, pageable);
     }
 
-    private Page<Survey> getReceivedSurveysByFilter(Period period, Relation relation, User owner, Pageable pageable) {
+    private Page<Survey> getReceivedSurveysByFilter(WikiType wikiType, Period period, Relation relation, User owner, Pageable pageable) {
         if (!period.isTotal()) {
-            return surveyRepository.findByOwnerAndPeriod(owner, period, pageable);
+            return surveyRepository.findByWikiTypeAndOwnerAndPeriod(wikiType, owner, period, pageable);
         }
         if (!relation.isTotal()) {
-            return surveyRepository.findByOwnerAndRelation(owner, relation, pageable);
+            return surveyRepository.findByWikiTypeAndOwnerAndRelation(wikiType, owner, relation, pageable);
         }
-        return surveyRepository.findByOwner(owner, pageable);
+        return surveyRepository.findByWikiTypeAndOwner(wikiType, owner, pageable);
     }
 
     private Object convertAnswer(Question question, Answer answer) {
