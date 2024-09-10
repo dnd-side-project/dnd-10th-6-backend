@@ -12,15 +12,15 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface SurveyRepository extends MongoRepository<Survey, String> {
     Long countByOwner(User owner);
 
-    Page<Survey> findByOwner(User owner, Pageable pageable);
+    Page<Survey> findByWikiTypeAndOwner(WikiType wikiType, User owner, Pageable pageable);
 
     Page<Survey> findByOwnerAndWikiType(User owner, WikiType wikiType, Pageable pageable);
 
     Page<Survey> findBySender(User sender, Pageable pageable);
 
-    Page<Survey> findByOwnerAndPeriod(User owner, Period period, Pageable pageable);
+    Page<Survey> findByWikiTypeAndOwnerAndPeriod(WikiType wikiType, User owner, Period period, Pageable pageable);
 
-    Page<Survey> findByOwnerAndRelation(User owner, Relation relation, Pageable pageable);
+    Page<Survey> findByWikiTypeAndOwnerAndRelation(WikiType wikiType, User owner, Relation relation, Pageable pageable);
 
     Page<Survey> findBySenderAndPeriod(User sender, Period period, Pageable pageable);
 
