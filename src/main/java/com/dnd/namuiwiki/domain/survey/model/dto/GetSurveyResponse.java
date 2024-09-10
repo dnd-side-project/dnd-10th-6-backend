@@ -1,9 +1,5 @@
 package com.dnd.namuiwiki.domain.survey.model.dto;
 
-import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
-import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
-import com.dnd.namuiwiki.common.util.ListUtils;
-import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
@@ -39,39 +35,12 @@ public class GetSurveyResponse {
         private QuestionName questionName;
 
         static SingleQuestionAndAnswer from(Question question, Answer surveyAnswer) {
-            Object answer = convertAnswerToObject(question, surveyAnswer);
-
             return new SingleQuestionAndAnswer(
                     question.getTitle(),
-                    answer,
+                    surveyAnswer.convertToObject(),
                     surveyAnswer.getReason(),
                     question.getName()
             );
-        }
-
-        private static Object convertAnswerToObject(Question question, Answer surveyAnswer) {
-            Object optionValue;
-            if (surveyAnswer.getType().isManual()) {
-                optionValue = new SimpleAnswerDto(
-                        surveyAnswer.getAnswer().toString(),
-                        surveyAnswer.getAnswer(),
-                        null);
-            } else if (question.getType().isListType()) {
-                optionValue = (ListUtils.<String>convertList(surveyAnswer.getAnswer()).stream()
-                        .map(optionId -> SimpleAnswerDto.of(getOption(question, optionId)))
-                        .toList());
-            } else if (question.getType().isChoiceType()) {
-                Option option = getOption(question, surveyAnswer.getAnswer().toString());
-                optionValue = SimpleAnswerDto.of(option);
-            } else {
-                throw new ApplicationErrorException(ApplicationErrorType.INVALID_DATA_ARGUMENT, "선택형 질문이 아닙니다");
-            }
-            return optionValue;
-        }
-
-        private static Option getOption(Question question, String optionId) {
-            return question.getOption(optionId)
-                    .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID));
         }
 
     }

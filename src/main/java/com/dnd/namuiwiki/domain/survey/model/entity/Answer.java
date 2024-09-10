@@ -2,8 +2,11 @@ package com.dnd.namuiwiki.domain.survey.model.entity;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
+import com.dnd.namuiwiki.common.util.ListUtils;
+import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionType;
+import com.dnd.namuiwiki.domain.survey.model.dto.SimpleAnswerDto;
 import com.dnd.namuiwiki.domain.survey.type.AnswerType;
 import lombok.Builder;
 import lombok.Getter;
@@ -71,6 +74,26 @@ public class Answer {
         if (!questionType.containsAnswerType(answerType)) {
             throw new ApplicationErrorException(ApplicationErrorType.NOT_ALLOWED_ANSWER_TYPE);
         }
+    }
+
+    public Object convertToObject() {
+        Object optionValue;
+        if (getType().isManual()) {
+            optionValue = new SimpleAnswerDto(
+                    getAnswer().toString(),
+                    getAnswer(),
+                    null);
+        } else if (question.getType().isListType()) {
+            optionValue = (ListUtils.<String>convertList(getAnswer()).stream()
+                    .map(optionId -> SimpleAnswerDto.of(question.getOption(optionId)))
+                    .toList());
+        } else if (question.getType().isChoiceType()) {
+            Option option = question.getOption(getAnswer().toString());
+            optionValue = SimpleAnswerDto.of(option);
+        } else {
+            throw new ApplicationErrorException(ApplicationErrorType.INVALID_DATA_ARGUMENT, "선택형 질문이 아닙니다");
+        }
+        return optionValue;
     }
 
 }
