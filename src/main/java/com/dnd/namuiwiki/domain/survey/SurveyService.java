@@ -3,6 +3,7 @@ package com.dnd.namuiwiki.domain.survey;
 import com.dnd.namuiwiki.common.dto.PageableDto;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
+import com.dnd.namuiwiki.common.util.ListUtils;
 import com.dnd.namuiwiki.domain.jwt.JwtService;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.option.OptionRepository;
@@ -225,7 +226,16 @@ public class SurveyService {
             return answer.getAnswer();
         }
 
-        Option option = question.getOption(answer.getAnswer().toString())
+        if (question.getType().isListType()) {
+            return (ListUtils.convertList(answer.getAnswer()).stream()
+                    .map(optionId -> getOptionValue(question, optionId)).toList());
+        }
+
+        return getOptionValue(question, answer.getAnswer());
+    }
+
+    private Object getOptionValue(Question question, Object answer) {
+        Option option = question.getOption(answer.toString())
                 .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID));
         if (question.getType().isNumericType()) {
             return option.getValue();

@@ -2,6 +2,7 @@ package com.dnd.namuiwiki.domain.survey.model.dto;
 
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
+import com.dnd.namuiwiki.common.util.ListUtils;
 import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
@@ -33,55 +34,46 @@ public class GetSurveyResponse {
     @AllArgsConstructor
     private static class SingleQuestionAndAnswer {
         private String questionTitle;
-        private String text;
-        private Object value;
+        private Object answer;
         private String reason;
         private QuestionName questionName;
-        private String optionName;
 
         static SingleQuestionAndAnswer from(Question question, Answer surveyAnswer) {
-            String optionName = getOptionName(question, surveyAnswer);
+            Object answer = convertAnswerToObject(question, surveyAnswer);
 
-            if (surveyAnswer.getType().isManual()) {
-                return new SingleQuestionAndAnswer(
-                        question.getTitle(),
-                        surveyAnswer.getAnswer().toString(),
-                        surveyAnswer.getAnswer(),
-                        surveyAnswer.getReason(),
-                        question.getName(),
-                        optionName
-                );
-            }
-            Option option = question.getOption(surveyAnswer.getAnswer().toString())
-                    .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID));
             return new SingleQuestionAndAnswer(
                     question.getTitle(),
-                    option.getText(),
-                    option.getValue(),
+                    answer,
                     surveyAnswer.getReason(),
-                    question.getName(),
-                    optionName
+                    question.getName()
             );
         }
 
-        private static String getOptionName(Question question, Answer surveyAnswer) {
-            String optionName = null;
-
-            if (question.getType().isChoiceType()) {
-                if (surveyAnswer.getType().isOption()) {
-                    optionName = question.getOption(surveyAnswer.getAnswer().toString())
-                            .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID))
-                            .getName();
-                } else {
-                    optionName = question.getOptions().values().stream()
-                            .filter(option -> option.getName().contains("MANUAL"))
-                            .findFirst()
-                            .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID))
-                            .getName();
-                }
+        private static Object convertAnswerToObject(Question question, Answer surveyAnswer) {
+            Object optionValue;
+            if (surveyAnswer.getType().isManual()) {
+                optionValue = new SimpleAnswerDto(
+                        surveyAnswer.getAnswer().toString(),
+                        surveyAnswer.getAnswer(),
+                        null);
+            } else if (question.getType().isListType()) {
+                optionValue = (ListUtils.<String>convertList(surveyAnswer.getAnswer()).stream()
+                        .map(optionId -> SimpleAnswerDto.of(getOption(question, optionId)))
+                        .toList());
+            } else if (question.getType().isChoiceType()) {
+                Option option = getOption(question, surveyAnswer.getAnswer().toString());
+                optionValue = SimpleAnswerDto.of(option);
+            } else {
+                throw new ApplicationErrorException(ApplicationErrorType.INVALID_DATA_ARGUMENT, "선택형 질문이 아닙니다");
             }
-            return optionName;
+            return optionValue;
         }
+
+        private static Option getOption(Question question, String optionId) {
+            return question.getOption(optionId)
+                    .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID));
+        }
+
     }
 
     public static GetSurveyResponse from(Survey survey, List<Question> questions) {
