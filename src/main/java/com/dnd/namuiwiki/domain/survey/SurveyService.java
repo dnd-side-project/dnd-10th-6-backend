@@ -187,7 +187,7 @@ public class SurveyService {
                         .createdAt(survey.getWrittenAt())
                         .answer(convertAnswer(question, answer))
                         .reason(answer.getReason())
-                        .optionName(question, answer)
+                        .optionName(answer)
                         .wikiType(survey.getWikiType())
                         .build()).orElse(null));
 

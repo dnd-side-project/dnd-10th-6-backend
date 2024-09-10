@@ -25,7 +25,8 @@ public class SingleAnswerWithSurveyDetailDto {
     private WikiType wikiType;
 
     public static class SingleAnswerWithSurveyDetailDtoBuilder {
-        public SingleAnswerWithSurveyDetailDtoBuilder optionName(Question question, Answer surveyAnswer) {
+        public SingleAnswerWithSurveyDetailDtoBuilder optionName(Answer surveyAnswer) {
+            Question question = surveyAnswer.getQuestion();
             String optionName = null;
 
             if (question.getType().isChoiceType()) {
