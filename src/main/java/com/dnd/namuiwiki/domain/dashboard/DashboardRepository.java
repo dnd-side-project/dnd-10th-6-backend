@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
 
-public interface DashboardRepository extends MongoRepository<Dashboard, String>, DashboardCustomRepository {
+public interface DashboardRepository extends MongoRepository<Dashboard, String> {
     Optional<Dashboard> findByUserAndWikiTypeAndPeriodAndRelation(User user, WikiType wikiType, Period period, Relation relation);
 
     boolean existsByUserAndWikiTypeAndPeriodAndRelation(User user, WikiType wikiType, Period period, Relation relation);

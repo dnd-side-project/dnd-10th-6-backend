@@ -66,8 +66,7 @@ public class AverageStatistic extends Statistic {
     private long getValueFromOption(Answer answer, Question question) {
         long value;
         String optionId = answer.getAnswer().toString();
-        Option option = question.getOption(optionId)
-                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID));
+        Option option = question.getOption(optionId);
         value = Long.parseLong(option.getValue().toString());
         return value;
     }

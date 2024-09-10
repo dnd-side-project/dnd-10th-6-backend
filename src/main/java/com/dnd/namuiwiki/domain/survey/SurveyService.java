@@ -3,6 +3,7 @@ package com.dnd.namuiwiki.domain.survey;
 import com.dnd.namuiwiki.common.dto.PageableDto;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
 import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
+import com.dnd.namuiwiki.common.util.ListUtils;
 import com.dnd.namuiwiki.domain.jwt.JwtService;
 import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.option.OptionRepository;
@@ -153,8 +154,7 @@ public class SurveyService {
         User user = getUserByWikiId(tokenUserInfoDto.getWikiId());
         validateSurveyOwner(survey, user);
 
-        List<Question> questions = questionRepository.findAll();
-        return GetSurveyResponse.from(survey, questions);
+        return GetSurveyResponse.from(survey);
     }
 
     private void validateSurveyOwner(Survey survey, User user) {
@@ -164,6 +164,7 @@ public class SurveyService {
     }
 
     public GetAnswersByQuestionResponse getAnswersByQuestion(
+            WikiType wikiType,
             String wikiId, String questionId,
             Period period, Relation relation,
             int pageNo, int pageSize
@@ -175,7 +176,7 @@ public class SurveyService {
 
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        Page<Survey> surveys = getReceivedSurveysByFilter(period, relation, owner, pageable);
+        Page<Survey> surveys = getReceivedSurveysByFilter(wikiType, period, relation, owner, pageable);
         var answers = surveys.map(survey -> survey.getAnswers().stream()
                 .filter(answer -> answer.getQuestion().getId().equals(questionId))
                 .findAny()
@@ -184,9 +185,8 @@ public class SurveyService {
                         .period(survey.getPeriod())
                         .relation(survey.getRelation())
                         .createdAt(survey.getWrittenAt())
-                        .answer(convertAnswer(question, answer))
+                        .answer(answer.convertToObject())
                         .reason(answer.getReason())
-                        .optionName(question, answer)
                         .wikiType(survey.getWikiType())
                         .build()).orElse(null));
 
@@ -209,14 +209,14 @@ public class SurveyService {
         return surveyRepository.findBySender(sender, pageable);
     }
 
-    private Page<Survey> getReceivedSurveysByFilter(Period period, Relation relation, User owner, Pageable pageable) {
+    private Page<Survey> getReceivedSurveysByFilter(WikiType wikiType, Period period, Relation relation, User owner, Pageable pageable) {
         if (!period.isTotal()) {
-            return surveyRepository.findByOwnerAndPeriod(owner, period, pageable);
+            return surveyRepository.findByWikiTypeAndOwnerAndPeriod(wikiType, owner, period, pageable);
         }
         if (!relation.isTotal()) {
-            return surveyRepository.findByOwnerAndRelation(owner, relation, pageable);
+            return surveyRepository.findByWikiTypeAndOwnerAndRelation(wikiType, owner, relation, pageable);
         }
-        return surveyRepository.findByOwner(owner, pageable);
+        return surveyRepository.findByWikiTypeAndOwner(wikiType, owner, pageable);
     }
 
     private Object convertAnswer(Question question, Answer answer) {
@@ -224,8 +224,16 @@ public class SurveyService {
             return answer.getAnswer();
         }
 
-        Option option = question.getOption(answer.getAnswer().toString())
-                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID));
+        if (question.getType().isListType()) {
+            return (ListUtils.convertList(answer.getAnswer()).stream()
+                    .map(optionId -> getOptionValue(question, optionId)).toList());
+        }
+
+        return getOptionValue(question, answer.getAnswer());
+    }
+
+    private Object getOptionValue(Question question, Object answer) {
+        Option option = question.getOption(answer.toString());
         if (question.getType().isNumericType()) {
             return option.getValue();
         }

@@ -1,6 +1,5 @@
 package com.dnd.namuiwiki.domain.statistic.model;
 
-import com.dnd.namuiwiki.domain.dashboard.model.dto.RankDto;
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.entity.Question;
@@ -14,16 +13,16 @@ import java.util.stream.Collectors;
 
 @Getter
 public class RankStatistic extends Statistic {
-    private final Map<String, RankDto> ranks;
+    private final Map<String, Rank> ranks;
 
-    public RankStatistic(String questionId, QuestionName questionName, DashboardType dashboardType, Long totalCount, Map<String, RankDto> ranks) {
+    public RankStatistic(String questionId, QuestionName questionName, DashboardType dashboardType, Long totalCount, Map<String, Rank> ranks) {
         super(questionId, questionName, dashboardType, totalCount);
         this.ranks = ranks;
     }
 
     public static RankStatistic create(Question question) {
-        Map<String, RankDto> rankMap = question.getOptions().values().stream()
-                .collect(Collectors.toMap(Option::getId, RankDto::optionToRankDto));
+        Map<String, Rank> rankMap = question.getOptions().values().stream()
+                .collect(Collectors.toMap(Option::getId, Rank::optionToRankDto));
         return new RankStatistic(
                 question.getId(),
                 question.getName(),
@@ -49,12 +48,5 @@ public class RankStatistic extends Statistic {
             String optionId = answerList.get(i);
             ranks.get(optionId).addPoint(point);
         }
-
-        // rankMap percentage update
-        long totalPoint = this.totalCount * (5 + 4 + 3 + 2 + 1);
-        ranks.forEach((key, value) -> {
-            int percentage = (int) (value.getPoint() / totalPoint);
-            value.updatePercentage(percentage);
-        });
     }
 }

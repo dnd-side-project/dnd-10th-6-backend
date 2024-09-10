@@ -23,7 +23,7 @@ public enum QuestionType {
     }
 
     public boolean isChoiceType() {
-        return this == MULTIPLE_CHOICE || this == OX || this == NUMERIC_CHOICE || this == RANK;
+        return this == MULTIPLE_CHOICE || this == OX || this == NUMERIC_CHOICE;
     }
 
     public boolean isNumericType() {
