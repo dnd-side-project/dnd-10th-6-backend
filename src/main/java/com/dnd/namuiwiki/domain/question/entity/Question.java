@@ -27,6 +27,7 @@ public class Question extends BaseTimeEntity {
     private QuestionType type;
     private DashboardType dashboardType;
     private Long surveyOrder;
+    private Long dashboardOrder;
     private WikiType wikiType;
     private boolean reasonRequired;
 

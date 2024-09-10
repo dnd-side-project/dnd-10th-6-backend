@@ -16,7 +16,7 @@ public class RankDashboardComponent extends DashboardComponentV2 {
     private final List<RankDto> rank;
 
     public RankDashboardComponent(DashboardType dashboardType, Statistic statistic, Question question) {
-        super(dashboardType, question.getId(), question.getTitle(), question.getName());
+        super(dashboardType, question.getId(), question.getTitle(), question.getName(), question.getDashboardOrder());
 
         if (!dashboardType.isRankType()) {
             throw new IllegalArgumentException("Required RankDashboardType");

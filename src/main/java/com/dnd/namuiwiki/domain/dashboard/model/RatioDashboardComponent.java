@@ -17,7 +17,7 @@ public class RatioDashboardComponent extends DashboardComponentV2 {
     private List<RatioDto> rank;
 
     public RatioDashboardComponent(DashboardType dashboardType, Statistic statistic, Question question) {
-        super(dashboardType, question.getId(), question.getTitle(), question.getName());
+        super(dashboardType, question.getId(), question.getTitle(), question.getName(), question.getDashboardOrder());
 
         if (!dashboardType.isRatioType()) {
             throw new IllegalArgumentException("Required RatioDashboardType");
