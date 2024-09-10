@@ -185,9 +185,8 @@ public class SurveyService {
                         .period(survey.getPeriod())
                         .relation(survey.getRelation())
                         .createdAt(survey.getWrittenAt())
-                        .answer(convertAnswer(question, answer))
+                        .answer(answer.convertToObject())
                         .reason(answer.getReason())
-                        .optionName(answer)
                         .wikiType(survey.getWikiType())
                         .build()).orElse(null));
 
