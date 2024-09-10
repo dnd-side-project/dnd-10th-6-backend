@@ -11,10 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @AllArgsConstructor
@@ -34,7 +31,9 @@ public class GetSurveyResponse {
         private String reason;
         private QuestionName questionName;
 
-        static SingleQuestionAndAnswer from(Question question, Answer surveyAnswer) {
+        static SingleQuestionAndAnswer from(Answer surveyAnswer) {
+            Question question = surveyAnswer.getQuestion();
+
             return new SingleQuestionAndAnswer(
                     question.getTitle(),
                     surveyAnswer.convertToObject(),
@@ -45,19 +44,16 @@ public class GetSurveyResponse {
 
     }
 
-    public static GetSurveyResponse from(Survey survey, List<Question> questions) {
-        var singleQuestionAndAnswers = pairQuestionAndAnswer(survey, questions);
-        return new GetSurveyResponse(survey.getSenderName(), survey.getWikiType(), survey.getPeriod(), survey.getRelation(), survey.getWrittenAt(), singleQuestionAndAnswers);
+    public static GetSurveyResponse from(Survey survey) {
+        return new GetSurveyResponse(
+                survey.getSenderName(),
+                survey.getWikiType(),
+                survey.getPeriod(),
+                survey.getRelation(),
+                survey.getWrittenAt(),
+                survey.getAnswers().stream().map(SingleQuestionAndAnswer::from).toList()
+        );
     }
 
-    private static List<SingleQuestionAndAnswer> pairQuestionAndAnswer(Survey survey, List<Question> questions) {
-        Map<String, Question> questionMap = new HashMap<>();
-        questions.forEach(question -> questionMap.put(question.getId(), question));
-
-        var answers = survey.getAnswers();
-        List<SingleQuestionAndAnswer> questionAndAnswerList = new ArrayList<>();
-        answers.forEach(answer -> questionAndAnswerList.add(SingleQuestionAndAnswer.from(questionMap.get(answer.getQuestion().getId()), answer)));
-        return questionAndAnswerList;
-    }
 
 }

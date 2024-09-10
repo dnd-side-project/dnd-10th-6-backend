@@ -154,8 +154,7 @@ public class SurveyService {
         User user = getUserByWikiId(tokenUserInfoDto.getWikiId());
         validateSurveyOwner(survey, user);
 
-        List<Question> questions = questionRepository.findAll();
-        return GetSurveyResponse.from(survey, questions);
+        return GetSurveyResponse.from(survey);
     }
 
     private void validateSurveyOwner(Survey survey, User user) {
