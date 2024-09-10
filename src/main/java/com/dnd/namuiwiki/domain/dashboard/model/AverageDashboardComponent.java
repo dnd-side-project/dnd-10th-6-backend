@@ -13,7 +13,7 @@ public class AverageDashboardComponent extends DashboardComponentV2 {
     private final long entireAverage;
 
     public AverageDashboardComponent(DashboardType dashboardType, Statistic statistic, long entireAverage, Question question) {
-        super(dashboardType, question.getId(), question.getTitle(), question.getName());
+        super(dashboardType, question.getId(), question.getTitle(), question.getName(), question.getDashboardOrder());
 
         if (!dashboardType.isAverageType()) {
             throw new IllegalArgumentException("Required AverageDashboardType");

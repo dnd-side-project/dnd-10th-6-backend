@@ -17,4 +17,5 @@ public abstract class DashboardComponentV2 {
     private final String questionId;
     private final String questionTitle;
     private final QuestionName questionName;
+    private final Long dashboardOrder;
 }
