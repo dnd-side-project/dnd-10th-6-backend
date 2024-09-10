@@ -31,7 +31,6 @@ public class SingleAnswerWithSurveyDetailDto {
             if (question.getType().isChoiceType()) {
                 if (surveyAnswer.getType().isOption()) {
                     optionName = question.getOption(surveyAnswer.getAnswer().toString())
-                            .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID))
                             .getName();
                 } else {
                     optionName = question.getOptions().values().stream()

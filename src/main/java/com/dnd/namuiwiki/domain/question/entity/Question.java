@@ -1,5 +1,7 @@
 package com.dnd.namuiwiki.domain.question.entity;
 
+import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
+import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
 import com.dnd.namuiwiki.common.model.BaseTimeEntity;
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
 import com.dnd.namuiwiki.domain.option.entity.Option;
@@ -13,7 +15,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.util.Map;
-import java.util.Optional;
 
 @Getter
 @Builder
@@ -33,8 +34,11 @@ public class Question extends BaseTimeEntity {
     @DocumentReference(collection = "options")
     private Map<String, Option> options;
 
-    public Optional<Option> getOption(String optionId) {
-        return Optional.ofNullable(options.get(optionId));
+    public Option getOption(String optionId) {
+        if (!options.containsKey(optionId)) {
+            throw new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID);
+        }
+        return options.get(optionId);
     }
 
 }

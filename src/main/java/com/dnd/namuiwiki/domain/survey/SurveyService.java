@@ -235,8 +235,7 @@ public class SurveyService {
     }
 
     private Object getOptionValue(Question question, Object answer) {
-        Option option = question.getOption(answer.toString())
-                .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID));
+        Option option = question.getOption(answer.toString());
         if (question.getType().isNumericType()) {
             return option.getValue();
         }
