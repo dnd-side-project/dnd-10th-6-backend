@@ -36,7 +36,7 @@ public class RankDashboardComponent extends DashboardComponentV2 {
             if (totalPoint.get() == 0) {
                 return;
             }
-            rankDtoList.add(new RankDto(rank.getText(), rank.getPoint(), rank.getPoint() / totalPoint.get()));
+            rankDtoList.add(new RankDto(rank.getText(), rank.getPoint(), (rank.getPoint() / totalPoint.get()) * 100 ));
         });
 
         rankDtoList.sort((o1, o2) -> Integer.compare(o2.getPercentage(), o1.getPercentage()));
