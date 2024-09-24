@@ -190,7 +190,7 @@ public class SurveyService {
                         .wikiType(survey.getWikiType())
                         .build()).orElse(null));
 
-        return new GetAnswersByQuestionResponse(question.getTitle(), question.getName(), PageableDto.create(answers));
+        return new GetAnswersByQuestionResponse(question.getTitle(), question.getName(), question.getType(), PageableDto.create(answers));
     }
 
     private void validateFilter(Period period, Relation relation) {
