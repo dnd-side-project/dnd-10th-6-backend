@@ -6,7 +6,7 @@
 
 
 <a href="https://namui-wiki.life" target="_blank">
-<h3 align="center"> >> 남의위키 사용해보기 << </h3>
+<div align="center"> >> 남의위키 사용해보기 << </div>
 <img src="https://github.com/user-attachments/assets/f2a6d980-bfd7-4e44-bab0-a5d943730fd2">
 </a>
 
