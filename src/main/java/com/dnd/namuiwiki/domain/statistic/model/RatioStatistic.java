@@ -60,8 +60,7 @@ public class RatioStatistic extends Statistic {
         String optionId = answer.getAnswer().toString();
         Legend legend = getLegend(optionId)
                 .orElseGet(() -> {
-                    Option option = question.getOption(optionId)
-                            .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID));
+                    Option option = question.getOption(optionId);
                     return new Legend(option.getId(), option.getText(), option.getValue(), 0L);
                 });
         legend.increaseCount();

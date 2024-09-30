@@ -1,27 +1,23 @@
 package com.dnd.namuiwiki.domain.survey.model.dto;
 
-import com.dnd.namuiwiki.common.exception.ApplicationErrorException;
-import com.dnd.namuiwiki.common.exception.ApplicationErrorType;
-import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.question.type.QuestionName;
 import com.dnd.namuiwiki.domain.survey.model.entity.Answer;
 import com.dnd.namuiwiki.domain.survey.model.entity.Survey;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
+import com.dnd.namuiwiki.domain.wiki.WikiType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @AllArgsConstructor
 public class GetSurveyResponse {
     private String senderName;
+    private WikiType wikiType;
     private Period period;
     private Relation relation;
     private LocalDateTime createdAt;
@@ -31,70 +27,33 @@ public class GetSurveyResponse {
     @AllArgsConstructor
     private static class SingleQuestionAndAnswer {
         private String questionTitle;
-        private String text;
-        private Object value;
+        private Object answer;
         private String reason;
         private QuestionName questionName;
-        private String optionName;
 
-        static SingleQuestionAndAnswer from(Question question, Answer surveyAnswer) {
-            String optionName = getOptionName(question, surveyAnswer);
+        static SingleQuestionAndAnswer from(Answer surveyAnswer) {
+            Question question = surveyAnswer.getQuestion();
 
-            if (surveyAnswer.getType().isManual()) {
-                return new SingleQuestionAndAnswer(
-                        question.getTitle(),
-                        surveyAnswer.getAnswer().toString(),
-                        surveyAnswer.getAnswer(),
-                        surveyAnswer.getReason(),
-                        question.getName(),
-                        optionName
-                );
-            }
-            Option option = question.getOption(surveyAnswer.getAnswer().toString())
-                    .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID));
             return new SingleQuestionAndAnswer(
                     question.getTitle(),
-                    option.getText(),
-                    option.getValue(),
+                    surveyAnswer.convertToObject(),
                     surveyAnswer.getReason(),
-                    question.getName(),
-                    optionName
+                    question.getName()
             );
         }
 
-        private static String getOptionName(Question question, Answer surveyAnswer) {
-            String optionName = null;
-
-            if (question.getType().isChoiceType()) {
-                if (surveyAnswer.getType().isOption()) {
-                    optionName = question.getOption(surveyAnswer.getAnswer().toString())
-                            .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID))
-                            .getName();
-                } else {
-                    optionName = question.getOptions().values().stream()
-                            .filter(option -> option.getName().contains("MANUAL"))
-                            .findFirst()
-                            .orElseThrow(() -> new ApplicationErrorException(ApplicationErrorType.INVALID_OPTION_ID))
-                            .getName();
-                }
-            }
-            return optionName;
-        }
     }
 
-    public static GetSurveyResponse from(Survey survey, List<Question> questions) {
-        var singleQuestionAndAnswers = pairQuestionAndAnswer(survey, questions);
-        return new GetSurveyResponse(survey.getSenderName(), survey.getPeriod(), survey.getRelation(), survey.getWrittenAt(), singleQuestionAndAnswers);
+    public static GetSurveyResponse from(Survey survey) {
+        return new GetSurveyResponse(
+                survey.getSenderName(),
+                survey.getWikiType(),
+                survey.getPeriod(),
+                survey.getRelation(),
+                survey.getWrittenAt(),
+                survey.getAnswers().stream().map(SingleQuestionAndAnswer::from).toList()
+        );
     }
 
-    private static List<SingleQuestionAndAnswer> pairQuestionAndAnswer(Survey survey, List<Question> questions) {
-        Map<String, Question> questionMap = new HashMap<>();
-        questions.forEach(question -> questionMap.put(question.getId(), question));
-
-        var answers = survey.getAnswers();
-        List<SingleQuestionAndAnswer> questionAndAnswerList = new ArrayList<>();
-        answers.forEach(answer -> questionAndAnswerList.add(SingleQuestionAndAnswer.from(questionMap.get(answer.getQuestion().getId()), answer)));
-        return questionAndAnswerList;
-    }
 
 }

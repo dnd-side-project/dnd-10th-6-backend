@@ -4,11 +4,13 @@ import com.dnd.namuiwiki.domain.dashboard.model.entity.Dashboard;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
 import com.dnd.namuiwiki.domain.user.entity.User;
+import com.dnd.namuiwiki.domain.wiki.WikiType;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
 
-public interface DashboardRepository extends MongoRepository<Dashboard, String>, DashboardCustomRepository {
-    Optional<Dashboard> findByUserAndPeriodAndRelation(User user, Period period, Relation relation);
-    boolean existsByUserAndPeriodAndRelation(User user, Period period, Relation relation);
+public interface DashboardRepository extends MongoRepository<Dashboard, String> {
+    Optional<Dashboard> findByUserAndWikiTypeAndPeriodAndRelation(User user, WikiType wikiType, Period period, Relation relation);
+
+    boolean existsByUserAndWikiTypeAndPeriodAndRelation(User user, WikiType wikiType, Period period, Relation relation);
 }

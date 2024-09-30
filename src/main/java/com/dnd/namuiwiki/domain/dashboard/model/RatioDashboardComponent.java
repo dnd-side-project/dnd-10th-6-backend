@@ -2,9 +2,10 @@ package com.dnd.namuiwiki.domain.dashboard.model;
 
 import com.dnd.namuiwiki.domain.dashboard.model.dto.RatioDto;
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
+import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.statistic.model.Legend;
 import com.dnd.namuiwiki.domain.statistic.model.RatioStatistic;
-import com.dnd.namuiwiki.domain.statistic.model.Statistics;
+import com.dnd.namuiwiki.domain.statistic.model.Statistic;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -12,23 +13,23 @@ import java.util.List;
 import java.util.Optional;
 
 @Getter
-public class HappyDashboardComponent extends DashboardComponent {
+public class RatioDashboardComponent extends DashboardComponentV2 {
     private List<RatioDto> rank;
-    private final String questionId;
 
-    public HappyDashboardComponent(Statistics statistics, String questionId) {
-        super(DashboardType.HAPPY);
-        this.questionId = questionId;
+    public RatioDashboardComponent(DashboardType dashboardType, Statistic statistic, Question question) {
+        super(dashboardType, question.getId(), question.getTitle(), question.getName(), question.getDashboardOrder());
 
-        calculate(statistics);
+        if (!dashboardType.isRatioType()) {
+            throw new IllegalArgumentException("Required RatioDashboardType");
+        }
+
+        calculate((RatioStatistic) statistic);
     }
 
-    @Override
-    public void calculate(Statistics statistics) {
-        RatioStatistic happy = (RatioStatistic) statistics.getStatisticsByDashboardType(this.dashboardType).get(0);
-        Long totalCount = happy.getTotalCount();
+    private void calculate(RatioStatistic statistic) {
+        Long totalCount = statistic.getTotalCount();
 
-        List<Legend> legends = happy.getLegends();
+        List<Legend> legends = statistic.getLegends();
         int optionPercentage = 0;
 
         this.rank = new ArrayList<>();

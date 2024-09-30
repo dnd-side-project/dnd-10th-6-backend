@@ -4,6 +4,7 @@ import com.dnd.namuiwiki.common.annotation.DisableSwaggerSecurity;
 import com.dnd.namuiwiki.common.dto.ResponseDto;
 import com.dnd.namuiwiki.domain.question.dto.QuestionDto;
 import com.dnd.namuiwiki.domain.question.type.QuestionType;
+import com.dnd.namuiwiki.domain.wiki.WikiType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,16 +28,22 @@ public class QuestionController {
 
     @Operation(hidden = true)
     @PostMapping
-    public ResponseEntity<?> setDefaultQuestions(@RequestParam String pwd) {
-        questionService.setDefaultDocuments(pwd);
+    public ResponseEntity<?> setDefaultQuestions(
+            @RequestParam String pwd,
+            @RequestParam WikiType wikiType
+    ) {
+        questionService.setDefaultQuestions(pwd, wikiType);
         return ResponseDto.noContent();
     }
 
     @Operation(summary = "설문에 들어갈 문항 조회", responses = {@ApiResponse(responseCode = "200", description = "문항 조회 성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = QuestionDto.class))))})
     @DisableSwaggerSecurity
     @GetMapping
-    public ResponseEntity<?> getQuestions(@RequestParam(required = false, name = "type") QuestionType questionType) {
-        var response = questionService.getQuestions(questionType);
+    public ResponseEntity<?> getQuestions(
+            @RequestParam(required = false, name = "type") QuestionType questionType,
+            @RequestParam(name = "wikiType") WikiType wikiType
+    ) {
+        var response = questionService.getQuestions(questionType, wikiType);
         return ResponseDto.ok(response);
     }
 

@@ -11,20 +11,14 @@ public class OptionDto {
     private String id;
     private Object value;
     private String text;
+    private String description;
 
     public static OptionDto from(Option option) {
         return OptionDto.builder()
                 .id(option.getId())
                 .value(option.getValue())
                 .text(option.getText())
-                .build();
-    }
-
-    public Option toEntity() {
-        return Option.builder()
-                .id(id)
-                .value(value)
-                .text(text)
+                .description(option.getDescription())
                 .build();
     }
 

@@ -6,6 +6,7 @@ import com.dnd.namuiwiki.domain.jwt.dto.TokenUserInfoDto;
 import com.dnd.namuiwiki.domain.survey.model.dto.GetAnswersByQuestionResponse;
 import com.dnd.namuiwiki.domain.survey.type.Period;
 import com.dnd.namuiwiki.domain.survey.type.Relation;
+import com.dnd.namuiwiki.domain.wiki.WikiType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -31,13 +32,19 @@ public class AnswerController {
     @GetMapping
     public ResponseEntity<?> getAnswersByQuestion(
             @JwtAuthorization TokenUserInfoDto tokenUserInfoDto,
+            @RequestParam(name = "wikiType") WikiType wikiType,
             @RequestParam(name = "questionId") String questionId,
             @RequestParam(name = "period", required = false, defaultValue = "TOTAL") Period period,
             @RequestParam(name = "relation", required = false, defaultValue = "TOTAL") Relation relation,
             @RequestParam(name = "pageNo", required = false, defaultValue = "0") int pageNo,
-            @RequestParam(name = "pageSize", required = false, defaultValue = "20") int pageSize) {
-
-        var answersByQuestion = surveyService.getAnswersByQuestion(tokenUserInfoDto.getWikiId(), questionId, period, relation, pageNo, pageSize);
+            @RequestParam(name = "pageSize", required = false, defaultValue = "20") int pageSize
+    ) {
+        var answersByQuestion = surveyService.getAnswersByQuestion(
+                wikiType,
+                tokenUserInfoDto.getWikiId(), questionId,
+                period, relation,
+                pageNo, pageSize
+        );
         return ResponseDto.ok(answersByQuestion);
     }
 }
