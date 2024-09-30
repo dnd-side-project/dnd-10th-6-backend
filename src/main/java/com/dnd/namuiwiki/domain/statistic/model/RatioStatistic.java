@@ -37,7 +37,7 @@ public class RatioStatistic extends Statistic {
 
     public static RatioStatistic create(Question question) {
         Map<String, Legend> legends = new HashMap<>();
-        question.getOptions().forEach((key, value) -> legends.put(key, new Legend(key, value.getText(), value.getValue(), 0L)));
+        question.getOptions().forEach((key, value) -> legends.put(key, new Legend(key, 0L)));
         return new RatioStatistic(
                 question.getId(),
                 question.getName(),
@@ -61,7 +61,7 @@ public class RatioStatistic extends Statistic {
         Legend legend = getLegend(optionId)
                 .orElseGet(() -> {
                     Option option = question.getOption(optionId);
-                    return new Legend(option.getId(), option.getText(), option.getValue(), 0L);
+                    return new Legend(option.getId(), 0L);
                 });
         legend.increaseCount();
     }

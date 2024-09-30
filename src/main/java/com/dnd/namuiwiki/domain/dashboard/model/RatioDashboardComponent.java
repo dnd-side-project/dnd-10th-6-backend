@@ -2,6 +2,7 @@ package com.dnd.namuiwiki.domain.dashboard.model;
 
 import com.dnd.namuiwiki.domain.dashboard.model.dto.RatioDto;
 import com.dnd.namuiwiki.domain.dashboard.type.DashboardType;
+import com.dnd.namuiwiki.domain.option.entity.Option;
 import com.dnd.namuiwiki.domain.question.entity.Question;
 import com.dnd.namuiwiki.domain.statistic.model.Legend;
 import com.dnd.namuiwiki.domain.statistic.model.RatioStatistic;
@@ -10,6 +11,7 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Getter
@@ -23,10 +25,10 @@ public class RatioDashboardComponent extends DashboardComponentV2 {
             throw new IllegalArgumentException("Required RatioDashboardType");
         }
 
-        calculate((RatioStatistic) statistic);
+        calculate((RatioStatistic) statistic, question);
     }
 
-    private void calculate(RatioStatistic statistic) {
+    private void calculate(RatioStatistic statistic, Question question) {
         Long totalCount = statistic.getTotalCount();
 
         List<Legend> legends = statistic.getLegends();
@@ -36,12 +38,12 @@ public class RatioDashboardComponent extends DashboardComponentV2 {
 
         for (Legend legend : legends) {
             if (totalCount == 0) {
-                rank.add(new RatioDto(legend.getText(), 0));
+                rank.add(new RatioDto(getText(question, legend), 0));
                 continue;
             }
             int percentage = (int) (legend.getCount() * 100 / totalCount);
             optionPercentage += percentage;
-            rank.add(new RatioDto(legend.getText(), percentage));
+            rank.add(new RatioDto(getText(question, legend), percentage));
         }
 
         // 직접입력인 legend 인거 찾아서 새로 업데이트
@@ -53,6 +55,12 @@ public class RatioDashboardComponent extends DashboardComponentV2 {
                 .filter(legend -> legend.getLegend().contains("직접 입력"))
                 .findFirst();
         manualLegend.ifPresent(ratioDto -> ratioDto.setPercentage(100 - optionPercentage));
+    }
+
+    private String getText(Question question, Legend legend) {
+        Map<String, Option> options = question.getOptions();
+        Option option = options.get(legend.getOptionId());
+        return option.getText();
     }
 
 }
